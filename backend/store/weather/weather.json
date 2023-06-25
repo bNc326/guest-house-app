@@ -1,0 +1,530 @@
+[
+  {
+    "code": 1000,
+    "day": {
+      "text": "Napos",
+      "icon": "clear-day.svg"
+    },
+    "night": {
+      "text": "Tiszta",
+      "icon": "clear-night.svg"
+    }
+  },
+  {
+    "code": 1003,
+    "day": {
+      "text": "Részben felhős",
+      "icon": "partly-cloudy-day.svg"
+    },
+    "night": {
+      "text": "Részben felhős",
+      "icon": "partly-cloudy-night.svg"
+    }
+  },
+  {
+    "code": 1006,
+    "day": {
+      "text": "Felhős",
+      "icon": "cloudy.svg"
+    },
+    "night": {
+      "text": "Felhős",
+      "icon": "cloudy.svg"
+    }
+  },
+  {
+    "code": 1009,
+    "day": {
+      "text": "Borús",
+      "icon": "overcast-day.svg"
+    },
+    "night": {
+      "text": "Borús",
+      "icon": "overcast-night.svg"
+    }
+  },
+  {
+    "code": 1030,
+    "day": {
+      "text": "Gyenge köd",
+      "icon": "partly-cloudy-day-haze.svg"
+    },
+    "night": {
+      "text": "Gyenge köd",
+      "icon": "partly-cloudy-night-haze.svg"
+    }
+  },
+  {
+    "code": 1063,
+    "day": {
+      "text": "Eső előfordulhat",
+      "icon": "partly-cloudy-day-rain.svg"
+    },
+    "night": {
+      "text": "Eső előfordulhat",
+      "icon": "partly-cloudy-night-rain.svg"
+    }
+  },
+  {
+    "code": 1066,
+    "day": {
+      "text": "Hó előfordulhat",
+      "icon": "partly-cloudy-day-snow.svg"
+    },
+    "night": {
+      "text": "Hó előfordulhat",
+      "icon": "partly-cloudy-night-snow.svg"
+    }
+  },
+  {
+    "code": 1069,
+    "day": {
+      "text": "Havas eső",
+      "icon": "partly-cloudy-day-sleet.svg"
+    },
+    "night": {
+      "text": "Havas eső",
+      "icon": "partly-cloudy-night-sleet.svg"
+    }
+  },
+  {
+    "code": 1072,
+    "day": {
+      "text": "Ónos szitálás",
+      "icon": "partly-cloudy-day-hail.svg"
+    },
+    "night": {
+      "text": "Ónos szitálás",
+      "icon": "partly-cloudy-night-hail.svg"
+    }
+  },
+  {
+    "code": 1087,
+    "day": {
+      "text": "Mennydőrgés",
+      "icon": "thunderstorms-day-extreme.svg"
+    },
+    "night": {
+      "text": "Mennydőrgés",
+      "icon": "thunderstorms-night-extreme.svg"
+    }
+  },
+  {
+    "code": 1114,
+    "day": {
+      "text": "Hófúvás",
+      "icon": "wind-snow.svg"
+    },
+    "night": {
+      "text": "Hófúvás",
+      "icon": "wind-snow.svg"
+    }
+  },
+  {
+    "code": 1117,
+    "day": {
+      "text": "Hóvihar",
+      "icon": "thunderstorms-day-extreme-snow.svg"
+    },
+    "night": {
+      "text": "Hóvihar",
+      "icon": "thunderstorms-night-extreme-snow.svg"
+    }
+  },
+  {
+    "code": 1135,
+    "day": {
+      "text": "Sűrű köd",
+      "icon": "mist.svg"
+    },
+    "night": {
+      "text": "Sűrű köd",
+      "icon": "mist.svg"
+    }
+  },
+  {
+    "code": 1147,
+    "day": {
+      "text": "Jeges köd",
+      "icon": "extreme-day-fog.svg"
+    },
+    "night": {
+      "text": "Jeges köd",
+      "icon": "extreme-night-fog.svg"
+    }
+  },
+  {
+    "code": 1150,
+    "day": {
+      "text": "Foltos enyhe szitálás",
+      "icon": "partly-cloudy-day-drizzle.svg"
+    },
+    "night": {
+      "text": "Foltos enyhe szitálás",
+      "icon": "partly-cloudy-night-drizzle.svg"
+    }
+  },
+  {
+    "code": 1153,
+    "day": {
+      "text": "Enyhe szitálás",
+      "icon": "overcast-day-drizzle.svg"
+    },
+    "night": {
+      "text": "Enyhe szitálás",
+      "icon": "overcast-night-drizzle.svg"
+    }
+  },
+  {
+    "code": 1168,
+    "day": {
+      "text": "Ónos szitálás",
+      "icon": "overcast-day-sleet.svg"
+    },
+    "night": {
+      "text": "Ónos szitálás",
+      "icon": "overcast-night-sleet.svg"
+    }
+  },
+  {
+    "code": 1171,
+    "day": {
+      "text": "Erős ónos szitálás",
+      "icon": "extreme-day-sleet.svg"
+    },
+    "night": {
+      "text": "Erős ónos szitálás",
+      "icon": "extreme-night-sleet.svg"
+    }
+  },
+  {
+    "code": 1180,
+    "day": {
+      "text": "Foltos gyenge eső",
+      "icon": "partly-cloudy-day-rain.svg"
+    },
+    "night": {
+      "text": "Foltos gyenge eső",
+      "icon": "partly-cloudy-night-rain.svg"
+    }
+  },
+  {
+    "code": 1183,
+    "day": {
+      "text": "Gyenge eső",
+      "icon": "rain.svg"
+    },
+    "night": {
+      "text": "Gyenge eső",
+      "icon": "rain.svg"
+    }
+  },
+  {
+    "code": 1186,
+    "day": {
+      "text": "Időnként mérsékelt eső",
+      "icon": "overcast-day-rain.svg"
+    },
+    "night": {
+      "text": "Időnként mérsékelt eső",
+      "icon": "overcast-night-rain.svg"
+    }
+  },
+  {
+    "code": 1189,
+    "day": {
+      "text": "Mérsékelt eső",
+      "icon": "overcast-rain.svg"
+    },
+    "night": {
+      "text": "Mérsékelt eső",
+      "icon": "overcast-rain.svg"
+    }
+  },
+  {
+    "code": 1192,
+    "day": {
+      "text": "Időnként heves eső",
+      "icon": "extreme-day-rain.svg"
+    },
+    "night": {
+      "text": "Időnként heves eső",
+      "icon": "extreme-night-rain.svg"
+    }
+  },
+  {
+    "code": 1195,
+    "day": {
+      "text": "Heves eső",
+      "icon": "extreme-rain.svg"
+    },
+    "night": {
+      "text": "Heves eső",
+      "icon": "extreme-rain.svg"
+    }
+  },
+  {
+    "code": 1198,
+    "day": {
+      "text": "Enyhe fagyos eső",
+      "icon": "partly-cloudy-day-hail.svg"
+    },
+    "night": {
+      "text": "Enyhe fagyos eső",
+      "icon": "partly-cloudy-night-hail.svg"
+    }
+  },
+  {
+    "code": 1201,
+    "day": {
+      "text": "Mérsékelt vagy erős fagyos eső",
+      "icon": "hail.svg"
+    },
+    "night": {
+      "text": "Mérsékelt vagy erős fagyos eső",
+      "icon": "hail.svg"
+    }
+  },
+  {
+    "code": 1204,
+    "day": {
+      "text": "Enyhe havas eső",
+      "icon": "partly-cloudy-day-sleet.svg"
+    },
+    "night": {
+      "text": "Enyhe havas eső",
+      "icon": "partly-cloudy-night-sleet.svg"
+    }
+  },
+  {
+    "code": 1207,
+    "day": {
+      "text": "Mérsékelt vagy erős ónós eső",
+      "icon": "sleet.svg"
+    },
+    "night": {
+      "text": "Mérsékelt vagy erős ónós eső",
+      "icon": "sleet.svg"
+    }
+  },
+  {
+    "code": 1210,
+    "day": {
+      "text": "Foltos enyhe hó",
+      "icon": "partly-cloudy-day-snow.svg"
+    },
+    "night": {
+      "text": "Foltos enyhe hó",
+      "icon": "partly-cloudy-night-snow.svg"
+    }
+  },
+  {
+    "code": 1213,
+    "day": {
+      "text": "Enyhe havazás",
+      "icon": "snow.svg"
+    },
+    "night": {
+      "text": "Enyhe havazás",
+      "icon": "snow.svg"
+    }
+  },
+  {
+    "code": 1216,
+    "day": {
+      "text": "Foltos mérsékelt hó",
+      "icon": "overcast-day-snow.svg"
+    },
+    "night": {
+      "text": "Foltos mérsékelt hó",
+      "icon": "overcast-night-snow.svg"
+    }
+  },
+  {
+    "code": 1219,
+    "day": {
+      "text": "Mérsékelt havazás",
+      "icon": "overcast-snow.svg"
+    },
+    "night": {
+      "text": "Mérsékelt havazás",
+      "icon": "overcast-snow.svg"
+    }
+  },
+  {
+    "code": 1222,
+    "day": {
+      "text": "Foltos erős hó",
+      "icon": "extreme-day-snow.svg"
+    },
+    "night": {
+      "text": "Foltos erős hó",
+      "icon": "extreme-night-snow.svg"
+    }
+  },
+  {
+    "code": 1225,
+    "day": {
+      "text": "Erős hó",
+      "icon": "extreme-snow.svg"
+    },
+    "night": {
+      "text": "Erős hó",
+      "icon": "extreme-snow.svg"
+    }
+  },
+  {
+    "code": 1237,
+    "day": {
+      "text": "Jégeső",
+      "icon": "hail.svg"
+    },
+    "night": {
+      "text": "Jégeső",
+      "icon": "hail.svg"
+    }
+  },
+  {
+    "code": 1240,
+    "day": {
+      "text": "eső",
+      "icon": "rain.svg"
+    },
+    "night": {
+      "text": "eső",
+      "icon": "rain.svg"
+    }
+  },
+  {
+    "code": 1243,
+    "day": {
+      "text": "Mérsékelt vagy heves esőzés",
+      "icon": "extreme-day-rain.svg"
+    },
+    "night": {
+      "text": "Mérsékelt vagy heves esőzés",
+      "icon": "extreme-night-rain.svg"
+    }
+  },
+  {
+    "code": 1246,
+    "day": {
+      "text": "Szakadó eső",
+      "icon": "extreme-rain.svg"
+    },
+    "night": {
+      "text": "Szakadó eső",
+      "icon": "extreme-rain.svg"
+    }
+  },
+  {
+    "code": 1249,
+    "day": {
+      "text": "Enyhe havas eső",
+      "icon": "extreme-day-sleet.svg"
+    },
+    "night": {
+      "text": "Enyhe havas eső",
+      "icon": "extreme-night-sleet.svg"
+    }
+  },
+  {
+    "code": 1252,
+    "day": {
+      "text": "Mérsékelt vagy erős havas eső",
+      "icon": "extreme-sleet.svg"
+    },
+    "night": {
+      "text": "Mérsékelt vagy erős havas eső",
+      "icon": "extreme-sleet.svg"
+    }
+  },
+  {
+    "code": 1255,
+    "day": {
+        "text": "Enyhe hózápor",
+        "icon": "extreme-day-snow.svg"
+      },
+      "night": {
+        "text": "Enyhe hózápor",
+        "icon": "extreme-night-snow.svg"
+      }
+  },
+  {
+    "code": 1258,
+    "day": {
+        "text": "Mérsékelt vagy erős hózápor",
+        "icon": "extreme-snow.svg"
+      },
+      "night": {
+        "text": "Mérsékelt vagy erős hózápor",
+        "icon": "extreme-snow.svg"
+      }
+  },
+  {
+    "code": 1261,
+    "day": {
+        "text": "Enyhe jégzápor",
+        "icon": "extreme-day-hail.svg"
+      },
+      "night": {
+        "text": "Enyhe jégzápor",
+        "icon": "extreme-night-hail.svg"
+      }
+  },
+  {
+    "code": 1264,
+    "day": {
+        "text": "Mérsékelt vagy erős jégszemcsék",
+        "icon": "extreme-hail.svg"
+      },
+      "night": {
+        "text": "Mérsékelt vagy erős jégszemcsék",
+        "icon": "extreme-hail.svg"
+      }
+  },
+  {
+    "code": 1273,
+    "day": {
+        "text": "Foltos gyenge eső dörgéssel",
+        "icon": "thunderstorms-day-extreme-rain.svg"
+      },
+      "night": {
+        "text": "Foltos gyenge eső dörgéssel",
+        "icon": "thunderstorms-night-extreme-rain.svg"
+      }
+  },
+  {
+    "code": 1276,
+    "day": {
+        "text": "Mérsékelt vagy heves esőzés zivatarral",
+        "icon": "thunderstorms-extreme-rain.svg"
+      },
+      "night": {
+        "text": "Mérsékelt vagy heves esőzés zivatarral",
+        "icon": "thunderstorms-extreme-rain.svg"
+      }
+  },
+  {
+    "code": 1279,
+    "day": {
+        "text": "Foltos gyenge havazás dörgéssel",
+        "icon": "thunderstorms-day-extreme-snow.svg"
+      },
+      "night": {
+        "text": "Foltos gyenge havazás dörgéssel",
+        "icon": "thunderstorms-night-extreme-snow.svg"
+      }
+  },
+  {
+    "code": 1282,
+    "day": {
+        "text": "Mérsékelt vagy erős havazás zivatarral",
+        "icon": "thunderstorms-extreme-snow.svg"
+      },
+      "night": {
+        "text": "Mérsékelt vagy erős havazás zivatarral",
+        "icon": "thunderstorms-extreme-snow.svg"
+      }
+  }
+]
