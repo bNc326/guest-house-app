@@ -43,19 +43,24 @@ export const getOneImage = (req, res, next) => {
 
 export const uploadImage = (req, res, next) => {
   try {
+    console.log("file", req.files);
     fs.readFile(filePath, (err, file) => {
       const data = JSON.parse(file);
       const files = req.files;
 
       files.map((file) => {
-        const split = file.originalname.split(".");
-        const updateBody = {
-          id: uuid(),
-          alt: file.originalname.replace(/\.[^/.]+$/, ""),
-          path: file.originalname,
-          trimmedPath: `${split[0].substring(0, 12)}... .${split[1]}`,
-        };
-        data.push(updateBody);
+        const foundItem = data.find((img) => img.path === file.originalname);
+
+        if (!foundItem) {
+          const split = file.originalname.split(".");
+          const updateBody = {
+            id: uuid(),
+            alt: file.originalname.replace(/\.[^/.]+$/, ""),
+            path: file.originalname,
+            trimmedPath: `${split[0].substring(0, 12)}... .${split[1]}`,
+          };
+          data.push(updateBody);
+        }
       });
 
       fs.writeFile(filePath, JSON.stringify(data), (err) => {

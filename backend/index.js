@@ -52,6 +52,13 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/store", express.static("store"));
+app.get("/api/isLoaded", (req, res, next) => {
+  try {
+    res.status(200).send(true);
+  } catch (error) {
+    next(error);
+  }
+});
 app.use("/api/auth", auth);
 app.use("/api/weather", weather);
 app.use("/api/booking", Booking);
@@ -79,6 +86,6 @@ app.get("/", (req, res) => {
 });
 
 app.listen(8800, () => {
-  connectDB();
-  console.log("Server running on port 8800");
-});
+  connectDB()
+  console.log("Server running on port 8800")
+})

@@ -1,4 +1,5 @@
 import multer from "multer";
+import fs from "fs";
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
@@ -8,6 +9,5 @@ const storage = multer.diskStorage({
     callback(null, file.originalname);
   },
 });
-
 
 export const uploads = multer({ storage: storage });
