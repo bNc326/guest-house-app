@@ -38,7 +38,7 @@ const ImageBox: React.FC<Props> = ({
                 className="w-full h-full block"
               />
 
-              <div className="text-dynamicSmall text-center py-2 select-none absolute w-full bottom-0 z-10 bg-white">
+              <div className="text-dynamicSmall text-center py-2 select-none absolute w-full bottom-0 z-0 bg-white">
                 {img.trimmedPath}
               </div>
             </label>

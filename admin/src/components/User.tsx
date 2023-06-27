@@ -20,9 +20,9 @@ const User: React.FC<{
   };
 
   return (
-    <header className="w-full bg-white">
+    <header className="w-full sticky top-0 left-0 z-[1000] bg-white shadow-sm">
       <div className="flex w-full p-2 gap-2 items-center justify-between relative">
-        <div className="z-50 w-full tablet:hidden">
+        <div className="z-10 w-full tablet:hidden">
           <Hamburger
             size={24}
             rounded

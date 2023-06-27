@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { TippContext } from "../../context/TippContext";
 import Switch from "react-switch";
+import { GrFormClose } from "react-icons/gr";
 
 type route = {
   id: number;
@@ -27,6 +28,15 @@ const Dropdown: React.FC<{
     <>
       {isShowDropdown && (
         <div className="absolute z-20 top-0 left-0 w-full h-screen backdrop-blur-sm bg-gray-300/80 flex flex-col items-center justify-center gap-2">
+          <span
+            className="absolute top-4 right-4"
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              setIsShowDropdown(false);
+            }}
+          >
+            <GrFormClose size={32} />
+          </span>
           <ul className="flex flex-col gap-2 text-dynamicTitle3">
             {routePath.map((route, index) => (
               <NavLink

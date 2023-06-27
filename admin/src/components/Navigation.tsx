@@ -92,7 +92,7 @@ const Navigation: React.FC<{
     // <BsStar size={"1.5rem"} />,
   ];
   return (
-    <nav className="bg-white h-full min-h-screen flex flex-col tablet:px-4">
+    <nav className="flex h-full flex-col tablet:px-4">
       <Dropdown
         isShowDropdown={isShowDropdown}
         routePath={routePath}
@@ -101,24 +101,20 @@ const Navigation: React.FC<{
         setIsTippOff={setIsTippOff}
       />
 
-      <ul className="gap-4 flex-col hidden tablet:flex">
+      <ul className="gap-4 flex-col hidden tablet:flex sticky top-8">
         {routePath.map((route, index) => (
           <NavLink
             key={index}
             to={route.path}
             end={route.end}
-            className={({ isActive }) =>
-              isActive
-                ? "opacity-70"
-                : "hover:opacity-70 transition-all duration-300 ease-in-out"
-            }
+            className={({ isActive }) => (isActive ? "opacity-50" : "")}
           >
             <Tooltip
               content={route.linkName}
               placement="right"
-              className="z-50"
+              className="w-max"
             >
-              <li className="flex items-center gap-2 cursor-pointer">
+              <li className="flex transition-all ease-in-out duration-300 items-center gap-2 cursor-pointer">
                 {linkIcons[index]}
 
                 {ctx.isDemo && !ctx.isOff && (

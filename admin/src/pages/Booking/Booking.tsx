@@ -8,10 +8,7 @@ import {
 import { Button } from "flowbite-react";
 import { TippContext } from "../../context/TippContext";
 import { format } from "date-fns";
-import {
-  ALERT_TYPE,
-  ALERT_ACTION_TYPE,
-} from "../../models/Alert/AlertModels";
+import { ALERT_TYPE, ALERT_ACTION_TYPE } from "../../models/Alert/AlertModels";
 import { HiTrash } from "react-icons/hi";
 import Table, {
   TableCell,
@@ -197,15 +194,9 @@ const Booking = () => {
   //*\
 
   return (
-    <section
-      className={`flex flex-col gap-4 ${
-        ctx.isDemo && !ctx.isOff
-          ? "tablet:w-[calc(100%-18imgrandom %)]"
-          : "tablet:w-[calc(100%-2rem*2)]"
-      } `}
-    >
+    <section className={`flex flex-col gap-4 w-full relative`}>
       {itemForDelete.length !== 0 && (
-        <div className="w-full flex justify-between items-center bg-blue-600/30 p-2 rounded-t-md">
+        <div className="w-full flex justify-between items-center bg-blue-600/30 backdrop-blur-sm p-2 rounded-t-md sticky top-14">
           <span>{itemForDelete.length} elem kiválasztva</span>{" "}
           <Button color="failure" onClick={deleteItemsHandler}>
             <span className="flex gap-1 items-center">

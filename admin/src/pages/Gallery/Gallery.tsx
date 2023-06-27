@@ -331,7 +331,7 @@ const Gallery = () => {
 
   return (
     <section className="w-full flex flex-col items-center gap-4 ">
-      <div className="w-11/12 flex flex-wrap justify-center gap-4 py-4">
+      <div className="w-11/12 flex flex-wrap justify-center gap-4 py-4 ">
         <div className="w-full flex flex-col gap-4">
           <DropZone
             dropHandler={dropHandler}
@@ -344,6 +344,7 @@ const Gallery = () => {
             upload={upload}
             deletePreviewHandler={deletePreviewHandler}
           />
+
           <UploadForm
             upload={upload}
             isProgress={isProgress}

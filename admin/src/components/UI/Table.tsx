@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ComponentProps } from "react";
 import { Link } from "react-router-dom";
 import {
   MODAL_ACTION,
@@ -55,16 +55,19 @@ interface TableCellInterface extends Children {
   className?: string;
 }
 
-export const TableRow: React.FC<{
+interface TableCellProps extends ComponentProps<any> {}
+
+interface TableRowProps extends ComponentProps<any> {
   children: JSX.Element | JSX.Element[];
-  className?: string;
-}> = (props) => {
-  return <tr className={props.className}>{props.children}</tr>;
+}
+
+export const TableRow: React.FC<TableRowProps> = (props) => {
+  return <tr className={props.className + 'hover:bg-gray-300 transition-all ease-in-out duration-150 '}>{props.children}</tr>;
 };
 
-export const TableCell: React.FC<TableCellInterface> = (props) => {
+export const TableCell: React.FC<TableCellProps> = (props) => {
   return (
-    <td className={`${props.className} whitespace-nowrap px-4`}>
+    <td {...props} className={`${props.className} whitespace-nowrap px-4`}>
       {props.children}
     </td>
   );

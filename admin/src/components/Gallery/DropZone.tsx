@@ -58,12 +58,7 @@ const DropZone: React.FC<Props> = (props) => {
           multiple
           hidden
         />
-        <button
-          onClick={() => uploadRef.current?.click()}
-          className="text-dynamicMedium bg-black/50 hover:bg-black/30 text-white font-bold px-2 py-1 rounded-xl transition-all ease-in-out duration-300"
-        >
-          Fájl Feltöltés
-        </button>
+        
       </div>
     </div>
   );

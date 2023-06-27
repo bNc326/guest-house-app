@@ -814,12 +814,12 @@ export const ButtonArea: React.FC<{
 }> = ({ data, objectsEqual, loading, resetFormHandler }) => {
   const navigate = useNavigate();
   return (
-    <div className="flex gap-2 px-4 justify-between items-end">
+    <div className="flex gap-2 justify-between items-end">
       <div className="flex gap-2 w-full">
         <Button
           disabled={objectsEqual}
           type="submit"
-          className="w-full laptop:w-[unset]"
+          className="w-full laptop:w-[unset] transition-all ease-in-out duration-300"
         >
           <span className="flex gap-1 items-center">
             {loading ? (
@@ -830,14 +830,14 @@ export const ButtonArea: React.FC<{
             Létrehozás
           </span>
         </Button>
-        <Button
-          type="button"
-          outline
-          className="bg-red-600 hover:bg-red-600 w-full laptop:w-[unset]"
+        <button
           onClick={resetFormHandler}
+          type="button"
+          disabled={objectsEqual}
+          className="w-full px-4 rounded-lg laptop:w-[unset] border-2 text-red-600 border-red-600 hover:bg-red-600 hover:text-white disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-30 transition-all ease-in-out duration-300"
         >
           Elvétés
-        </Button>
+        </button>
       </div>
     </div>
   );

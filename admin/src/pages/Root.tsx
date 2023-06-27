@@ -5,11 +5,9 @@ import { AuthContext } from "../context/AuthContext";
 import { AUTH_ACTION_TYPE } from "../models/Auth/AuthModel";
 import User from "../components/User";
 import { TippContext } from "../context/TippContext";
-import { Fade as Hamburger } from "hamburger-react";
 import AlertComponent from "../components/UI/Alert";
 import useAlert from "../hooks/useAlert";
 import { Outlet as OutletModel } from "../models/OutletModel";
-import ModalComponents from "../components/modal/ModalComponents";
 
 const Root = () => {
   const [demoMounted, setDemoMounted] = useState(false);
@@ -89,34 +87,34 @@ const Root = () => {
     <>
       {isAdmin && (
         <TippContext.Provider value={{ isDemo: isDemo, isOff: isTippOff }}>
-          <section className="flex w-full min-h-screen h-full flex-col relative">
-            {user && (
-              <User
+          <section className="flex w-full h-full min-h-screen relative">
+            <aside className="py-4 h-full min-h-screen z-[1001]">
+              <Navigation
                 isShowDropdown={isShowDropdown}
                 setIsShowDropdown={setIsShowDropdown}
                 setIsTippOff={setIsTippOff}
-                user={user && user}
               />
-            )}
-            <div className="flex w-full overflow-hidden">
-              <aside>
-                <Navigation
+            </aside>
+            <article className="w-full h-full" >
+              {user && (
+                <User
                   isShowDropdown={isShowDropdown}
                   setIsShowDropdown={setIsShowDropdown}
                   setIsTippOff={setIsTippOff}
+                  user={user && user}
                 />
-              </aside>
-              <article className="w-full h-full rounded-md">
+              )}
+              <div className="w-full h-full rounded-md">
                 <Outlet context={outletCtx} />
-              </article>
-            </div>
+              </div>
+            </article>
+
             <AlertComponent
               isShow={alert.isShow}
               message={alert.message}
               type={alert.alertType}
               deleteAlertDispatch={alertDispatch}
             />
-            {/* <ModalComponents /> */}
           </section>
         </TippContext.Provider>
       )}

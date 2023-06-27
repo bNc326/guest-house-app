@@ -118,7 +118,6 @@ const EditBookingTabs: React.FC<{
               <TextInput
                 id="country"
                 type="text"
-                icon={HiMail}
                 required={true}
                 data-group={"costumer"}
                 data-depth-group={"address"}

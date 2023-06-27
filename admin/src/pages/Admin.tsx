@@ -24,8 +24,8 @@ const Admin = () => {
         <p className="font-bold text-dynamicTitle3"></p>
         <p className="text-dynamicMedium font-normal">
           Ez egy admin felület a{" "}
-          <a href="https://guest-house-app.onrender.com">
-            guest-house.app.onrender.com
+          <a href="https://guest-house-app.onrender.com" target="_blank">
+            guest-house-app.onrender.com
           </a>{" "}
           vendégház applikációhoz!
         </p>
