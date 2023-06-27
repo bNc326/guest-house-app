@@ -27,7 +27,7 @@ const Dropdown: React.FC<{
   return (
     <>
       {isShowDropdown && (
-        <div className="absolute z-20 top-0 left-0 w-full h-screen backdrop-blur-sm bg-gray-300/80 flex flex-col items-center justify-center gap-2">
+        <div className="fixed z-20 top-0 left-0 w-full h-screen backdrop-blur-sm bg-gray-300/80 flex flex-col items-center justify-center gap-2">
           <span
             className="absolute top-4 right-4"
             onClick={(e: React.MouseEvent) => {

@@ -8,6 +8,7 @@ import { TippContext } from "../context/TippContext";
 import AlertComponent from "../components/UI/Alert";
 import useAlert from "../hooks/useAlert";
 import { Outlet as OutletModel } from "../models/OutletModel";
+import { Modal, Button } from "flowbite-react";
 
 const Root = () => {
   const [demoMounted, setDemoMounted] = useState(false);
@@ -87,7 +88,7 @@ const Root = () => {
     <>
       {isAdmin && (
         <TippContext.Provider value={{ isDemo: isDemo, isOff: isTippOff }}>
-          <section className="flex w-full h-full min-h-screen relative">
+          <section className="flex w-full h-full">
             <aside className="py-4 h-full min-h-screen z-[1001]">
               <Navigation
                 isShowDropdown={isShowDropdown}
@@ -95,7 +96,7 @@ const Root = () => {
                 setIsTippOff={setIsTippOff}
               />
             </aside>
-            <article className="w-full h-full" >
+            <article className="w-full h-full">
               {user && (
                 <User
                   isShowDropdown={isShowDropdown}

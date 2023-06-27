@@ -212,7 +212,7 @@ const DisabledDays = () => {
       </div>
       <div>
         {itemForDelete.length !== 0 && (
-          <div className="w-full flex justify-between items-center bg-blue-600/30 p-2 rounded-t-md">
+          <div className="w-full flex justify-between items-center bg-blue-600/30 backdrop-blur-sm p-2 rounded-t-md sticky top-16">
             <span>{itemForDelete.length} elem kiválasztva</span>{" "}
             <Button color="failure" onClick={deleteItemsHandler}>
               <span className="flex gap-1 items-center">

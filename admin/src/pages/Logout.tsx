@@ -49,7 +49,7 @@ const Logout = () => {
   }, []);
 
   return (
-    <div className="h-screen w-full flex flex-col text-dynamicTitle gap-2 items-center justify-center">
+    <div className="h-screen w-full flex flex-col text-center text-dynamicTitle gap-2 items-center justify-center">
       {alert?.message ? alert.message : "Kijelentkezés"}
       <BarLoader
         loading={logoutProgress}

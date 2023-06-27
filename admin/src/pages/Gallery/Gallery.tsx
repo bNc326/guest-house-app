@@ -330,7 +330,7 @@ const Gallery = () => {
   };
 
   return (
-    <section className="w-full flex flex-col items-center gap-4 ">
+    <section className="w-full flex flex-col items-center gap-4 relative">
       <div className="w-11/12 flex flex-wrap justify-center gap-4 py-4 ">
         <div className="w-full flex flex-col gap-4">
           <DropZone
@@ -352,7 +352,7 @@ const Gallery = () => {
           />
         </div>
         {deletableIds.length !== 0 && (
-          <div className="w-full flex justify-between items-center bg-blue-600/30 p-2 rounded-t-md">
+          <div className="w-full flex justify-between items-center bg-blue-600/30 backdrop-blur-sm p-2 rounded-t-md sticky top-16 z-50E">
             <span>{deletableIds.length} elem kiválasztva</span>{" "}
             <div className="flex flex-col mobile:flex-row gap-1 mobile:gap-2 font-bold">
               <Button
