@@ -196,7 +196,7 @@ const Booking = () => {
   return (
     <section className={`flex flex-col gap-4 w-full relative`}>
       {itemForDelete.length !== 0 && (
-        <div className="w-full flex justify-between items-center bg-blue-600/30 backdrop-blur-sm p-2 rounded-t-md sticky top-16">
+        <div className="w-full flex justify-between items-center bg-blue-600/30 backdrop-blur-sm p-2 rounded-md sticky top-16">
           <span>{itemForDelete.length} elem kiválasztva</span>{" "}
           <Button color="failure" onClick={deleteItemsHandler}>
             <span className="flex gap-1 items-center">
