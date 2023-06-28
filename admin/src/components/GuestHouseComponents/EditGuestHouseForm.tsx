@@ -861,7 +861,7 @@ const EditGuestHouseForm: React.FC<{
   return (
     <form
       onSubmit={submitEditGuestHouseHandler}
-      className="w-full w-full laptop:w-4/5 desktop:w-1/2"
+      className="w-full laptop:w-4/5 desktop:w-1/2"
     >
       <EditGuestHouseTabs
         data={editableData}
