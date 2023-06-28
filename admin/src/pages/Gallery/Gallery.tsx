@@ -352,7 +352,7 @@ const Gallery = () => {
           />
         </div>
         {deletableIds.length !== 0 && (
-          <div className="w-full flex justify-between items-center bg-blue-600/30 backdrop-blur-sm p-2 rounded-t-md sticky top-16 z-50E">
+          <div className="w-full flex justify-between items-center bg-blue-600/30 backdrop-blur-sm p-2 rounded-md sticky top-16 z-50">
             <span>{deletableIds.length} elem kiválasztva</span>{" "}
             <div className="flex flex-col mobile:flex-row gap-1 mobile:gap-2 font-bold">
               <Button
@@ -384,6 +384,7 @@ const Gallery = () => {
           imageSrc={imageSrc}
         />
       </div>
+      
       <ModalComp
         isShow={isShow}
         setIsShow={setIsShow}
