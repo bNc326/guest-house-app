@@ -8,7 +8,7 @@ import useAlert from "../../hooks/useAlert";
 const EditGuestHouses = () => {
   const data = useRouteLoaderData("editGuestHouse") as HotelsModelObject;
   return (
-    <article className="py-4 shadow-xl flex justify-center space-y-8 rounded-3xl w-full">
+    <article className="p-4 shadow-xl flex justify-center space-y-8 rounded-3xl w-full">
       <EditGuestHouseForm data={data} />
     </article>
   );

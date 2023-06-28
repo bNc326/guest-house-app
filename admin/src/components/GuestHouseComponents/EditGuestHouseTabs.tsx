@@ -34,7 +34,7 @@ const EditGuestHouseTabs = forwardRef(
       inputBlurHandler,
     } = props;
     return (
-      <Tabs.Group className="w-full">
+      <Tabs.Group style="underline">
         <Tabs.Item title="Vendégház adatok">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col mobile:flex-row w-full gap-4">
