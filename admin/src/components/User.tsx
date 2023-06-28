@@ -60,7 +60,7 @@ const User: React.FC<{
       {logoutShow && (
         <div
           onClick={logoutHandler}
-          className="absolute z-50 bg-gray-100 -bottom-[100%] right-0 shadow-lg py-4 h-full flex items-center justify-center cursor-pointer"
+          className="absolute rounded-md z-50 bg-gray-100 -bottom-[calc(100%+0.5rem)] right-2 shadow-lg py-4 h-full flex items-center justify-center cursor-pointer"
         >
           <span className="select-none p-1">Kijelentkezés</span>
         </div>
