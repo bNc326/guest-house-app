@@ -88,15 +88,8 @@ const Root = () => {
     <>
       {isAdmin && (
         <TippContext.Provider value={{ isDemo: isDemo, isOff: isTippOff }}>
-          <section className="flex w-full h-full">
-            <aside className="py-4 h-full min-h-screen z-[1001]">
-              <Navigation
-                isShowDropdown={isShowDropdown}
-                setIsShowDropdown={setIsShowDropdown}
-                setIsTippOff={setIsTippOff}
-              />
-            </aside>
-            <article className="w-full h-full">
+          <section className="parent relative">
+            <header className="user-header  sticky top-0 z-[1000] backdrop-blur-sm shadow-sm">
               {user && (
                 <User
                   isShowDropdown={isShowDropdown}
@@ -105,9 +98,16 @@ const Root = () => {
                   user={user && user}
                 />
               )}
-              <div className="w-full h-full rounded-md">
-                <Outlet context={outletCtx} />
-              </div>
+            </header>
+            <aside className="navigation ">
+              <Navigation
+                isShowDropdown={isShowDropdown}
+                setIsShowDropdown={setIsShowDropdown}
+                setIsTippOff={setIsTippOff}
+              />
+            </aside>
+            <article className="outlet ">
+              <Outlet context={outletCtx} />
             </article>
 
             <AlertComponent

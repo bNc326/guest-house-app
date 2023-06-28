@@ -101,7 +101,7 @@ const Navigation: React.FC<{
         setIsTippOff={setIsTippOff}
       />
 
-      <ul className="gap-4 flex-col hidden tablet:flex sticky top-8">
+      <ul className="gap-4 flex-col hidden tablet:flex sticky top-14 ">
         {routePath.map((route, index) => (
           <NavLink
             key={index}
