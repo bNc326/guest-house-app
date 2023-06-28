@@ -37,36 +37,64 @@ const ModalComp: React.FC<{
     setIsShow(false);
   };
   return (
-    <Modal
-      dismissible
-      onClose={() => props.setIsShow(false)}
-      show={props.isShow}
-      size="md"
-      popup={true}
-    >
-      <Modal.Header />
-      <Modal.Body>
-        <div className="text-center">
-          <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-            {props.isSure.actionType === "ACCEPT" &&
-              "Szeretnéd elfogadni a foglalást?"}
+    <>
+      {props.isShow && (
+        <div className="fixed top-0 left-0 flex items-center justify-center w-full h-screen bg-black/50 z-[1500] backdrop-blur-sm" onClick={() => props.setIsShow(false)}>
+          <div className="bg-white rounded-lg w-11/12 max-w-[630px]  p-4 py-8 shadow-xl">
+            <div className="text-center">
+              <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                {props.isSure.actionType === "ACCEPT" &&
+                  "Szeretnéd elfogadni a foglalást?"}
 
-            {props.isSure.actionType === "EJECT" &&
-              "Szeretnéd elutasítani a foglalást?"}
-            {props.isSure.actionType === "DELETE" &&
-              "Szeretnéd törölni a képet?"}
-          </h3>
-          <div className="flex justify-center gap-4">
-            <Button onClick={sureButtonHandler} color="failure">
-              Igen, szeretném!
-            </Button>
-            <Button onClick={ejectButtonHandler} color="gray">
-              Nem, én nem!
-            </Button>
+                {props.isSure.actionType === "EJECT" &&
+                  "Szeretnéd elutasítani a foglalást?"}
+                {props.isSure.actionType === "DELETE" &&
+                  "Szeretnéd törölni a képet?"}
+              </h3>
+              <div className="flex justify-center gap-4">
+                <Button onClick={sureButtonHandler} color="failure">
+                  Igen, szeretném!
+                </Button>
+                <Button onClick={ejectButtonHandler} color="gray">
+                  Nem, én nem!
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
-      </Modal.Body>
-    </Modal>
+      )}
+    </>
+
+    // <Modal
+    //   dismissible
+    //   onClose={() => props.setIsShow(false)}
+    //   show={props.isShow}
+    //   size="md"
+    //   popup={true}
+    // >
+    //   <Modal.Header />
+    //   <Modal.Body>
+    //     <div className="text-center">
+    //       <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+    //         {props.isSure.actionType === "ACCEPT" &&
+    //           "Szeretnéd elfogadni a foglalást?"}
+
+    //         {props.isSure.actionType === "EJECT" &&
+    //           "Szeretnéd elutasítani a foglalást?"}
+    //         {props.isSure.actionType === "DELETE" &&
+    //           "Szeretnéd törölni a képet?"}
+    //       </h3>
+    //       <div className="flex justify-center gap-4">
+    //         <Button onClick={sureButtonHandler} color="failure">
+    //           Igen, szeretném!
+    //         </Button>
+    //         <Button onClick={ejectButtonHandler} color="gray">
+    //           Nem, én nem!
+    //         </Button>
+    //       </div>
+    //     </div>
+    //   </Modal.Body>
+    // </Modal>
   );
 };
 
