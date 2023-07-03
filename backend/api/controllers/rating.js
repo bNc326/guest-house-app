@@ -1,7 +1,7 @@
-import { Rating } from "../models/Rating.js";
-
+import { RatingDynamic } from "../utils/dynamicDbCollections";
 export const getRating = async (req, res, next) => {
   try {
+    const Rating = RatingDynamic(req.hotelParams)
     const result = await Rating.find();
     res.status(200).send(result);
   } catch (err) {
@@ -11,6 +11,7 @@ export const getRating = async (req, res, next) => {
 
 export const getOneRating = async (req, res, next) => {
   try {
+    const Rating = RatingDynamic(req.hotelParams)
     const result = await Rating.findOne({ _id: req.params.id });
     res.status(200).send(result);
   } catch (err) {
@@ -20,8 +21,9 @@ export const getOneRating = async (req, res, next) => {
 
 export const sendRating = async (req, res, next) => {
   try {
-    const newHotels = new Rating(req.body);
-    await newHotels.save();
+    const Rating = RatingDynamic(req.hotelParams)
+    const newRating = new Rating(req.body);
+    await newRating.save();
 
     res.status(201).json({
       success: true,
@@ -35,6 +37,7 @@ export const sendRating = async (req, res, next) => {
 
 export const deleteManyRating = async (req, res, next) => {
     try {
+      const Rating = RatingDynamic(req.hotelParams)
       await Rating.deleteMany({ _id: { $in: req.body } });
       res.status(201).json({
         success: true,
@@ -49,6 +52,7 @@ export const deleteManyRating = async (req, res, next) => {
 
 export const deleteRating = async (req, res, next) => {
   try {
+    const Rating = RatingDynamic(req.hotelParams)
     await Rating.findByIdAndDelete(req.params.id);
     res.status(201).json({
       success: true,
@@ -64,7 +68,8 @@ export const deleteRating = async (req, res, next) => {
 
 export const editRating = async (req, res, next) => {
   try {
-    await Hotels.findByIdAndUpdate(req.params.id, {
+    const Rating = RatingDynamic(req.hotelParams)
+    await Rating.findByIdAndUpdate(req.params.id, {
       $set: req.body,
     });
     res.status(201).json({

@@ -1,4 +1,10 @@
 import { Hotels } from "../models/Hotels.js";
+import { v4 as uuid } from "uuid";
+import {
+  BookingDynamic,
+  DisabledDayDynamic,
+  RatingDynamic,
+} from "../utils/dynamicDbCollections.js";
 
 export const getHotels = async (req, res, next) => {
   try {
@@ -20,7 +26,16 @@ export const getOneHotels = async (req, res, next) => {
 
 export const sendHotels = async (req, res, next) => {
   try {
-    const newHotels = new Hotels(req.body);
+    const body = req.body;
+    const name = body.hotelName.toLowerCase().replaceAll(" ", "-");
+    const uniqueId = uuid().split("-")[0];
+    body.hotelUUID = `${uniqueId}-${name}`;
+
+    BookingDynamic(body.hotelUUID).createCollection();
+    DisabledDayDynamic(body.hotelUUID).createCollection();
+    RatingDynamic(body.hotelUUID).createCollection();
+
+    const newHotels = new Hotels(body);
     await newHotels.save();
 
     res.status(201).json({

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const DisabledDaysSchema = new mongoose.Schema(
+export const DisabledDaysSchema = new mongoose.Schema(
   {
     startDate: Date,
     endDate: Date,
@@ -8,5 +8,3 @@ const DisabledDaysSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-export const DisabledDays = mongoose.model("disabled-days", DisabledDaysSchema);
