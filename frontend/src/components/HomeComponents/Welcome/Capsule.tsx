@@ -4,15 +4,16 @@ const Capsule: React.FC<{
   Icon?: IconType;
   text: string;
   className?: string;
+  iconSize?: number;
 }> = (props) => {
-  const { Icon, text, className } = { ...props };
+  const { Icon, text, className, iconSize } = { ...props };
   return (
     <li
       className={`flex items-center justify-center px-2 py-1 gap-2 bg-palette-4 rounded-full w-max shadow-md ${
         className ? className : ""
       } `}
     >
-      {Icon && <Icon size={24} />}
+      {Icon && <Icon size={iconSize ? iconSize : 24} />}
       <p>{text}</p>
     </li>
   );

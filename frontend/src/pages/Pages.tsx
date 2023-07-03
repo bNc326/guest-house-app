@@ -4,6 +4,7 @@ import Error from "./Error";
 import Calendar from "./Calendar";
 import Development from "./Development";
 import Gallery from "./Gallery";
+import GuestHouses from "./GuestHouses";
 
 export const RootPage = () => <Root />;
 
@@ -16,3 +17,5 @@ export const CalendarPage = () => <Calendar />;
 export const DevelopmentPage = () => <Development />;
 
 export const GalleryPage = () => <Gallery />;
+
+export const GuestHousePage = () => <GuestHouses />;

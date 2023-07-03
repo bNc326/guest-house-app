@@ -7,6 +7,7 @@ import {
   CalendarPage,
   DevelopmentPage,
   GalleryPage,
+  GuestHousePage,
 } from "./pages/Pages";
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
       children: [
         { index: true, element: <HomePage /> },
         { path: "galeria", element: <GalleryPage /> },
+        {path: "vendeghazak", element: <GuestHousePage />},
         { path: "rolunk", element: <DevelopmentPage /> },
         { path: "kapcsolat", element: <DevelopmentPage /> },
         { path: "naptar", element: <CalendarPage /> },

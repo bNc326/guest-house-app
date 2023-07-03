@@ -14,7 +14,6 @@ interface ContainerProps {
 }
 
 const Section = styled.section<SectionProps>`
-  height: 100%;
   min-height: 100vh;
   padding-top: 13vh;
   padding-bottom: 13vh;

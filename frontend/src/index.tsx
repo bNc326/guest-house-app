@@ -3,15 +3,15 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import "animate.css";
 import App from "./App";
-import { AuthContextProvider } from "context/AuthContext";
+import BookingProvider from "context/BookingContextProvider";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <AuthContextProvider>
+    <BookingProvider>
       <App />
-    </AuthContextProvider>
+    </BookingProvider>
   </React.StrictMode>
 );
