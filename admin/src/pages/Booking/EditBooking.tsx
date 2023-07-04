@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   useParams,
   json,
@@ -17,6 +17,7 @@ import useAlert from "../../hooks/useAlert";
 import { ALERT_TYPE, ALERT_ACTION_TYPE } from "../../models/Alert/AlertModels";
 import AlertComponent from "../../components/UI/Alert";
 import { Outlet } from "../../models/OutletModel";
+import { HotelContext } from "../../context/HotelContextProvider";
 
 const EditBooking = () => {
   const params = useParams();
@@ -25,6 +26,7 @@ const EditBooking = () => {
   const [showModal, setShowModal] = useState(false);
   const { isSure, isSureDispatch } = useIsSure();
   const outletCtx = useOutletContext() as Outlet;
+  const hotelCtx = useContext(HotelContext);
 
   useEffect(() => {
     const acceptOrEjectFetcher = async (action: "ACCEPT" | "EJECT") => {
@@ -37,13 +39,16 @@ const EditBooking = () => {
         body.status = "Ejected";
       }
 
-      const response = await fetch(url + `/booking/${params.bookingId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
+      const response = await fetch(
+        url + `/booking/${params.bookingId}?hotel=${hotelCtx.hotelUUID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
 
       if (!response.ok) {
         console.log("error");
@@ -106,9 +111,10 @@ const EditBooking = () => {
 export default EditBooking;
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  const hotelQuery = request.url.split("hotel=")[1];
   const id = params.bookingId;
   const url = process.env.REACT_APP_BACKEND_API as string;
-  const response = await fetch(url + `/booking/${id}`);
+  const response = await fetch(url + `/booking/${id}?hotel=${hotelQuery}`);
   if (!response.ok) {
     throw json({ message: "fetch failed" }, { status: 500 });
   } else {

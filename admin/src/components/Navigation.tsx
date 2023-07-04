@@ -15,6 +15,7 @@ import { HiArrowLeft } from "react-icons/hi";
 import { TippContext } from "../context/TippContext";
 import { Fade as Hamburger } from "hamburger-react";
 import Dropdown from "./NavigationComponent/Dropdown";
+import { HotelContext } from "../context/HotelContextProvider";
 
 const Navigation: React.FC<{
   isShowDropdown: boolean;
@@ -22,6 +23,8 @@ const Navigation: React.FC<{
   setIsTippOff: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ isShowDropdown, setIsShowDropdown, setIsTippOff }) => {
   const ctx = useContext(TippContext);
+  const hotelCtx = useContext(HotelContext);
+  const [linkActive, setLinkActive] = useState<boolean[]>([]);
   const routePath = [
     {
       id: 1,
@@ -31,12 +34,12 @@ const Navigation: React.FC<{
     },
     {
       id: 2,
-      path: "foglalasi-naptar",
+      path: `foglalasi-naptar?hotel=${hotelCtx.hotelUUID}`,
       linkName: "Foglalások",
     },
     {
       id: 3,
-      path: "lezart-naptar",
+      path: `lezart-naptar?hotel=${hotelCtx.hotelUUID}`,
       linkName: "Lezárt napok",
     },
     {
@@ -91,6 +94,8 @@ const Navigation: React.FC<{
     // <BsEnvelopeAt size={"1.5rem"} />,
     // <BsStar size={"1.5rem"} />,
   ];
+
+  console.log('link', linkActive)
   return (
     <nav className="flex h-full flex-col tablet:px-4">
       <Dropdown

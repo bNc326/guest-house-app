@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useLayoutEffect } from "react";
 import {
   json,
   useRouteLoaderData,
   useRevalidator,
   useOutletContext,
+  LoaderFunctionArgs,
 } from "react-router-dom";
 import { ALERT_TYPE, ALERT_ACTION_TYPE } from "../../models/Alert/AlertModels";
 import AlertComponent from "../../components/UI/Alert";
@@ -24,6 +25,8 @@ import useModals from "../../hooks/useModals";
 import { MODAL_ACTION_TYPE, MODAL_TYPE } from "../../models/Modal/ModalModal";
 import NewModal from "../../components/modal/NewModal";
 import { Outlet } from "../../models/OutletModel";
+import ChangeHotelComponent from "../../components/ChangeHotelComponent";
+import { HotelContext } from "../../context/HotelContextProvider";
 
 const DisabledDays = () => {
   const data = useRouteLoaderData("disabled-days") as DisabledDaysModel;
@@ -36,36 +39,13 @@ const DisabledDays = () => {
   const { modal, modalDispatch } = useModals();
   const [isNewModal, setIsNewModal] = useState<boolean>(false);
   const outletCtx = useOutletContext() as Outlet;
+  const hotelCtx = useContext(HotelContext);
 
   // * SIDE effects
 
   useEffect(() => {
     // * CHECKBOX set to all item
-    let updateData: CheckboxModel[] = [...deleteCheckbox];
-    const createCheckboxData = () => {
-      if (isNewModal) {
-        updateData = [];
-        setIsNewModal(false);
-      }
-      itemForDelete.map((item) => {
-        const index = updateData.findIndex((i) => i.id === item);
-        updateData.splice(index, 1);
-      });
-      setItemForDelete([]);
-      data.map((dataItem) => {
-        const id = dataItem._id as string;
-        const index = updateData.findIndex((item) => item.id === id);
-        if (index === -1) {
-          updateData.push({
-            id: dataItem._id,
-            checked: false,
-          });
-        }
-      });
-      setDeleteCheckbox(updateData);
-    };
 
-    createCheckboxData();
     //*\
 
     // * REFETCH in every minute
@@ -86,6 +66,34 @@ const DisabledDays = () => {
     };
   }, [data]);
 
+  useLayoutEffect(() => {
+    const updateData: CheckboxModel[] = [];
+    const createCheckboxData = () => {
+      itemForDelete.map((item) => {
+        const index = updateData.findIndex((i) => i.id === item);
+        updateData.splice(index, 1);
+      });
+      setItemForDelete([]);
+      data.map((dataItem) => {
+        const id = dataItem._id as string;
+        const index = updateData.findIndex((item) => item.id === id);
+        if (index === -1) {
+          updateData.push({
+            id: dataItem._id,
+            checked: false,
+          });
+        }
+      });
+      setDeleteCheckbox(updateData);
+    };
+
+    const cleanup = setTimeout(() => {
+      createCheckboxData();
+    }, 200);
+
+    return () => clearTimeout(cleanup);
+  }, [data, hotelCtx]);
+
   // * LISTENER for all item select in the table
   useEffect(() => {
     const getAllSelected = () => {
@@ -103,6 +111,7 @@ const DisabledDays = () => {
     getAllSelected() ? setAllItemDelete(true) : setAllItemDelete(false);
   }, [deleteCheckbox]);
   //*\
+
 
   // * HANDLERS for the delete item in the table
 
@@ -165,13 +174,16 @@ const DisabledDays = () => {
   const deleteItemsHandler = async () => {
     const url = process.env.REACT_APP_BACKEND_API as string;
 
-    const res = await fetch(url + `/disabled-days`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(itemForDelete),
-    });
+    const res = await fetch(
+      url + `/disabled-days?hotel=${hotelCtx.hotelUUID}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(itemForDelete),
+      }
+    );
 
     if (!res.ok) {
       console.log("err");
@@ -222,6 +234,7 @@ const DisabledDays = () => {
             </Button>
           </div>
         )}
+        <ChangeHotelComponent path="foglalasi-naptar" />
         <div className="overflow-x-scroll">
           <Table
             tableHead={tableHead}
@@ -295,9 +308,10 @@ const DisabledDays = () => {
 
 export default DisabledDays;
 
-export async function loader() {
+export async function loader({ params, request }: LoaderFunctionArgs) {
+  const hotelQuery = request.url.split("hotel=")[1];
   const url = process.env.REACT_APP_BACKEND_API as string;
-  const response = await fetch(url + `/disabled-days`);
+  const response = await fetch(url + `/disabled-days?hotel=${hotelQuery}`);
 
   if (!response.ok) {
     throw json({ message: "fetch failed" }, { status: 500 });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useRevalidator, useOutletContext } from "react-router-dom";
 import { Button, Modal, TextInput } from "flowbite-react";
 import { BsFillCalendar2RangeFill } from "react-icons/bs";
@@ -14,6 +14,7 @@ import {
 } from "../../models/Alert/AlertModels";
 import { MODAL_ACTION, MODAL_ACTION_TYPE } from "../../models/Modal/ModalModal";
 import { Outlet } from "../../models/OutletModel";
+import { HotelContext } from "../../context/HotelContextProvider";
 
 interface ModalData {
   _id: string;
@@ -33,13 +34,16 @@ const EditModal: React.FC<{
   const [isObjectEqual, setIsObjectEqual] = useState<boolean>(false);
   const revalidator = useRevalidator();
   const outletCtx = useOutletContext() as Outlet;
+  const hotelCtx = useContext(HotelContext);
 
   useEffect(() => {
     if (!props.isShow && props.id === null) return;
     const fetchData = async () => {
       const url = process.env.REACT_APP_BACKEND_API as string;
 
-      const res = await fetch(url + `/disabled-days/${props.id}`);
+      const res = await fetch(
+        url + `/disabled-days/${props.id}?hotel=${hotelCtx.hotelUUID}`
+      );
 
       if (!res.ok) {
         console.log("error");
@@ -131,11 +135,11 @@ const EditModal: React.FC<{
   return (
     <>
       <div className="fixed top-0 left-0 flex items-center justify-center w-full h-screen bg-black/50 z-[1500] backdrop-blur-sm">
-        <div className="bg-white rounded-lg w-11/12 p-4 py-8 shadow-xl flex flex-col gap-2">
+        <div className="bg-white rounded-lg w-11/12 max-w-[630px] p-4 py-8 shadow-xl flex flex-col gap-2">
           <div className="border-b-2 border-black/20 py-2 flex justify-between items-center">
             <span className="font-medium">Kizárt dátum szerkesztése</span>
             <span
-              className="p-1 rounded-md bg-black/10"
+              className="p-1 rounded-md bg-black/10 cursor-pointer"
               onClick={() => closeModalHandler()}
             >
               <GrFormClose size={24} />
