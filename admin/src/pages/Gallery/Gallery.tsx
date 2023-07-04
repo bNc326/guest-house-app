@@ -230,31 +230,40 @@ const Gallery = () => {
   const dropHandler = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    if (upload.fileList?.length !== 0 && upload.fileList !== null) {
-      const dt = new DataTransfer();
+    const imageType = /image.*/;
+    const dt = new DataTransfer();
 
+    if (upload.fileList?.length !== 0 && upload.fileList !== null) {
       Array.from(upload.fileList).map((file) => {
         dt.items.add(file);
       });
+    }
 
-      Array.from(e.dataTransfer.files).map((file) => {
+    Array.from(e.dataTransfer.files).map((file) => {
+      if (file.type.match(imageType)) {
         dt.items.add(file);
-      });
+      } else {
+        outletCtx.alertDispatch({
+          type: ALERT_ACTION_TYPE.SHOW,
+          payload: {
+            alertType: ALERT_TYPE.FAILURE,
+            message: "Csak ezek a formátumok tölthetőek fel! (jpg, jpeg, png, webp)",
+          },
+        });
+      }
+    });
 
-      uploadDispatch({
-        type: UPLOAD_TYPE.DROP,
-        payload: { fileList: dt.files },
-      });
-      return;
-    }
-
-    const { files } = e.dataTransfer;
-    if (files.length > 0) {
-      uploadDispatch({
-        type: UPLOAD_TYPE.DROP,
-        payload: { fileList: files },
-      });
-    }
+    uploadDispatch({
+      type: UPLOAD_TYPE.DROP,
+      payload: { fileList: dt.files },
+    });
+    // const { files } = e.dataTransfer;
+    // if (files.length > 0) {
+    //   uploadDispatch({
+    //     type: UPLOAD_TYPE.DROP,
+    //     payload: { fileList: files },
+    //   });
+    // }
   };
 
   const dragOverHandler = (e: DragEvent<HTMLDivElement>) => {
@@ -384,7 +393,7 @@ const Gallery = () => {
           imageSrc={imageSrc}
         />
       </div>
-      
+
       <ModalComp
         isShow={isShow}
         setIsShow={setIsShow}

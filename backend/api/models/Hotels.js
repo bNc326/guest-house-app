@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 
-const HotelsSchema = new mongoose.Schema({
+export const HotelsSchema = new mongoose.Schema({
   hotelName: String,
+  hotelUUID: String,
   impressum: {
     country: String,
     postalCode: Number,

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const BookingSchema = new mongoose.Schema(
+export const BookingSchema = new mongoose.Schema(
   {
     startDate: Date,
     endDate: Date,
@@ -25,5 +25,3 @@ const BookingSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-export const Booking = mongoose.model("booking", BookingSchema);

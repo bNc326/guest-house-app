@@ -24,18 +24,22 @@ const Navigation = () => {
     },
     {
       id: 3,
-      path: "/rolunk",
-      linkName: "Rólunk",
+      path: "/vendeghazak",
+      linkName: "Vendégházak",
     },
-    {
-      id: 4,
-      path: "/kapcsolat",
-      linkName: "Kapcsolat",
-    },
+    // {
+    //   id: 4,
+    //   path: "/rolunk",
+    //   linkName: "Rólunk",
+    // },
+    // {
+    //   id: 5,
+    //   path: "/kapcsolat",
+    //   linkName: "Kapcsolat",
+    // },
   ];
   return (
     <>
-      <header className="fixed w-full -top-1 z-50 bg-palette-3  shadow-md flex flex-col items-center">
         <nav className=" tall:justify-between gap-8 tall:w-full relative flex z-50  w-full max-w-[1200px] py-2 px-4 items-center justify-between">
           <div className="w-1/5  text-2xl tall:text-dynamic1rem font-bold text-palette-5 hidden nav:flex">
             <h1>Logo</h1>
@@ -84,7 +88,6 @@ const Navigation = () => {
             setIsOpen={setIsOpen}
           />
         </div>
-      </header>
     </>
   );
 };

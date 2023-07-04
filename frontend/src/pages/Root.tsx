@@ -1,15 +1,16 @@
 import { Outlet } from "react-router-dom";
 import Navigation from "../components/Navigation";
-import BookingProvider from "context/BookingContextProvider";
 const Root = () => {
   return (
     <>
-      <Navigation />
-      <BookingProvider>
-        <main className="w-full relative">
+      <section className="parent relative min-h-screen">
+        <header className="nav-header sticky w-full top-0 z-[1000] bg-palette-3 shadow-md flex flex-col items-center justify-center">
+          <Navigation />
+        </header>
+        <main className="outlet">
           <Outlet />
         </main>
-      </BookingProvider>
+      </section>
     </>
   );
 };

@@ -15,6 +15,7 @@ import {
 import { MODAL_ACTION, MODAL_ACTION_TYPE } from "../../models/Modal/ModalModal";
 import { AuthContext } from "../../context/AuthContext";
 import { Outlet } from "../../models/OutletModel";
+import { HotelContext } from "../../context/HotelContextProvider";
 
 interface ModalData {
   startDate: string;
@@ -38,6 +39,7 @@ const NewModal: React.FC<{
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const authCtx = useContext(AuthContext);
   const outletCtx = useOutletContext() as Outlet;
+  const hotelCtx = useContext(HotelContext);
 
   useEffect(() => {
     props.setIsNewModal(true);
@@ -82,13 +84,16 @@ const NewModal: React.FC<{
     setIsloading(true);
     const url = process.env.REACT_APP_BACKEND_API as string;
 
-    const res = await fetch(url + `/disabled-days`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const res = await fetch(
+      url + `/disabled-days?hotel=${hotelCtx.hotelUUID}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
     if (!res.ok) {
       console.log("error");
       setIsloading(false);
@@ -107,11 +112,11 @@ const NewModal: React.FC<{
   return (
     <>
       <div className="fixed top-0 left-0 flex items-center justify-center w-full h-screen bg-black/50 z-[1500] backdrop-blur-sm">
-        <div className="bg-white rounded-lg w-11/12 p-4 py-8 shadow-xl flex flex-col gap-2">
+        <div className="bg-white rounded-lg w-11/12 max-w-[630px] p-4 py-8 shadow-xl flex flex-col gap-2">
           <div className="border-b-2 border-black/20 py-2 flex justify-between items-center">
             <span className="font-medium">Új kizárt dátum létrehozás</span>
             <span
-              className="p-1 rounded-md bg-black/10"
+              className="p-1 rounded-md bg-black/10 cursor-pointer"
               onClick={() => closeModalHandler()}
             >
               <GrFormClose size={24} />

@@ -14,7 +14,6 @@ import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "yet-another-react-lightbox/plugins/counter.css";
 import "yet-another-react-lightbox/plugins/captions.css";
-
 import {
   LIGHTBOX_TYPE,
   LIGHTBOX_ACTION,

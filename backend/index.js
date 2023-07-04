@@ -11,6 +11,8 @@ import DisabledDays from "./api/routes/disabledDays.js";
 import Hotels from "./api/routes/hotels.js";
 import Rating from "./api/routes/rating.js";
 import Gallery from "./api/routes/gallery.js";
+import { validateHotel } from "./api/utils/validateHotel.js";
+import { createError } from "./api/utils/error.js";
 
 const app = express();
 
@@ -36,18 +38,15 @@ mongoose.connection.on("disconnected", () => {
 
 // * Middleware
 
-const corsConf = {
-  origin: "",
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
+const whitelist = [
+  "http://localhost:8800/api/"
+];
+const corsOptions = {
+  origin: '*',
+  credentials: true,
 };
-app.use(
-  cors({
-    origin: true,
-    credentials: true,
-  })
-);
+
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -61,12 +60,11 @@ app.get("/api/isLoaded", (req, res, next) => {
 });
 app.use("/api/auth", auth);
 app.use("/api/weather", weather);
-app.use("/api/booking", Booking);
-app.use("/api/disabled-days", DisabledDays);
+app.use("/api/booking", validateHotel, Booking);
+app.use("/api/disabled-days", validateHotel, DisabledDays);
 app.use("/api/hotels", Hotels);
-app.use("/api/ratings", Rating);
+app.use("/api/ratings", validateHotel, Rating);
 app.use("/api/gallery", Gallery);
-
 // * Error handling
 
 app.use((err, req, res, next) => {
@@ -86,6 +84,6 @@ app.get("/", (req, res) => {
 });
 
 app.listen(8800, () => {
-  connectDB()
-  console.log("Server running on port 8800")
-})
+  connectDB();
+  console.log("Server running on port 8800");
+});

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useRevalidator, useOutletContext } from "react-router-dom";
 import { GiToken } from "react-icons/gi";
 import { Label, TextInput, Button } from "flowbite-react";
@@ -13,6 +13,7 @@ import {
   ALERT_TYPE,
 } from "../../models/Alert/AlertModels";
 import { Outlet } from "../../models/OutletModel";
+import { HotelContext } from "../../context/HotelContextProvider";
 
 export interface InputValidate extends Record<string, any> {
   costumer: {
@@ -173,6 +174,7 @@ const EditBookingForm: React.FC<{
   );
   const inputBackup = cloneDeep(inputData);
   const outletCtx = useOutletContext() as Outlet;
+  const hotelCtx = useContext(HotelContext);
 
   // ! SIDE EFFECT: backup equal with editableDate?
 
@@ -567,13 +569,16 @@ const EditBookingForm: React.FC<{
     if (valid) {
       const url = process.env.REACT_APP_BACKEND_API as string;
       setEditLoading(true);
-      const response = await fetch(url + `/booking/${data._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(editableData),
-      });
+      const response = await fetch(
+        url + `/booking/${data._id}?hotel=${hotelCtx.hotelUUID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(editableData),
+        }
+      );
 
       if (!response.ok) {
         revalidator.revalidate();

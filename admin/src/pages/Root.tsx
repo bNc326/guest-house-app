@@ -89,7 +89,7 @@ const Root = () => {
       {isAdmin && (
         <TippContext.Provider value={{ isDemo: isDemo, isOff: isTippOff }}>
           <section className="parent relative">
-            <header className="user-header  sticky top-0 z-[1000] backdrop-blur-sm shadow-sm">
+            <header className="user-header sticky top-0 z-[1000] backdrop-blur-sm shadow-sm">
               {user && (
                 <User
                   isShowDropdown={isShowDropdown}

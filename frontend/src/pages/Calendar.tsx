@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { useRevalidator } from "react-router-dom";
+import { useRevalidator, useRouteLoaderData } from "react-router-dom";
 import Weather from "components/CalendarComponents/Weather";
 import CalendarComponent from "components/CalendarComponents/Calendar";
 import { formKey } from "components/HomeComponents/Contact/Form";
@@ -10,6 +10,9 @@ import { cloneDeep, mapValues } from "lodash";
 import { SendBookingModel } from "../models/SendBookingModel";
 import HelperBox from "components/CalendarComponents/HelperBox";
 import { ScaleLoader } from "react-spinners";
+import { GuestHouseModel } from "models/GuestHouseModel";
+import HotelModal from "components/CalendarComponents/HotelModal";
+import { HotelContext } from "context/HotelContextProvider";
 
 export interface FormInterface extends Record<string, formKey> {
   name: formKey;
@@ -22,7 +25,9 @@ export interface FormInterface extends Record<string, formKey> {
   adults: formKey;
   children: formKey;
 }
+
 const Calendar = () => {
+  const hotels = useRouteLoaderData("calendar") as GuestHouseModel[];
   const revalidator = useRevalidator();
   const [isSelecting, setIsSelecting] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -95,6 +100,13 @@ const Calendar = () => {
   });
   const [backup, setBackup] = useState(cloneDeep(formInput));
   const bookingCtx = useContext(BookingContext);
+  const hotelCtx = useContext(HotelContext);
+
+  const changeHotelHandler = (e: React.ChangeEvent) => {
+    if (!(e.target instanceof HTMLSelectElement)) return;
+
+    hotelCtx.setHotelUUID(e.target.value);
+  };
 
   const inputChangeHandler = (e: React.ChangeEvent) => {
     if (
@@ -221,7 +233,7 @@ const Calendar = () => {
         status: "Pending",
       };
 
-      const url = `${process.env.REACT_APP_BACKEND_API}/booking`;
+      const url = `${process.env.REACT_APP_BACKEND_API}/booking?hotel=${hotelCtx.hotelUUID}`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -245,10 +257,9 @@ const Calendar = () => {
     revalidator.revalidate();
   };
 
-
   return (
     <>
-      <section className="flex flex-col-reverse gap-8 justify-center items-center py-32 h-full min-h-screen bg-palette-3">
+      <section className="flex flex-col gap-4 justify-center items-center py-4 h-full bg-palette-3">
         {bookingCtx.isShowForm && (
           <BookingPreview bookingCtx={bookingCtx}>
             <BookingForm
@@ -261,25 +272,40 @@ const Calendar = () => {
             />
           </BookingPreview>
         )}
-        {!bookingCtx.isShowForm && (
+        {hotelCtx.hotelUUID && !bookingCtx.isShowForm && (
           <>
-            <HelperBox />
-            <div className="relative flex flex-col laptop:flex-row gap-16 laptop:gap-8 w-11/12 rounded-3xl max-w-[1920px] overflow-hidden">
-              {/* <Weather  /> */}
-
-              {isSelecting && (
-                <div className="w-full h-full bg-black/30 absolute top-0 left-0 z-20 flex items-center justify-center">
-                  <ScaleLoader loading color="#E6CCB2" />
-                </div>
-              )}
-
+            <div className="relative flex flex-col gap-4 w-11/12  max-w-[1920px] overflow-hidden">
+              <div className="w-full flex flex-col mobile:flex-row gap-2 items-center ">
+                <h2 className="text-dynamicDesc font-semibold">
+                  Másik vendégházat választok
+                </h2>
+                <select
+                  onChange={changeHotelHandler}
+                  name=""
+                  id=""
+                  className="w-full mobile:w-[unset] ring-0 border-0 outline-none rounded-lg bg-palette-2 text-gray-900 font-semibold focus:ring-0 active:ring-0 shadow-md"
+                >
+                  {hotels.map((hotel) => (
+                    <option
+                      className="hover:bg-red-600"
+                      value={hotel.hotelUUID}
+                      key={hotel._id}
+                      selected={hotelCtx.hotelUUID === hotel.hotelUUID}
+                    >
+                      {hotel.hotelName}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <CalendarComponent
                 isSelecting={isSelecting}
                 setIsSelecting={setIsSelecting}
               />
             </div>
+            <HelperBox />
           </>
         )}
+        {!hotelCtx.hotelUUID && <HotelModal hotels={hotels} />}
       </section>
     </>
   );
@@ -295,4 +321,16 @@ export const Separator: React.FC<{ title: string }> = (props) => {
       <span className="w-full h-[1px] bg-palette-2/50"></span>
     </div>
   );
+};
+
+export const loader = async () => {
+  const api = process.env.REACT_APP_BACKEND_API as string;
+
+  const response = await fetch(`${api}/hotels`);
+
+  if (!response.ok) {
+    console.log("error");
+  } else {
+    return response;
+  }
 };

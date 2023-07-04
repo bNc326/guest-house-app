@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const RatingSchema = new mongoose.Schema(
+export const RatingSchema = new mongoose.Schema(
   {
     name: String,
     email: String,
@@ -13,5 +13,3 @@ const RatingSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-export const Rating = mongoose.model("Rating", RatingSchema);

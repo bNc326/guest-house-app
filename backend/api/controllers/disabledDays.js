@@ -1,7 +1,8 @@
-import { DisabledDays } from "../models/DisabledDays.js";
+import { DisabledDayDynamic } from "../utils/dynamicDbCollections.js";
 
 export const getDisabledDays = async (req, res, next) => {
   try {
+    const DisabledDays = DisabledDayDynamic(req.hotelParams)
     const result = await DisabledDays.find().sort({ createdAt: -1 });
     res.status(200).send(result);
   } catch (err) {
@@ -11,6 +12,7 @@ export const getDisabledDays = async (req, res, next) => {
 
 export const getOneDisabledDays = async (req, res, next) => {
   try {
+    const DisabledDays = DisabledDayDynamic(req.hotelParams)
     const result = await DisabledDays.findOne({ _id: req.params.id });
     res.status(200).send(result);
   } catch (err) {
@@ -20,6 +22,7 @@ export const getOneDisabledDays = async (req, res, next) => {
 
 export const sendDisabledDays = async (req, res, next) => {
   try {
+    const DisabledDays = DisabledDayDynamic(req.hotelParams)
     const newDisabledDays = new DisabledDays(req.body);
     await newDisabledDays.save();
 
@@ -36,6 +39,7 @@ export const sendDisabledDays = async (req, res, next) => {
 
 export const deleteManyDisabledDays = async (req, res, next) => {
   try {
+    const DisabledDays = DisabledDayDynamic(req.hotelParams)
     await DisabledDays.deleteMany({ _id: { $in: req.body } });
     res.status(201).json({
       success: true,
@@ -50,6 +54,7 @@ export const deleteManyDisabledDays = async (req, res, next) => {
 
 export const deleteDisabledDays = async (req, res, next) => {
   try {
+    const DisabledDays = DisabledDayDynamic(req.hotelParams)
     await DisabledDays.findByIdAndDelete(req.params.id);
     res.status(201).json({
       success: true,
@@ -65,6 +70,7 @@ export const deleteDisabledDays = async (req, res, next) => {
 
 export const editDisabledDays = async (req, res, next) => {
   try {
+    const DisabledDays = DisabledDayDynamic(req.hotelParams)
     await DisabledDays.findByIdAndUpdate(req.params.id, {
       $set: req.body,
     });
