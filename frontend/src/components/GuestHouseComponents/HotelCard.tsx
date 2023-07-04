@@ -27,11 +27,13 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel }> = ({ hotel }) => {
 
   return (
     <div className="w-full h-full rounded-xl bg-palette-2  shadow-lg flex flex-col items-center mobile:flex-row p-4 gap-4">
-      <img
-        src="/static/media/room.869d8aefa93ad239dae6.jpg"
-        alt=""
-        className="rounded-xl w-full h-max shadow-md"
-      />
+      <div className="w-full shadow-md">
+        <img
+          src="/static/media/room.869d8aefa93ad239dae6.jpg"
+          alt=""
+          className="rounded-xl w-full h-full "
+        />
+      </div>
 
       <div className="flex flex-col-reverse w-full h-full gap-4">
         <div className="flex flex-col w-full justify-between ">

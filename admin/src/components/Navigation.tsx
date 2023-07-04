@@ -95,7 +95,6 @@ const Navigation: React.FC<{
     // <BsStar size={"1.5rem"} />,
   ];
 
-  console.log('link', linkActive)
   return (
     <nav className="flex h-full flex-col tablet:px-4">
       <Dropdown

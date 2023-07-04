@@ -9,8 +9,6 @@ import {
   GalleryPage,
   GuestHousePage,
 } from "./pages/Pages";
-import { loader as GuestHousesLoader } from "./pages/GuestHouses";
-import { loader as HotelLoaderForCalendar } from "./pages/Calendar";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -28,7 +26,6 @@ const App = () => {
               index: true,
               element: <GuestHousePage />,
               id: "guestHouses",
-              loader: GuestHousesLoader,
             },
           ],
         },
@@ -38,7 +35,6 @@ const App = () => {
           path: "naptar",
           element: <CalendarPage />,
           id: "calendar",
-          loader: HotelLoaderForCalendar,
         },
       ],
     },
