@@ -1,4 +1,4 @@
-import { RatingDynamic } from "../utils/dynamicDbCollections";
+import { RatingDynamic } from "../utils/dynamicDbCollections.js";
 export const getRating = async (req, res, next) => {
   try {
     const Rating = RatingDynamic(req.hotelParams)
