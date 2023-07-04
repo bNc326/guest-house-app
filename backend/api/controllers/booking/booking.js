@@ -1,7 +1,7 @@
 import { BookingDynamic } from "../../utils/dynamicDbCollections.js";
 export const getBookedDate = async (req, res, next) => {
   try {
-    const Booking = BookingDynamic(req.hotelParams)
+    const Booking = BookingDynamic(req.hotelParams);
     const result = await Booking.find().sort({ createdAt: -1 });
     res.status(200).send(result);
   } catch (err) {
@@ -11,7 +11,7 @@ export const getBookedDate = async (req, res, next) => {
 
 export const getOneBookedDate = async (req, res, next) => {
   try {
-    const Booking = BookingDynamic(req.hotelParams)
+    const Booking = BookingDynamic(req.hotelParams);
     const result = await Booking.findOne({ _id: req.params.id });
     if (result === null) {
       res.status(404).json({
@@ -30,7 +30,7 @@ export const getOneBookedDate = async (req, res, next) => {
 
 export const sendBookedDate = async (req, res, next) => {
   try {
-    const Booking = BookingDynamic(req.hotelParams)
+    const Booking = BookingDynamic(req.hotelParams);
     const newBookedDate = new Booking(req.body);
     await newBookedDate.save();
 
@@ -47,7 +47,7 @@ export const sendBookedDate = async (req, res, next) => {
 
 export const deleteManyBookedDate = async (req, res, next) => {
   try {
-    const Booking = BookingDynamic(req.hotelParams)
+    const Booking = BookingDynamic(req.hotelParams);
     await Booking.deleteMany({ _id: { $in: req.body } });
     res.status(201).json({
       success: true,
@@ -62,7 +62,7 @@ export const deleteManyBookedDate = async (req, res, next) => {
 
 export const deleteBookedDate = async (req, res, next) => {
   try {
-    const Booking = BookingDynamic(req.hotelParams)
+    const Booking = BookingDynamic(req.hotelParams);
     await Booking.findByIdAndDelete(req.params.id);
     res.status(201).json({
       success: true,
@@ -77,8 +77,8 @@ export const deleteBookedDate = async (req, res, next) => {
 
 export const editBookedDate = async (req, res, next) => {
   try {
-    const Booking = BookingDynamic(req.hotelParams)
-    await Booking.findByIdAndUpdate(req.params.id, {
+    const Booking = BookingDynamic(req.hotelParams);
+    const update = await Booking.findByIdAndUpdate(req.params.id, {
       $set: req.body,
     });
     res.status(201).json({

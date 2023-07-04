@@ -42,7 +42,7 @@ const whitelist = [
   "http://localhost:8800/api/"
 ];
 const corsOptions = {
-  
+  origin: '*',
   credentials: true,
 };
 

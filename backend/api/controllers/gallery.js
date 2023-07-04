@@ -9,7 +9,6 @@ const removePath = "./store/images/gallery/";
 
 export const getGallery = (req, res, next) => {
   try {
-    console.log("hívás");
     fs.readFile(filePath, (err, file) => {
       const data = JSON.parse(file);
       res.status(200).send(data);
@@ -43,7 +42,6 @@ export const getOneImage = (req, res, next) => {
 
 export const uploadImage = (req, res, next) => {
   try {
-    console.log("file", req.files);
     fs.readFile(filePath, (err, file) => {
       const data = JSON.parse(file);
       const files = req.files;
