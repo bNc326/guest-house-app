@@ -1,5 +1,5 @@
-import { createError } from "./error";
-import { Hotels } from "../models/Hotels";
+import { createError } from "./error.js";
+import { Hotels } from "../models/Hotels.js";
 import { BookingSchema } from "../models/Booking.js";
 import { DisabledDaysSchema } from "../models/DisabledDays.js";
 import { RatingSchema } from "../models/Rating.js";
