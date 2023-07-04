@@ -27,7 +27,6 @@ export interface FormInterface extends Record<string, formKey> {
 }
 
 const Calendar = () => {
-  const hotels = useRouteLoaderData("calendar") as GuestHouseModel[];
   const revalidator = useRevalidator();
   const [isSelecting, setIsSelecting] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -281,11 +280,9 @@ const Calendar = () => {
                 </h2>
                 <select
                   onChange={changeHotelHandler}
-                  name=""
-                  id=""
                   className="w-full mobile:w-[unset] ring-0 border-0 outline-none rounded-lg bg-palette-2 text-gray-900 font-semibold focus:ring-0 active:ring-0 shadow-md"
                 >
-                  {hotels.map((hotel) => (
+                  {hotelCtx?.hotels.map((hotel) => (
                     <option
                       className="hover:bg-red-600"
                       value={hotel.hotelUUID}
@@ -305,7 +302,7 @@ const Calendar = () => {
             <HelperBox />
           </>
         )}
-        {!hotelCtx.hotelUUID && <HotelModal hotels={hotels} />}
+        {!hotelCtx.hotelUUID && <HotelModal hotels={hotelCtx?.hotels} />}
       </section>
     </>
   );
@@ -321,16 +318,4 @@ export const Separator: React.FC<{ title: string }> = (props) => {
       <span className="w-full h-[1px] bg-palette-2/50"></span>
     </div>
   );
-};
-
-export const loader = async () => {
-  const api = process.env.REACT_APP_BACKEND_API as string;
-
-  const response = await fetch(`${api}/hotels`);
-
-  if (!response.ok) {
-    console.log("error");
-  } else {
-    return response;
-  }
 };

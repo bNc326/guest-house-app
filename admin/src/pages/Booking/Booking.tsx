@@ -99,7 +99,6 @@ const Booking = () => {
     };
   }, [data]);
 
-
   useLayoutEffect(() => {
     const updateData: CheckboxModel[] = [];
     const createCheckboxData = () => {
