@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaParking,
   FaWifi,
@@ -9,32 +10,54 @@ import {
   FaCreditCard,
   FaUsers,
   FaArrowRight,
+  FaPercent,
 } from "react-icons/fa";
 import { TbAirConditioning } from "react-icons/tb";
 import { BiArea } from "react-icons/bi";
 import Capsule from "../HomeComponents/Welcome/Capsule";
-import { Rating, Button } from "flowbite-react";
+import { Rating, Button, Tooltip } from "flowbite-react";
+import { GuestHouseModel } from "models/GuestHouseModel";
+import { BsFillInfoCircleFill } from "react-icons/bs";
+import { HotelContext } from "context/HotelContextProvider";
 
-const HotelCard = () => {
+const HotelCard: React.FC<{ hotel: GuestHouseModel }> = ({ hotel }) => {
+  const navigate = useNavigate();
+  const hotelCtx = useContext(HotelContext);
+  const address = `${hotel.impressum.postalCode} ${hotel.impressum.city}, ${hotel.impressum.street}`;
+
   return (
-    <div className="w-full h-full rounded-xl bg-palette-2  shadow-lg flex">
-      <div className="w-full max-w-[450px]">
-        <img
-          src="/static/media/room.869d8aefa93ad239dae6.jpg"
-          alt=""
-          className="rounded-l-xl"
-        />
-      </div>
-      <div className="flex w-full gap-4 p-4 ">
-        <div className="flex flex-col w-2/3 justify-between ">
+    <div className="w-full h-full rounded-xl bg-palette-2  shadow-lg flex flex-col items-center mobile:flex-row p-4 gap-4">
+      <img
+        src="/static/media/room.869d8aefa93ad239dae6.jpg"
+        alt=""
+        className="rounded-xl w-full h-max shadow-md"
+      />
+
+      <div className="flex flex-col-reverse w-full h-full gap-4">
+        <div className="flex flex-col w-full justify-between ">
           <div className="flex flex-col">
-            <h2 className="text-dynamicDesc font-semibold">Derek's Hotel</h2>
+            <h2 className="text-dynamicDesc font-semibold flex items-center gap-2">
+              {hotel?.hotelName}
+              <Tooltip
+                content={
+                  <span className="text-palette-3 text-dynamicMedium font-semibold font- w-full max-w-[200px] break-words">
+                    {hotel.description}
+                  </span>
+                }
+                placement="right"
+                className="bg-palette-4/70 backdrop-blur-[2px] max-w-[200px]"
+                arrow={false}
+              >
+                <BsFillInfoCircleFill className="fill-palette-4/80" size={20} />
+              </Tooltip>
+            </h2>
+            <p className="text-dynamicMedium">{address}</p>
             <p className="flex gap-2 text-dynamicList">
               <span className="flex items-center gap-1 text-palette-4 font-bold">
-                <FaBed /> 2 szoba
+                <FaBed /> {hotel?.roomAmount} szoba
               </span>
               <span className="flex items-center gap-1 text-palette-4 font-bold">
-                <FaUsers /> 5 fő
+                <FaUsers /> {hotel?.maxPersonAmount} fő
               </span>
             </p>
           </div>
@@ -81,7 +104,7 @@ const HotelCard = () => {
           </div>
         </div>
         <Separator />
-        <div className="w-1/3 flex flex-col justify-center h-full ">
+        <div className="w-full flex flex-col justify-center h-full bg-palette-3/60  shadow-md rounded-xl p-2 relative">
           <Rating className="flex flex-col ">
             <div className="flex  w-full justify-center">
               <Rating.Star filled />
@@ -103,19 +126,39 @@ const HotelCard = () => {
             </div>
           </Rating>
           <div className="text-center h-full flex flex-col justify-end gap-1">
-            <div className="flex justify-center items-center gap-2">
-              <div className="flex flex-col">
-                <span className="line-through text-dynamicList">
-                  42.990 Ft/éj/ház
-                </span>
-                <p className="font-bold text-dynamicDesc">39.990 Ft/éj/ház</p>
-              </div>
-              <div className="w-max flex items-center justify-center bg-palette-5 opacity-80 shadow-lg rounded-lg p-2 text-white font-bold">
-                -7%
-              </div>
+            <div className="flex justify-center items-center gap-2 ">
+              {hotel.discountPrice && (
+                <>
+                  <div className="flex flex-col">
+                    <span className="line-through text-dynamicList">
+                      {hotel?.price} Ft/éj/ház
+                    </span>
+                    <p className="font-bold text-dynamicDesc">
+                      {hotel?.discountPrice} Ft/éj/ház
+                    </p>
+                  </div>
+                  <div className="w-max text-dynamicMedium flex absolute top-4 right-4 items-center justify-center bg-palette-5 opacity-80 shadow-lg rounded-lg p-2 text-white font-bold">
+                    {(hotel.price - hotel.discountPrice) / (hotel.price * 0.01)}
+                    %
+                  </div>
+                </>
+              )}
+              {!hotel.discountPrice && (
+                <div className="flex flex-col">
+                  <p className="font-bold text-dynamicDesc">
+                    {hotel?.price} Ft/éj/ház
+                  </p>
+                </div>
+              )}
             </div>
-            <button className="w-full flex gap-2 items-center justify-center bg-palette-4 hover:opacity-80 text-palette-2 font-bold p-2 rounded-md shadow-md transition-all ease-in-out duration-300">
-              Megnézem
+            <button
+              onClick={() => {
+                hotelCtx.setHotelUUID(hotel.hotelUUID);
+                navigate("/naptar", { relative: "path" });
+              }}
+              className="w-full flex gap-2 items-center justify-center bg-palette-4 hover:opacity-80 text-palette-2 font-bold p-2 rounded-md shadow-md transition-all ease-in-out duration-300"
+            >
+              Lefoglalom
               <FaArrowRight />
             </button>
           </div>
@@ -128,5 +171,7 @@ const HotelCard = () => {
 export default HotelCard;
 
 export const Separator = () => {
-  return <span className="w-[5px] h-[95%] bg-palette-4/50 rounded-md"></span>;
+  return (
+    <span className="hidden w-[5px] h-[95%] bg-palette-4/50 rounded-md"></span>
+  );
 };

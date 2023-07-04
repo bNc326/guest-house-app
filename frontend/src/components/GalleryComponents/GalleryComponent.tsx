@@ -13,7 +13,7 @@ const GalleryComponent: React.FC<{
     <div className=" text-black flex flex-wrap gap-4">
       {gallery &&
         gallery.map((img, index) => (
-          <div className=" w-[calc(100%-1rem)] mobile:w-[calc(50%-1rem)] tablet:w-[calc(33%-1rem)] laptop:w-[calc(25%-1rem)] rounded-xl shadow-shadow hover:scale-105 transition ease-in-out duration-300 cursor-pointer ">
+          <div className=" w-[calc(100%)] mobile:w-[calc(50%-1rem/2)] tablet:w-[calc(33%-1rem/2)] laptop:w-[calc(25%-.75rem)] rounded-xl shadow-shadow hover:scale-105 transition ease-in-out duration-300 cursor-pointer ">
             <LazyLoadImage
             effect="blur"
               key={index}

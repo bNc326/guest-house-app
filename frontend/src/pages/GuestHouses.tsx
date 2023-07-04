@@ -1,10 +1,13 @@
 import React from "react";
 import Container from "components/UI/Container";
 import HotelCard from "components/GuestHouseComponents/HotelCard";
+import { useRouteLoaderData } from "react-router-dom";
+import { GuestHouseModel } from "models/GuestHouseModel";
 
 const GuestHouses = () => {
+  const data = useRouteLoaderData("guestHouses") as GuestHouseModel[];
   return (
-    <section className="guest-house-bg w-full h-screen flex justify-center py-10">
+    <section className="guest-house-bg w-full h-full flex justify-center py-10">
       <div className="w-[1366px] flex gap-4">
         {/* <aside className="bg-palette-3 rounded-lg shadow-shadow w-1/3">
           <ul>
@@ -20,15 +23,10 @@ const GuestHouses = () => {
             <li>fXZtMAc</li>
           </ul>
         </aside> */}
-        <article className="bg-palette-3 rounded-lg w-full h-[80vh] overflow-y-scroll shadow-shadow p-4 flex flex-col gap-4">
-          <HotelCard />
-          <HotelCard />
-          <HotelCard />
-          <HotelCard />
-          <HotelCard />
-          <HotelCard />
-          <HotelCard />
-          <HotelCard />
+        <article className=" rounded-lg w-full p-4 flex flex-col gap-4">
+          {data &&
+            data.map((hotel) => <HotelCard key={hotel._id} hotel={hotel} />)}
+
         </article>
       </div>
     </section>
@@ -36,3 +34,14 @@ const GuestHouses = () => {
 };
 
 export default GuestHouses;
+
+export const loader = async () => {
+  const api = process.env.REACT_APP_BACKEND_API as string;
+  const response = await fetch(`${api}/hotels`);
+
+  if (!response.ok) {
+    console.log("error");
+  } else {
+    return response;
+  }
+};

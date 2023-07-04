@@ -9,6 +9,8 @@ import {
   GalleryPage,
   GuestHousePage,
 } from "./pages/Pages";
+import { loader as GuestHousesLoader } from "./pages/GuestHouses";
+import { loader as HotelLoaderForCalendar } from "./pages/Calendar";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -19,10 +21,25 @@ const App = () => {
       children: [
         { index: true, element: <HomePage /> },
         { path: "galeria", element: <GalleryPage /> },
-        {path: "vendeghazak", element: <GuestHousePage />},
+        {
+          path: "vendeghazak",
+          children: [
+            {
+              index: true,
+              element: <GuestHousePage />,
+              id: "guestHouses",
+              loader: GuestHousesLoader,
+            },
+          ],
+        },
         { path: "rolunk", element: <DevelopmentPage /> },
         { path: "kapcsolat", element: <DevelopmentPage /> },
-        { path: "naptar", element: <CalendarPage /> },
+        {
+          path: "naptar",
+          element: <CalendarPage />,
+          id: "calendar",
+          loader: HotelLoaderForCalendar,
+        },
       ],
     },
   ]);
