@@ -247,7 +247,8 @@ const Gallery = () => {
           type: ALERT_ACTION_TYPE.SHOW,
           payload: {
             alertType: ALERT_TYPE.FAILURE,
-            message: "Csak ezek a formátumok tölthetőek fel! (jpg, jpeg, png, webp)",
+            message:
+              "Csak ezek a formátumok tölthetőek fel! (jpg, jpeg, png, webp)",
           },
         });
       }
@@ -257,13 +258,6 @@ const Gallery = () => {
       type: UPLOAD_TYPE.DROP,
       payload: { fileList: dt.files },
     });
-    // const { files } = e.dataTransfer;
-    // if (files.length > 0) {
-    //   uploadDispatch({
-    //     type: UPLOAD_TYPE.DROP,
-    //     payload: { fileList: files },
-    //   });
-    // }
   };
 
   const dragOverHandler = (e: DragEvent<HTMLDivElement>) => {
@@ -283,33 +277,36 @@ const Gallery = () => {
   const uploadChangeHandler = (e: React.ChangeEvent) => {
     if (!(e.target instanceof HTMLInputElement)) return;
 
-    if (upload.fileList?.length !== 0 && upload.fileList !== null) {
-      const dt = new DataTransfer();
-      const files = e.target.files;
+    const dt = new DataTransfer();
+    const files = e.target.files;
+    const imageType = /image.*/;
 
+    if (upload.fileList?.length !== 0 && upload.fileList !== null) {
       Array.from(upload.fileList).map((file) => {
         dt.items.add(file);
       });
+    }
 
-      files &&
-        Array.from(files).map((file) => {
+    files &&
+      Array.from(files).map((file) => {
+        if (file.type.match(imageType)) {
           dt.items.add(file);
-        });
-
-      uploadDispatch({
-        type: UPLOAD_TYPE.DROP,
-        payload: { fileList: dt.files },
+        } else {
+          outletCtx.alertDispatch({
+            type: ALERT_ACTION_TYPE.SHOW,
+            payload: {
+              alertType: ALERT_TYPE.FAILURE,
+              message:
+                "Csak ezek a formátumok tölthetőek fel! (jpg, jpeg, png, webp)",
+            },
+          });
+        }
       });
-      return;
-    }
 
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      uploadDispatch({
-        type: UPLOAD_TYPE.DROP,
-        payload: { fileList: files },
-      });
-    }
+    uploadDispatch({
+      type: UPLOAD_TYPE.DROP,
+      payload: { fileList: dt.files },
+    });
   };
 
   const uploadHandler = async (e: React.FormEvent) => {
