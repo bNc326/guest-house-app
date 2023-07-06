@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { createError } from "../utils/error.js";
 
 export const verifyToken = (req, res, next) => {
+  console.log("bármi");
   const token = req.cookies.access_token;
 
   if (!token) {
@@ -11,6 +12,7 @@ export const verifyToken = (req, res, next) => {
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) return next(createError(403, "A token nem érvényes!"));
     req.user = user;
+    res.json({ success: true, status: 200, message: "Sikeres hitelesítés!" });
     next();
   });
 };
