@@ -32,13 +32,15 @@ export const sendBookedDate = async (req, res, next) => {
   try {
     const Booking = BookingDynamic(req.hotelParams);
     const newBookedDate = new Booking(req.body);
-    await newBookedDate.save();
+    const newBooked = await newBookedDate.save();
+
+    console.log("booked", newBooked._id.valueOf());
 
     res.status(201).json({
       success: true,
       status: 201,
-      message: `Köszönjük a foglalást! Adminisztrátór általi jóváhagyásra vár! Részleteken elküldtük emailben!`,
-      id: req.params.id,
+      message: `A foglalás adminisztrátor általi jóváhagyásra vár!`,
+      id: newBooked._id.valueOf(),
     });
   } catch (err) {
     next(err);

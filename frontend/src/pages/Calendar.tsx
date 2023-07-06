@@ -13,6 +13,8 @@ import { ScaleLoader } from "react-spinners";
 import { GuestHouseModel } from "models/GuestHouseModel";
 import HotelModal from "components/CalendarComponents/HotelModal";
 import { HotelContext } from "context/HotelContextProvider";
+import BookingSuccessModal from "components/CalendarComponents/BookingSuccessModal";
+import { BookingSuccess } from "../models/BookingSuccessModel";
 
 export interface FormInterface extends Record<string, formKey> {
   name: formKey;
@@ -30,6 +32,12 @@ const Calendar = () => {
   const revalidator = useRevalidator();
   const [isSelecting, setIsSelecting] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [bookingSuccess, setBookingSuccess] = useState({
+    isSuccess: false,
+    name: "",
+    message: "",
+    bookingId: "",
+  });
   const [formInput, setFormInput] = useState<FormInterface>({
     name: {
       value: "",
@@ -100,6 +108,19 @@ const Calendar = () => {
   const [backup, setBackup] = useState(cloneDeep(formInput));
   const bookingCtx = useContext(BookingContext);
   const hotelCtx = useContext(HotelContext);
+
+  useEffect(() => {
+    const cleanup = setTimeout(() => {
+      setBookingSuccess({
+        isSuccess: false,
+        name: "",
+        message: "",
+        bookingId: "",
+      });
+    }, 100);
+
+    return () => clearTimeout(cleanup);
+  }, []);
 
   const changeHotelHandler = (e: React.ChangeEvent) => {
     if (!(e.target instanceof HTMLSelectElement)) return;
@@ -243,7 +264,16 @@ const Calendar = () => {
       if (!response.ok) {
         console.log("error");
       } else {
-        const data = await response.json();
+        const data: BookingSuccess = await response.json();
+        setBookingSuccess((prev) => {
+          const updated = { ...prev };
+          updated.isSuccess = true;
+          updated.bookingId = data.id;
+          updated.message = data.message;
+          updated.name = formInput.name.value as string;
+
+          return updated;
+        });
         setIsLoading(false);
         resetData();
       }
@@ -303,6 +333,14 @@ const Calendar = () => {
           </>
         )}
         {!hotelCtx.hotelUUID && <HotelModal hotels={hotelCtx?.hotels} />}
+        {bookingSuccess.isSuccess && (
+          <BookingSuccessModal
+            message={bookingSuccess.message}
+            bookingId={bookingSuccess.bookingId}
+            name={bookingSuccess.name}
+            setBookingSuccess={setBookingSuccess}
+          />
+        )}
       </section>
     </>
   );

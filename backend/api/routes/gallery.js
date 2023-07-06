@@ -7,12 +7,13 @@ import {
   deleteImage,
   uploadImage,
 } from "../controllers/gallery.js";
+import { verifyToken } from "../utils/verifyToken.js";
 const router = express.Router();
 
 router.get("/", getGallery);
-router.post("/upload", uploads.array("images"), uploadImage);
+router.post("/upload", verifyToken, uploads.array("images"), uploadImage);
 router.get("/:id", getOneImage);
-router.put("/:id", editImage);
-router.delete("/", deleteImage);
+router.put("/:id", verifyToken, editImage);
+router.delete("/", verifyToken, deleteImage);
 
 export default router;
