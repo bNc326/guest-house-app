@@ -11,10 +11,10 @@ import { verifyToken } from "../utils/verifyToken.js";
 const router = express.Router();
 
 router.get("/", getDisabledDays);
-router.post("/", verifyToken, sendDisabledDays);
-router.delete("/", verifyToken, deleteManyDisabledDays);
+router.post("/", sendDisabledDays);
+router.delete("/", deleteManyDisabledDays);
 router.get("/:id", getOneDisabledDays);
-router.put("/:id", verifyToken, editDisabledDays);
-router.delete("/:id", verifyToken, deleteDisabledDays);
+router.put("/:id",  editDisabledDays);
+router.delete("/:id", deleteDisabledDays);
 
 export default router;

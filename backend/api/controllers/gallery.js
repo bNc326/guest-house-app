@@ -1,6 +1,7 @@
 import fs from "fs";
 import { v4 as uuid } from "uuid";
 import pkg from "lodash";
+import { ImageModel } from "../models/Image";
 
 const { pullAt } = pkg;
 const dirPath = "./store/images/gallery";
@@ -47,29 +48,39 @@ export const uploadImage = (req, res, next) => {
       const files = req.files;
 
       files.map((file) => {
-        const foundItem = data.find((img) => img.path === file.originalname);
-
-        if (!foundItem) {
-          const split = file.originalname.split(".");
-          const updateBody = {
-            id: uuid(),
-            alt: file.originalname.replace(/\.[^/.]+$/, ""),
-            path: file.originalname,
-            trimmedPath: `${split[0].substring(0, 12)}... .${split[1]}`,
-          };
-          data.push(updateBody);
-        }
-      });
-
-      fs.writeFile(filePath, JSON.stringify(data), (err) => {
-        if (err) {
-        }
-        res.status(200).json({
-          success: true,
-          status: 200,
-          message: `A képet/ket sikeresen feltőltötted!`,
+        const split = file.originalname.split(".");
+        const image = new ImageModel({
+          alt: file.originalname.replace(/\.[^/.]+$/, ""),
+          image: {
+            data: file.filename,
+            contentType: file.mimetype,
+          },
+          trimmedPath: `${split[0].substring(0, 12)}... .${split[1]}`,
         });
+        image.save();
+        // const foundItem = data.find((img) => img.path === file.originalname);
+
+        // if (!foundItem) {
+        //   const split = file.originalname.split(".");
+        //   const updateBody = {
+        //     id: uuid(),
+        //     alt: file.originalname.replace(/\.[^/.]+$/, ""),
+        //     path: file.originalname,
+        //     trimmedPath: `${split[0].substring(0, 12)}... .${split[1]}`,
+        //   };
+        //   data.push(updateBody);
+        // }
       });
+
+      // fs.writeFile(filePath, JSON.stringify(data), (err) => {
+      //   if (err) {
+      //   }
+      //   res.status(200).json({
+      //     success: true,
+      //     status: 200,
+      //     message: `A képet/ket sikeresen feltőltötted!`,
+      //   });
+      // });
     });
   } catch (err) {
     console.log("feltöltés hiba", err);

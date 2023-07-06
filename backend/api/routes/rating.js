@@ -12,9 +12,9 @@ const router = express.Router();
 
 router.get("/", getRating);
 router.post("/", sendRating);
-router.delete("/", verifyToken, deleteManyRating);
+router.delete("/",  deleteManyRating);
 router.get("/:id", getOneRating);
-router.put("/:id", verifyToken, editRating);
-router.delete("/:id", verifyToken, deleteRating);
+router.put("/:id", editRating);
+router.delete("/:id", deleteRating);
 
 export default router;
