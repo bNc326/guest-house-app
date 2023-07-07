@@ -12,9 +12,9 @@ const router = express.Router();
 
 router.get("/", getDisabledDays);
 router.post("/", sendDisabledDays);
-router.delete("/", deleteManyDisabledDays);
-router.get("/:id", getOneDisabledDays);
-router.put("/:id",  editDisabledDays);
-router.delete("/:id", deleteDisabledDays);
+router.delete("/", verifyToken, deleteManyDisabledDays);
+router.get("/:id", verifyToken, getOneDisabledDays);
+router.put("/:id", verifyToken,  editDisabledDays);
+router.delete("/:id", verifyToken, deleteDisabledDays);
 
 export default router;

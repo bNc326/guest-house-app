@@ -15,6 +15,7 @@ import {
 import { MODAL_ACTION, MODAL_ACTION_TYPE } from "../../models/Modal/ModalModal";
 import { Outlet } from "../../models/OutletModel";
 import { HotelContext } from "../../context/HotelContextProvider";
+import { useAuthHeader } from "react-auth-kit";
 
 interface ModalData {
   _id: string;
@@ -35,6 +36,7 @@ const EditModal: React.FC<{
   const revalidator = useRevalidator();
   const outletCtx = useOutletContext() as Outlet;
   const hotelCtx = useContext(HotelContext);
+  const accessToken = useAuthHeader();
 
   useEffect(() => {
     if (!props.isShow && props.id === null) return;
@@ -113,6 +115,7 @@ const EditModal: React.FC<{
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        authorization: accessToken(),
       },
       body: JSON.stringify(data),
     });

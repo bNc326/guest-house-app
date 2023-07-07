@@ -5,7 +5,6 @@ export enum AUTH_ACTION_TYPE {
 }
 
 export type details = {
-  _id: string;
   username?: string;
   email?: string;
 };

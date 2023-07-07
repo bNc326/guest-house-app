@@ -18,12 +18,17 @@ import { loader as editHotelLoader } from "./pages/GuestHouses/EditGuestHouses";
 import NewGuestHouses from "./pages/GuestHouses/NewGuestHouses";
 import Logout from "./pages/Logout";
 import Gallery, { loader as galleryLoader } from "./pages/Gallery/Gallery";
+import { RequireAuth } from "react-auth-kit";
 
 const App = () => {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Root />,
+      element: (
+        <RequireAuth loginPath="/login">
+          <Root />
+        </RequireAuth>
+      ),
       errorElement: <Error />,
       children: [
         { index: true, element: <Admin /> },

@@ -1,11 +1,11 @@
 import express from "express";
-import { login, logout, register } from "../controllers/auth.js";
+import { login, logout, register, refresh } from "../controllers/auth.js";
 import { verifyToken } from "../utils/verifyToken.js";
 
 const router = express.Router();
-router.get("/authenticate", verifyToken);
+router.delete("/logout", logout);
 router.post("/register", register);
-router.post("/logout", logout);
 router.post("/login", login);
+router.post("/refresh", verifyToken, refresh);
 
 export default router;

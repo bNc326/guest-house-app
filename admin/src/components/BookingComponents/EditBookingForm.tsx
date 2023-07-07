@@ -14,6 +14,7 @@ import {
 } from "../../models/Alert/AlertModels";
 import { Outlet } from "../../models/OutletModel";
 import { HotelContext } from "../../context/HotelContextProvider";
+import { useAuthHeader } from "react-auth-kit";
 
 export interface InputValidate extends Record<string, any> {
   costumer: {
@@ -175,6 +176,7 @@ const EditBookingForm: React.FC<{
   const inputBackup = cloneDeep(inputData);
   const outletCtx = useOutletContext() as Outlet;
   const hotelCtx = useContext(HotelContext);
+  const accessToken = useAuthHeader();
 
   // ! SIDE EFFECT: backup equal with editableDate?
 
@@ -575,6 +577,7 @@ const EditBookingForm: React.FC<{
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            authorization: accessToken(),
           },
           body: JSON.stringify(editableData),
         }

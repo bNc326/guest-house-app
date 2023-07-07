@@ -19,6 +19,7 @@ import {
 } from "../../models/Alert/AlertModels";
 import { isEqual } from "lodash";
 import { Outlet } from "../../models/OutletModel";
+import { useAuthHeader } from "react-auth-kit";
 
 export interface InputValidate extends Record<string, any> {
   hotelName: {
@@ -182,6 +183,7 @@ const EditGuestHouseForm: React.FC<{
   const inputBackup = cloneDeep(inputData);
   const focusRef = useRef<HTMLDivElement>(null);
   const outletCtx = useOutletContext() as Outlet;
+  const accessToken = useAuthHeader();
 
   useEffect(() => {
     const setArrayData = () => {
@@ -826,6 +828,7 @@ const EditGuestHouseForm: React.FC<{
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          authorization: accessToken(),
         },
         body: JSON.stringify(editableData),
       });
@@ -851,9 +854,6 @@ const EditGuestHouseForm: React.FC<{
             message: data.message + " 5 másodperc múlva visszirányítunk!",
           },
         });
-        setTimeout(() => {
-          navigate("..");
-        }, 5000);
       }
     }
   };

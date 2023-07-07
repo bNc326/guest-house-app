@@ -5,6 +5,8 @@ import "animate.css";
 import App from "./App";
 import { AuthContextProvider } from "./context/AuthContext";
 import { HotelContextProvider } from "./context/HotelContextProvider";
+import { AuthProvider } from "react-auth-kit";
+import refreshApi from "./refreshApi";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -12,9 +14,15 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <HotelContextProvider>
-      <AuthContextProvider>
+      <AuthProvider
+        authType={"cookie"}
+        authName={"_auth"}
+        cookieDomain={window.location.hostname}
+        cookieSecure={window.location.protocol === "https:"}
+        refresh={refreshApi}
+      >
         <App />
-      </AuthContextProvider>
+      </AuthProvider>
     </HotelContextProvider>
   </React.StrictMode>
 );

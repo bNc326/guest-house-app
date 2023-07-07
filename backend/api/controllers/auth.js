@@ -1,6 +1,16 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { createError } from "../utils/error.js";
+
+let refreshTokens = [];
+
+const generateAccessToken = (user) => {
+  const token = jwt.sign(user, process.env.JWT_ACCESS_SECRET, {
+    expiresIn: "1h",
+  });
+  return token;
+};
 
 export const register = async (req, res, next) => {
   try {
@@ -18,14 +28,6 @@ export const register = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-};
-
-export const logout = async (req, res, next) => {
-  res.clearCookie("access_token", { httpOnly: true }).status(200).json({
-    success: true,
-    status: 200,
-    message: "A felhasználó sikeresen kijelentkezett!",
-  });
 };
 
 export const login = async (req, res, next) => {
@@ -55,16 +57,43 @@ export const login = async (req, res, next) => {
       return;
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    const accessToken = generateAccessToken({ id: user._id });
+
+    const refreshToken = jwt.sign(
+      { id: user._id },
+      process.env.JWT_REFRESH_SECRET
+    );
+    refreshTokens.push(refreshToken);
 
     const { password, createdAt, updatedAt, __v, ...otherDetails } = user._doc;
-    res
-      .cookie("access_token", token, { httpOnly: true })
-      .status(200)
-      .json({
-        ...otherDetails,
-      });
+    res.status(200).json({
+      ...otherDetails,
+      accessToken,
+      refreshToken,
+    });
   } catch (err) {
     next(err);
   }
+};
+
+export const refresh = (req, res, next) => {
+  const token = req.body.token;
+  if (!token) return next(createError(401, "Nincs refresh token!"));
+  if (!refreshTokens.includes(token)) {
+    return next(createError(403, "Nem található ilyen refresh token!"));
+  }
+
+  jwt.verify(token, process.env.JWT_REFRESH_SECRET, (err, user) => {
+    if (err) return createError(403, "Nem érvényes a refresh token!");
+    const accessToken = generateAccessToken({ id: user._id });
+    res.status(200).json({ success: true, status: 200, accessToken });
+  });
+};
+
+export const logout = (req, res, next) => {
+  refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
+
+  res
+    .status(204)
+    .json({ success: true, status: 204, message: "Sikeresen kijelentkeztél!" });
 };
