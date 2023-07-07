@@ -16,6 +16,7 @@ import { MODAL_ACTION, MODAL_ACTION_TYPE } from "../../models/Modal/ModalModal";
 import { AuthContext } from "../../context/AuthContext";
 import { Outlet } from "../../models/OutletModel";
 import { HotelContext } from "../../context/HotelContextProvider";
+import { useAuthHeader } from "react-auth-kit";
 
 interface ModalData {
   startDate: string;
@@ -40,6 +41,7 @@ const NewModal: React.FC<{
   const authCtx = useContext(AuthContext);
   const outletCtx = useOutletContext() as Outlet;
   const hotelCtx = useContext(HotelContext);
+  const accessToken = useAuthHeader();
 
   useEffect(() => {
     props.setIsNewModal(true);
@@ -90,6 +92,7 @@ const NewModal: React.FC<{
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: accessToken(),
         },
         body: JSON.stringify(data),
       }

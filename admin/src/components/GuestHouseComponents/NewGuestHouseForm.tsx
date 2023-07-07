@@ -16,6 +16,7 @@ import {
   ALERT_ACTION,
 } from "../../models/Alert/AlertModels";
 import { Outlet } from "../../models/OutletModel";
+import { useAuthHeader } from "react-auth-kit";
 
 export interface InputValidate extends Record<string, any> {
   hotelName: {
@@ -197,6 +198,7 @@ const NewGuestHouseForm: React.FC<{}> = (props) => {
   const inputBackup = cloneDeep(inputData);
   const focusRef = useRef<HTMLDivElement>(null);
   const outletCtx = useOutletContext() as Outlet;
+  const accessToken = useAuthHeader();
 
   useEffect(() => {
     const getRefElements = (key: "service" | "feature", refIndex: number) => {
@@ -748,6 +750,7 @@ const NewGuestHouseForm: React.FC<{}> = (props) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: accessToken(),
         },
         body: JSON.stringify(editableData),
       });

@@ -18,6 +18,7 @@ import { ALERT_TYPE, ALERT_ACTION_TYPE } from "../../models/Alert/AlertModels";
 import AlertComponent from "../../components/UI/Alert";
 import { Outlet } from "../../models/OutletModel";
 import { HotelContext } from "../../context/HotelContextProvider";
+import { useAuthHeader } from "react-auth-kit";
 
 const EditBooking = () => {
   const params = useParams();
@@ -27,6 +28,7 @@ const EditBooking = () => {
   const { isSure, isSureDispatch } = useIsSure();
   const outletCtx = useOutletContext() as Outlet;
   const hotelCtx = useContext(HotelContext);
+  const accessToken = useAuthHeader();
 
   useEffect(() => {
     const acceptOrEjectFetcher = async (action: "ACCEPT" | "EJECT") => {
@@ -45,6 +47,7 @@ const EditBooking = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            authorization: accessToken(),
           },
           body: JSON.stringify(body),
         }

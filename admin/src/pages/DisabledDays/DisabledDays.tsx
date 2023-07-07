@@ -27,6 +27,7 @@ import NewModal from "../../components/modal/NewModal";
 import { Outlet } from "../../models/OutletModel";
 import ChangeHotelComponent from "../../components/ChangeHotelComponent";
 import { HotelContext } from "../../context/HotelContextProvider";
+import { useAuthHeader } from "react-auth-kit";
 
 const DisabledDays = () => {
   const data = useRouteLoaderData("disabled-days") as DisabledDaysModel;
@@ -40,6 +41,7 @@ const DisabledDays = () => {
   const [isNewModal, setIsNewModal] = useState<boolean>(false);
   const outletCtx = useOutletContext() as Outlet;
   const hotelCtx = useContext(HotelContext);
+  const accessToken = useAuthHeader();
 
   // * SIDE effects
 
@@ -112,7 +114,6 @@ const DisabledDays = () => {
   }, [deleteCheckbox]);
   //*\
 
-
   // * HANDLERS for the delete item in the table
 
   const selectItemForDeleteHandler = (e: React.ChangeEvent) => {
@@ -180,6 +181,7 @@ const DisabledDays = () => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          authorization: accessToken(),
         },
         body: JSON.stringify(itemForDelete),
       }

@@ -1,16 +1,16 @@
-import { useContext } from "react";
-import { useOutletContext } from "react-router-dom";
 import { details } from "../models/Auth/AuthModel";
 import { Alert } from "flowbite-react";
 import { HiBellAlert } from "react-icons/hi2";
-import { AuthContext } from "../context/AuthContext";
+import { useAuthUser } from "react-auth-kit";
+
 const Admin = () => {
-  const ctx = useContext(AuthContext);
+  const authUser = useAuthUser();
+  const user = authUser() as details;
 
   return (
     <div className="text-black flex flex-col gap-4 items-center justify-center text-center w-full">
       <div className="flex flex-col gap-1">
-        <h2 className="text-dynamicTitle2">Kedves {ctx.user?.username}!</h2>
+        <h2 className="text-dynamicTitle2">Kedves {user?.username}!</h2>
         <h3 className="text-dynamicTitle3">Üdvözöljük az adminfelületen!</h3>
 
         <Alert color="info" icon={HiBellAlert}>

@@ -25,6 +25,7 @@ import {
 } from "../../models/Gallery/Gallery";
 import ImageBox from "../../components/Gallery/ImageBox";
 import { Outlet } from "../../models/OutletModel";
+import { useAuthHeader } from "react-auth-kit";
 
 const Gallery = () => {
   const imageSrc = useRouteLoaderData("gallery") as GalleryModel[];
@@ -38,6 +39,7 @@ const Gallery = () => {
   const { isSure, isSureDispatch } = useIsSure();
   const revalidator = useRevalidator();
   const outletCtx = useOutletContext() as Outlet;
+  const accessToken = useAuthHeader();
 
   useLayoutEffect(() => {
     const getDeleteCheckbox = () => {
@@ -69,6 +71,7 @@ const Gallery = () => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
+            authorization: accessToken(),
           },
           body: body,
         });
@@ -319,6 +322,7 @@ const Gallery = () => {
     });
 
     const response = await axios.post(url + "/gallery/upload", formData, {
+      headers: { authorization: accessToken() },
       onUploadProgress: (p) => {
         if (!p.total) return;
         const uploadProgress = Math.ceil((p.loaded / p.total) * 100);

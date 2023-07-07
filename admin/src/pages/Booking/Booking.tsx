@@ -28,6 +28,7 @@ import { Checkbox as CheckboxModel } from "../../models/CheckboxModel";
 import { Outlet } from "../../models/OutletModel";
 import { HotelContext } from "../../context/HotelContextProvider";
 import ChangeHotelComponent from "../../components/ChangeHotelComponent";
+import { useAuthHeader } from "react-auth-kit";
 
 const Booking = () => {
   const [isMounted, setIsMounted] = useState<boolean>(false);
@@ -51,36 +52,11 @@ const Booking = () => {
   const outletCtx = useOutletContext() as Outlet;
   const ctx = useContext(TippContext);
   const hotelCtx = useContext(HotelContext);
+  const accessToken = useAuthHeader();
 
   // * SIDE effects
 
   useEffect(() => {
-    // * CHECKBOX set to all item
-
-    // const updateData: CheckboxModel[] = [...deleteCheckbox];
-    // const createCheckboxData = () => {
-    //   console.log("bent");
-    //   itemForDelete.map((item) => {
-    //     const index = updateData.findIndex((i) => i.id === item);
-    //     updateData.splice(index, 1);
-    //   });
-    //   setItemForDelete([]);
-    //   data.map((dataItem) => {
-    //     const id = dataItem._id as string;
-    //     const index = updateData.findIndex((item) => item.id === id);
-    //     if (index === -1) {
-    //       updateData.push({
-    //         id: dataItem._id,
-    //         checked: false,
-    //       });
-    //     }
-    //   });
-    //   setDeleteCheckbox(updateData);
-    // };
-
-    // createCheckboxData();
-    //*\
-
     // * REFETCH in every minute
     if (!isMounted) {
       revalidator.revalidate();
@@ -210,6 +186,7 @@ const Booking = () => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        authorization: accessToken(),
       },
       body: JSON.stringify(itemForDelete),
     });
