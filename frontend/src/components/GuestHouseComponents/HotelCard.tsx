@@ -1,17 +1,6 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  FaParking,
-  FaWifi,
-  FaBed,
-  FaStar,
-  FaUtensils,
-  FaTv,
-  FaCreditCard,
-  FaUsers,
-  FaArrowRight,
-  FaPercent,
-} from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 import { TbAirConditioning } from "react-icons/tb";
 import { BiArea } from "react-icons/bi";
 import Capsule from "../HomeComponents/Welcome/Capsule";
@@ -19,6 +8,19 @@ import { Rating, Button, Tooltip } from "flowbite-react";
 import { GuestHouseModel } from "models/GuestHouseModel";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import { HotelContext } from "context/HotelContextProvider";
+import {
+  MdLocalParking,
+  MdWifi,
+  MdBed,
+  MdFlatware,
+  MdTv,
+  MdOutlineCreditScore,
+  MdBabyChangingStation,
+  MdFamilyRestroom,
+  MdWorkspacePremium,
+  MdOutlineOutdoorGrill,
+  MdSpa,
+} from "react-icons/md";
 
 const HotelCard: React.FC<{ hotel: GuestHouseModel }> = ({ hotel }) => {
   const navigate = useNavigate();
@@ -56,10 +58,10 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel }> = ({ hotel }) => {
             <p className="text-dynamicMedium">{address}</p>
             <p className="flex gap-2 text-dynamicList">
               <span className="flex items-center gap-1 text-palette-4 font-bold">
-                <FaBed /> {hotel?.roomAmount} szoba
+                <MdBed /> {hotel?.roomAmount} szoba
               </span>
               <span className="flex items-center gap-1 text-palette-4 font-bold">
-                <FaUsers /> {hotel?.maxPersonAmount} fő
+                <MdFamilyRestroom /> {hotel?.maxPersonAmount} fő
               </span>
             </p>
           </div>
@@ -68,39 +70,65 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel }> = ({ hotel }) => {
               <h3 className="font-semibold text-dynamicList">Szolgáltatások</h3>
               <ul className="flex flex-wrap w-full z-0 text-dynamicSmall gap-2 text-palette-3 font-semibold">
                 <Capsule
-                  Icon={FaParking}
+                  Icon={MdLocalParking}
                   text="Ingyenes parkolás"
                   iconSize={16}
                 />
                 <Capsule
-                  Icon={FaUtensils}
+                  Icon={MdFlatware}
                   text="Étterrem"
                   className="mobile:order-8 tablet:order-none"
                   iconSize={16}
                 />
-                <Capsule Icon={FaWifi} text="Ingyenes wifi" iconSize={16} />
+                <Capsule Icon={MdWifi} text="Ingyenes wifi" iconSize={16} />
                 <Capsule Icon={BiArea} text="60m2" iconSize={16} />
                 <Capsule
-                  Icon={FaCreditCard}
+                  Icon={MdOutlineCreditScore}
                   text="Bankkártya & SZÉP kártya"
                   iconSize={16}
                 />
-                <Capsule Icon={FaTv} text="Síkképernyős TV" iconSize={16} />
+                <Capsule Icon={MdTv} text="Televízió" iconSize={16} />
                 <Capsule
                   Icon={TbAirConditioning}
                   text="Légkondícionáló"
                   iconSize={16}
                 />
+                <Capsule
+                  Icon={MdBabyChangingStation}
+                  text="Bababarát hely"
+                  iconSize={16}
+                />
+                <Capsule
+                  Icon={MdOutlineOutdoorGrill}
+                  text="Grillező hely"
+                  iconSize={16}
+                />
+                <Capsule Icon={MdSpa} text="Gyógyfűrdő 500m" iconSize={16} />
               </ul>
             </div>
             <div className="flex flex-col gap-1">
               <h3 className="font-semibold text-dynamicList">Extrák</h3>
               <ul className="flex flex-wrap w-full z-0 text-dynamicSmall gap-2 text-palette-3 font-semibold">
-                <Capsule Icon={FaStar} text="Finn Sauna" iconSize={16} />
-                <Capsule Icon={FaStar} text="Wellness" iconSize={16} />
-                <Capsule Icon={FaStar} text="Dézsa fűrdő" iconSize={16} />
-                <Capsule Icon={FaStar} text="Dézsa fűrdő" iconSize={16} />
-                <Capsule Icon={FaStar} text="Fél panzio" iconSize={16} />
+                <Capsule
+                  Icon={MdWorkspacePremium}
+                  text="Finn Sauna"
+                  iconSize={16}
+                />
+                <Capsule
+                  Icon={MdWorkspacePremium}
+                  text="Wellness"
+                  iconSize={16}
+                />
+                <Capsule
+                  Icon={MdWorkspacePremium}
+                  text="Dézsa fűrdő"
+                  iconSize={16}
+                />
+                <Capsule
+                  Icon={MdWorkspacePremium}
+                  text="Fél panzio"
+                  iconSize={16}
+                />
               </ul>
             </div>
           </div>
