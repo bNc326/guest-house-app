@@ -36,9 +36,7 @@ select {
 .parent {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: 0.1fr repeat(11, 1fr);
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
+  grid-template-rows: 0.2fr repeat(11, 1fr);
 }
 
 .nav-header {

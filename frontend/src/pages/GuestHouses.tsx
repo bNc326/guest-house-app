@@ -10,15 +10,20 @@ const GuestHouses = () => {
   const data = useRouteLoaderData("guestHouses") as GuestHouseModel[];
   const hotelCtx = useContext(HotelContext);
   return (
-    <section className="guest-house-bg w-full h-full flex justify-center py-10">
-      <div className="w-[1366px] h-full flex gap-4">
-        <article className=" rounded-lg w-full p-4 flex flex-col items-center justify-center h-full gap-4">
+    <section className="guest-house-bg w-full min-h-[100%] flex justify-center p-4 pt-20">
+      <div className="w-[1366px] flex gap-4">
+        <article
+          id={"scroll_guesthouse"}
+          className="w-full h-full flex items-center flex-col gap-4"
+        >
           {hotelCtx.hotels &&
-            hotelCtx.hotels.map((hotel) => (
-              <HotelCard key={hotel._id} hotel={hotel} />
+            hotelCtx.hotels.map((hotel, index) => (
+              <HotelCard key={hotel._id} index={index} hotel={hotel} />
             ))}
           {hotelCtx.hotels.length === 0 && (
-            <ClipLoader loading size={40} color="#7F5539" />
+            <div className="w-full h-full flex items-center justify-center">
+              <ClipLoader loading size={40} color="#7F5539" />
+            </div>
           )}
         </article>
       </div>

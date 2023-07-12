@@ -21,8 +21,13 @@ import {
   MdOutlineOutdoorGrill,
   MdSpa,
 } from "react-icons/md";
+import CountUp from "react-countup";
+import { AnimationOnScroll } from "react-animation-on-scroll";
 
-const HotelCard: React.FC<{ hotel: GuestHouseModel }> = ({ hotel }) => {
+const HotelCard: React.FC<{ hotel: GuestHouseModel; index: number }> = ({
+  hotel,
+  index,
+}) => {
   const navigate = useNavigate();
   const hotelCtx = useContext(HotelContext);
   const address = `${hotel.impressum.postalCode} ${hotel.impressum.city}, ${hotel.impressum.street}`;
@@ -55,15 +60,31 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel }> = ({ hotel }) => {
                 <BsFillInfoCircleFill className="fill-palette-4/80" size={20} />
               </Tooltip>
             </h2>
-            <p className="text-dynamicMedium">{address}</p>
-            <p className="flex gap-2 text-dynamicList">
+            <AnimationOnScroll
+              animateOnce
+              animatePreScroll={false}
+              animateIn={"animate__fadeInUp"}
+              className={`text-dynamicMedium ${
+                index === 0 ? "animate__animated animate__fadeInUp" : ""
+              }`}
+            >
+              {address}
+            </AnimationOnScroll>
+            <AnimationOnScroll
+              animateOnce
+              animatePreScroll={false}
+              animateIn={"animate__fadeInUp"}
+              className={`flex gap-2 text-dynamicList ${
+                index === 0 ? "animate__animated animate__fadeInUp" : ""
+              }`}
+            >
               <span className="flex items-center gap-1 text-palette-4 font-bold">
                 <MdBed /> {hotel?.roomAmount} szoba
               </span>
               <span className="flex items-center gap-1 text-palette-4 font-bold">
                 <MdFamilyRestroom /> {hotel?.maxPersonAmount} fő
               </span>
-            </p>
+            </AnimationOnScroll>
           </div>
           <div className="flex flex-col">
             <div className="flex flex-col gap-1 pb-2">
@@ -73,37 +94,63 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel }> = ({ hotel }) => {
                   Icon={MdLocalParking}
                   text="Ingyenes parkolás"
                   iconSize={16}
+                  animationIndex={index}
                 />
                 <Capsule
                   Icon={MdFlatware}
                   text="Étterrem"
                   className="mobile:order-8 tablet:order-none"
                   iconSize={16}
+                  animationIndex={index}
                 />
-                <Capsule Icon={MdWifi} text="Ingyenes wifi" iconSize={16} />
-                <Capsule Icon={BiArea} text="60m2" iconSize={16} />
+                <Capsule
+                  Icon={MdWifi}
+                  text="Ingyenes wifi"
+                  iconSize={16}
+                  animationIndex={index}
+                />
+                <Capsule
+                  Icon={BiArea}
+                  text="60m2"
+                  iconSize={16}
+                  animationIndex={index}
+                />
                 <Capsule
                   Icon={MdOutlineCreditScore}
                   text="Bankkártya & SZÉP kártya"
                   iconSize={16}
+                  animationIndex={index}
                 />
-                <Capsule Icon={MdTv} text="Televízió" iconSize={16} />
+                <Capsule
+                  Icon={MdTv}
+                  text="Televízió"
+                  iconSize={16}
+                  animationIndex={index}
+                />
                 <Capsule
                   Icon={TbAirConditioning}
                   text="Légkondícionáló"
                   iconSize={16}
+                  animationIndex={index}
                 />
                 <Capsule
                   Icon={MdBabyChangingStation}
                   text="Bababarát hely"
                   iconSize={16}
+                  animationIndex={index}
                 />
                 <Capsule
                   Icon={MdOutlineOutdoorGrill}
                   text="Grillező hely"
                   iconSize={16}
+                  animationIndex={index}
                 />
-                <Capsule Icon={MdSpa} text="Gyógyfűrdő 500m" iconSize={16} />
+                <Capsule
+                  Icon={MdSpa}
+                  text="Gyógyfűrdő 500m"
+                  iconSize={16}
+                  animationIndex={index}
+                />
               </ul>
             </div>
             <div className="flex flex-col gap-1">
@@ -113,21 +160,25 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel }> = ({ hotel }) => {
                   Icon={MdWorkspacePremium}
                   text="Finn Sauna"
                   iconSize={16}
+                  animationIndex={index}
                 />
                 <Capsule
                   Icon={MdWorkspacePremium}
                   text="Wellness"
                   iconSize={16}
+                  animationIndex={index}
                 />
                 <Capsule
                   Icon={MdWorkspacePremium}
                   text="Dézsa fűrdő"
                   iconSize={16}
+                  animationIndex={index}
                 />
                 <Capsule
                   Icon={MdWorkspacePremium}
                   text="Fél panzio"
                   iconSize={16}
+                  animationIndex={index}
                 />
               </ul>
             </div>
@@ -144,14 +195,29 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel }> = ({ hotel }) => {
               <Rating.Star className="fill-gray-700" />
             </div>
             <div className="flex flex-col items-center w-full">
-              <p className="font-bold text-dynamicTitle3">4.95</p>
+              <p className="font-bold text-dynamicTitle3">
+                <CountUp
+                  end={4.95}
+                  decimals={2}
+                  duration={5}
+                  enableScrollSpy
+                  scrollSpyOnce
+                />
+              </p>
               <a
                 className="font-medium underline hover:no-underline"
                 href="asd"
               >
-                <p className="whitespace-nowrap text-dynamicMedium">
+                <AnimationOnScroll
+                  animateOnce
+                  animatePreScroll={false}
+                  animateIn={"animate__fadeInUp"}
+                  className={`whitespace-nowrap text-dynamicMedium ${
+                    index === 0 ? "animate__animated animate__fadeInUp" : ""
+                  }`}
+                >
                   13 Értékelés
-                </p>
+                </AnimationOnScroll>
               </a>
             </div>
           </Rating>
@@ -159,26 +225,47 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel }> = ({ hotel }) => {
             <div className="flex justify-center items-center gap-2 ">
               {hotel.discountPrice && (
                 <>
-                  <div className="flex flex-col">
+                  <AnimationOnScroll
+                    animateOnce
+                    animatePreScroll={false}
+                    animateIn={"animate__fadeInUp"}
+                    className={`flex flex-col ${
+                      index === 0 ? "animate__animated animate__fadeInUp" : ""
+                    }`}
+                  >
                     <span className="line-through text-dynamicList">
                       {hotel?.price} Ft/éj/ház
                     </span>
                     <p className="font-bold text-dynamicDesc">
                       {hotel?.discountPrice} Ft/éj/ház
                     </p>
-                  </div>
-                  <div className="w-max text-dynamicMedium flex absolute top-4 right-4 items-center justify-center bg-palette-5 opacity-80 shadow-lg rounded-lg p-2 text-white font-bold">
+                  </AnimationOnScroll>
+                  <AnimationOnScroll
+                    animateOnce
+                    animatePreScroll={false}
+                    animateIn={"animate__fadeInUp"}
+                    className={`w-max text-dynamicMedium flex absolute top-4 right-4 items-center justify-center bg-palette-5 opacity-80 shadow-lg rounded-lg p-2 text-white font-bold ${
+                      index === 0 ? "animate__animated animate__fadeInUp" : ""
+                    }`}
+                  >
                     {(hotel.price - hotel.discountPrice) / (hotel.price * 0.01)}
                     %
-                  </div>
+                  </AnimationOnScroll>
                 </>
               )}
               {!hotel.discountPrice && (
-                <div className="flex flex-col">
+                <AnimationOnScroll
+                  animateOnce
+                  animatePreScroll={false}
+                  animateIn={"animate__fadeInUp"}
+                  className={`flex flex-col ${
+                    index === 0 ? "animate__animated animate__fadeInUp" : ""
+                  }`}
+                >
                   <p className="font-bold text-dynamicDesc">
                     {hotel?.price} Ft/éj/ház
                   </p>
-                </div>
+                </AnimationOnScroll>
               )}
             </div>
             <button
