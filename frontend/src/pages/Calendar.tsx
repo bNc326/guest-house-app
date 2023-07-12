@@ -288,7 +288,7 @@ const Calendar = () => {
 
   return (
     <>
-      <section className="flex flex-col gap-4 justify-center items-center py-4 h-full bg-palette-3">
+      <section className="flex flex-col gap-4 justify-center items-center min-h-full py-4 pt-20 bg-palette-3">
         {bookingCtx.isShowForm && (
           <BookingPreview bookingCtx={bookingCtx}>
             <BookingForm
@@ -303,7 +303,7 @@ const Calendar = () => {
         )}
         {hotelCtx.hotelUUID && !bookingCtx.isShowForm && (
           <>
-            <div className="relative flex flex-col gap-4 w-11/12  max-w-[1920px] overflow-hidden">
+            <div className="relative flex flex-col gap-4 w-11/12 max-w-[1920px] overflow-hidden">
               <div className="w-full flex flex-col mobile:flex-row gap-2 items-center ">
                 <h2 className="text-dynamicDesc font-semibold">
                   Másik vendégházat választok

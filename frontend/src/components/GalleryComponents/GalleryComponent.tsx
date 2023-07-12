@@ -15,7 +15,7 @@ const GalleryComponent: React.FC<{
         gallery.map((img, index) => (
           <div className=" w-[calc(100%)] mobile:w-[calc(50%-1rem/2)] tablet:w-[calc(33%-1rem/2)] laptop:w-[calc(25%-.75rem)] rounded-xl shadow-shadow hover:scale-105 transition ease-in-out duration-300 cursor-pointer ">
             <LazyLoadImage
-            effect="blur"
+              effect="blur"
               key={index}
               onClick={() => {
                 lightboxDispatch({ type: LIGHTBOX_TYPE.SHOW, index: index });

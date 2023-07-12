@@ -58,6 +58,7 @@ const Welcome = () => {
             <div className=" flex w-full flex-col gap-4">
               <div className="h-full rounded-3xl flex justify-end mobile:justify-between px-0 gap-4 ">
                 <AnimationOnScroll
+                  animateOnce
                   animatePreScroll={false}
                   animateIn="animate__fadeInLeft"
                   animateOut="animate__fadeOutLeft"
@@ -68,12 +69,7 @@ const Welcome = () => {
 
                 <div className="flex w-full items-center gap-4">
                   <div className=" flex flex-col customTablet:flex-row gap-4">
-                    <AnimationOnScroll
-                      animatePreScroll={false}
-                      animateIn="animate__fadeInUp"
-                      animateOut="animate__fadeOutUp"
-                      className="rounded-3xl w-full flex items-start"
-                    >
+                    <div className="rounded-3xl w-full flex items-start">
                       <ul className="flex flex-wrap w-full z-0 text-dynamicList gap-2 text-palette-3 font-semibold">
                         <Capsule Icon={FaParking} text="Ingyenes parkolás" />
                         <Capsule
@@ -99,8 +95,9 @@ const Welcome = () => {
                           text="Légkondícionáló"
                         />
                       </ul>
-                    </AnimationOnScroll>
+                    </div>
                     <AnimationOnScroll
+                      animateOnce
                       animatePreScroll={false}
                       animateIn="animate__fadeInRight"
                       animateOut="animate__fadeOutRight"

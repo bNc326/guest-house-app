@@ -9,6 +9,7 @@ import Carp from "components/UI/svg/Carp";
 import { Link } from "react-router-dom";
 import { BsFacebook, BsMapFill } from "react-icons/bs";
 import { RxOpenInNewWindow } from "react-icons/rx";
+import { AnimationOnScroll } from "react-animation-on-scroll";
 
 type iconData = {
   name: string;
@@ -53,7 +54,13 @@ const Lakes: React.FC<{
             className={` flex flex-col gap-6 text-dynamicList mobile:w-full  p-2 rounded-3xl`}
           >
             {props.data?.lakeData.map((lake, index) => (
-              <li key={index} className="flex flex-col gap-2 w-full ">
+              <AnimationOnScroll
+                animateOnce
+                animatePreScroll={false}
+                animateIn={"animate__fadeInUp"}
+                key={index}
+                className="flex flex-col gap-2 w-full "
+              >
                 <div className="flex gap-4 items-center min-h-[40px]">
                   <span className="h-dynamicIcon w-dynamicIcon  flex items-center justify-center">
                     {listIcon[index].icon}
@@ -63,59 +70,82 @@ const Lakes: React.FC<{
                     <span className="font-bold">{lake}</span>
                   </p>
                 </div>
-              </li>
+              </AnimationOnScroll>
             ))}
           </ul>
           <div className="h-full self-end tablet:hidden">{props.designBg}</div>
         </div>
-        <div className="flex flex-col gap-4 w-full mobile:w-4/5">
+        <AnimationOnScroll
+          animateOnce
+          animatePreScroll={false}
+          animateIn={"animate__fadeInLeft"}
+          className="flex flex-col gap-4 w-full mobile:w-4/5"
+        >
           <img
             src={props.data?.lakeImg}
             alt={props.data?.lakeName}
             className="max-w-none w-full max-h-[280px] rounded-3xl shadow-shadow"
           />
-        </div>
+        </AnimationOnScroll>
       </div>
       <div className="flex tablet:justify-center">
         <ul className="flex gap-3 items-center">
           {props.data?.links.facebook && (
-            <Link to={props.data.links.facebook.link} target={"_blank"}>
-              <li>
-                <BsFacebook
-                  className={`transition-colors ease-in-out duration-300 h-dynamicSocialIcon w-dynamicSocialIcon ${
-                    props.underWater
-                      ? "fill-[#0C4D5B] hover:fill-[#0C4D5B]/75"
-                      : "fill-[#7F5539] hover:fill-[#7F5539]/75"
-                  }`}
-                />
-              </li>
-            </Link>
+            <AnimationOnScroll
+              animateOnce
+              animatePreScroll={false}
+              animateIn={"animate__fadeInUp"}
+            >
+              <Link to={props.data.links.facebook.link} target={"_blank"}>
+                <li>
+                  <BsFacebook
+                    className={`transition-colors ease-in-out duration-300 h-dynamicSocialIcon w-dynamicSocialIcon ${
+                      props.underWater
+                        ? "fill-[#0C4D5B] hover:fill-[#0C4D5B]/75"
+                        : "fill-[#7F5539] hover:fill-[#7F5539]/75"
+                    }`}
+                  />
+                </li>
+              </Link>
+            </AnimationOnScroll>
           )}
           {props.data?.links.maps && (
-            <Link to={props.data.links.maps.link} target={"_blank"}>
-              <li>
-                <BsMapFill
-                  className={`transition-colors ease-in-out duration-300 h-dynamicSocialIcon w-dynamicSocialIcon ${
-                    props.underWater
-                      ? "fill-[#0C4D5B] hover:fill-[#0C4D5B]/75"
-                      : "fill-[#7F5539] hover:fill-[#7F5539]/75"
-                  }`}
-                />
-              </li>
-            </Link>
+            <AnimationOnScroll
+              animateOnce
+              animatePreScroll={false}
+              animateIn={"animate__fadeInUp"}
+            >
+              <Link to={props.data.links.maps.link} target={"_blank"}>
+                <li>
+                  <BsMapFill
+                    className={`transition-colors ease-in-out duration-300 h-dynamicSocialIcon w-dynamicSocialIcon ${
+                      props.underWater
+                        ? "fill-[#0C4D5B] hover:fill-[#0C4D5B]/75"
+                        : "fill-[#7F5539] hover:fill-[#7F5539]/75"
+                    }`}
+                  />
+                </li>
+              </Link>
+            </AnimationOnScroll>
           )}
           {props.data?.links.web && (
-            <Link to={props.data.links.web.link} target={"_blank"}>
-              <li>
-                <RxOpenInNewWindow
-                  className={`transition-colors ease-in-out duration-300 h-dynamicSocialIcon w-dynamicSocialIcon ${
-                    props.underWater
-                      ? "text-[#0C4D5B] hover:text-[#0C4D5B]/75"
-                      : "text-[#7F5539] hover:text-[#7F5539]/75"
-                  }`}
-                />
-              </li>
-            </Link>
+            <AnimationOnScroll
+              animateOnce
+              animatePreScroll={false}
+              animateIn={"animate__fadeInUp"}
+            >
+              <Link to={props.data.links.web.link} target={"_blank"}>
+                <li>
+                  <RxOpenInNewWindow
+                    className={`transition-colors ease-in-out duration-300 h-dynamicSocialIcon w-dynamicSocialIcon ${
+                      props.underWater
+                        ? "text-[#0C4D5B] hover:text-[#0C4D5B]/75"
+                        : "text-[#7F5539] hover:text-[#7F5539]/75"
+                    }`}
+                  />
+                </li>
+              </Link>
+            </AnimationOnScroll>
           )}
         </ul>
       </div>

@@ -10,6 +10,7 @@ const Card: React.FC<{
   return (
     <>
       <AnimationOnScroll
+        animateOnce
         animatePreScroll={false}
         animateIn={
           props.index === 0
