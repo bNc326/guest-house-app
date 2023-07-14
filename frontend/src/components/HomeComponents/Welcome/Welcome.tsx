@@ -15,6 +15,7 @@ import {
 import { TbAirConditioning } from "react-icons/tb";
 import { BiArea } from "react-icons/bi";
 import Capsule from "./Capsule";
+import { AnimationOnScroll } from "react-animation-on-scroll";
 const Welcome = () => {
   const cards = [
     {
@@ -42,9 +43,10 @@ const Welcome = () => {
       <Container color="#E6CCB2" relative>
         <div className="flex flex-col w-full gap-8">
           <div className="flex flex-col mobile:flex-wrap mobile:flex-row mobile:justify-center tablet:flex-nowrap items-between w-full gap-6">
-            {cards.map((card) => (
+            {cards.map((card, index) => (
               <Card
                 key={card.id}
+                index={index}
                 title={card.title}
                 range={card.range}
                 color={card.color}
@@ -55,12 +57,19 @@ const Welcome = () => {
           <div className="flex gap-8 w-full rounded-3xl px-0">
             <div className=" flex w-full flex-col gap-4">
               <div className="h-full rounded-3xl flex justify-end mobile:justify-between px-0 gap-4 ">
-                <div className="hidden h-full mobile:block">
+                <AnimationOnScroll
+                  animateOnce
+                  animatePreScroll={false}
+                  animateIn="animate__fadeInLeft"
+                  animateOut="animate__fadeOutLeft"
+                  className="hidden h-full mobile:block"
+                >
                   <Service />
-                </div>
+                </AnimationOnScroll>
+
                 <div className="flex w-full items-center gap-4">
                   <div className=" flex flex-col customTablet:flex-row gap-4">
-                    <div className=" rounded-3xl w-full flex items-start">
+                    <div className="rounded-3xl w-full flex items-start">
                       <ul className="flex flex-wrap w-full z-0 text-dynamicList gap-2 text-palette-3 font-semibold">
                         <Capsule Icon={FaParking} text="Ingyenes parkolás" />
                         <Capsule
@@ -70,10 +79,7 @@ const Welcome = () => {
                         />
                         <Capsule Icon={FaWifi} text="Ingyenes wifi" />
                         <Capsule Icon={BiArea} text="60m2" />
-                        <Capsule
-                          Icon={FaStar}
-                          text="Sauna"
-                        />
+                        <Capsule Icon={FaStar} text="Sauna" />
                         <Capsule
                           Icon={FaBed}
                           text="2 szoba / 5-6 fő"
@@ -90,11 +96,19 @@ const Welcome = () => {
                         />
                       </ul>
                     </div>
-                    <img
-                      src={room}
-                      alt="szoba"
+                    <AnimationOnScroll
+                      animateOnce
+                      animatePreScroll={false}
+                      animateIn="animate__fadeInRight"
+                      animateOut="animate__fadeOutRight"
                       className="w-full rounded-xl shadow-xl"
-                    />
+                    >
+                      <img
+                        src={room}
+                        alt="szoba"
+                        className="w-full rounded-xl"
+                      />
+                    </AnimationOnScroll>
                   </div>
                 </div>
               </div>

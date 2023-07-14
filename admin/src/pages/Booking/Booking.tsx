@@ -1,9 +1,17 @@
-import { useEffect, useState, useContext } from "react";
+import {
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+  useLayoutEffect,
+} from "react";
 import {
   json,
   useRouteLoaderData,
   useRevalidator,
   useOutletContext,
+  LoaderFunctionArgs,
+  useSearchParams,
 } from "react-router-dom";
 import { Button } from "flowbite-react";
 import { TippContext } from "../../context/TippContext";
@@ -18,6 +26,9 @@ import Table, {
 import { BookingDate } from "../../models/Booking/BookingDate";
 import { Checkbox as CheckboxModel } from "../../models/CheckboxModel";
 import { Outlet } from "../../models/OutletModel";
+import { HotelContext } from "../../context/HotelContextProvider";
+import ChangeHotelComponent from "../../components/ChangeHotelComponent";
+import { useAuthHeader } from "react-auth-kit";
 
 const Booking = () => {
   const [isMounted, setIsMounted] = useState<boolean>(false);
@@ -40,12 +51,32 @@ const Booking = () => {
   const [deleteCheckbox, setDeleteCheckbox] = useState<CheckboxModel[]>([]);
   const outletCtx = useOutletContext() as Outlet;
   const ctx = useContext(TippContext);
+  const hotelCtx = useContext(HotelContext);
+  const accessToken = useAuthHeader();
 
   // * SIDE effects
 
   useEffect(() => {
-    // * CHECKBOX set to all item
-    const updateData: CheckboxModel[] = [...deleteCheckbox];
+    // * REFETCH in every minute
+    if (!isMounted) {
+      revalidator.revalidate();
+      setIsMounted(true);
+      return;
+    }
+
+    const cleanupInterval = setInterval(() => {
+      revalidator.revalidate();
+    }, 60000);
+    //*\
+
+    // * CLEANUP function
+    return () => {
+      clearInterval(cleanupInterval);
+    };
+  }, [data]);
+
+  useLayoutEffect(() => {
+    const updateData: CheckboxModel[] = [];
     const createCheckboxData = () => {
       itemForDelete.map((item) => {
         const index = updateData.findIndex((i) => i.id === item);
@@ -65,28 +96,15 @@ const Booking = () => {
       setDeleteCheckbox(updateData);
     };
 
-    createCheckboxData();
-    //*\
+    const cleanup = setTimeout(() => {
+      createCheckboxData();
+    }, 200);
 
-    // * REFETCH in every minute
-    if (!isMounted) {
-      revalidator.revalidate();
-      setIsMounted(true);
-      return;
-    }
-    const cleanupInterval = setInterval(() => {
-      revalidator.revalidate();
-    }, 60000);
-    //*\
-
-    // * CLEANUP function
-    return () => {
-      clearInterval(cleanupInterval);
-    };
-  }, [data]);
+    return () => clearTimeout(cleanup);
+  }, [data, hotelCtx]);
 
   // * LISTENER for all item select in the table
-  useEffect(() => {
+  useLayoutEffect(() => {
     const getAllSelected = () => {
       if (deleteCheckbox.length === 0) return;
       for (let i in deleteCheckbox) {
@@ -164,10 +182,11 @@ const Booking = () => {
   const deleteItemsHandler = async () => {
     const url = process.env.REACT_APP_BACKEND_API as string;
 
-    const res = await fetch(url + `/booking`, {
+    const res = await fetch(url + `/booking?hotel=${hotelCtx.hotelUUID}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        authorization: accessToken(),
       },
       body: JSON.stringify(itemForDelete),
     });
@@ -206,6 +225,7 @@ const Booking = () => {
           </Button>
         </div>
       )}
+      <ChangeHotelComponent path="foglalasi-naptar" />
       <div className="overflow-x-scroll">
         <Table
           tableHead={tableHead}
@@ -264,7 +284,10 @@ const Booking = () => {
                   </span>
                 )}
               </TableCell>
-              <TableButton to={date._id} type="edit" />
+              <TableButton
+                to={`${date._id}?hotel=${hotelCtx.hotelUUID}`}
+                type="edit"
+              />
             </TableRow>
           ))}
         </Table>
@@ -280,9 +303,11 @@ const Booking = () => {
 
 export default Booking;
 
-export async function loader() {
+export async function loader({ params, request }: LoaderFunctionArgs) {
+  const hotelQuery = request.url.split("hotel=")[1];
+
   const url = process.env.REACT_APP_BACKEND_API as string;
-  const response = await fetch(url + `/booking`);
+  const response = await fetch(`${url}/booking?hotel=${hotelQuery}`);
 
   if (!response.ok) {
     throw json({ message: "fetch failed" }, { status: 500 });

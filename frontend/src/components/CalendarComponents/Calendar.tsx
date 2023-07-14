@@ -6,9 +6,10 @@ import { v4 as uuid } from "uuid";
 import BigCalendar from "./BigCalendar";
 import BookingDate from "../../models/BookingDate";
 import BookedDate from "../../models/BookedDate";
-import { ClipLoader } from "react-spinners";
+import { ClipLoader, ScaleLoader } from "react-spinners";
 import { BookingContext } from "context/BookingContextProvider";
 import { DisabledDaysModel } from "models/DisabledDaysModel";
+import { HotelContext } from "context/HotelContextProvider";
 
 const CalendarComponent: React.FC<{
   isSelecting: boolean;
@@ -44,6 +45,7 @@ const CalendarComponent: React.FC<{
   const [calendarLoading, setCalendarLoading] = useState<
     "no loading" | "loading" | "change state" | "success"
   >("no loading");
+  const [hotelChange, setHotelChange] = useState<boolean>(false);
   const [renderBookingDate, setRenderBookingDate] = useState<BookingDate>({});
   const [firstTouch, setFirstTouch] = useState<boolean>(false);
   const [firstTouchIndex, setFirstTouchIndex] = useState<number | null>(null);
@@ -56,6 +58,7 @@ const CalendarComponent: React.FC<{
   const [bookedDate, setBookedDate] = useState<BookedDate[]>([]);
   const [disabledDays, setDisabledDays] = useState<DisabledDaysModel[]>([]);
   const bookingCtx = useContext(BookingContext);
+  const hotelCtx = useContext(HotelContext);
 
   // ! ASYNC FUNCTIONS
 
@@ -69,8 +72,12 @@ const CalendarComponent: React.FC<{
       let dbDate: BookedDate[] = [];
       const disabledDbDays: DisabledDaysModel[] = [];
       const url = process.env.REACT_APP_BACKEND_API as string;
-      const response = await fetch(url + "/booking");
-      const disabledDaysResponse = await fetch(url + "/disabled-days");
+      const response = await fetch(
+        `${url}/booking?hotel=${hotelCtx?.hotelUUID}`
+      );
+      const disabledDaysResponse = await fetch(
+        `${url}/disabled-days?hotel=${hotelCtx?.hotelUUID}`
+      );
       if (!response.ok) {
         //TODO: Handle error
         console.log("hiba");
@@ -96,6 +103,7 @@ const CalendarComponent: React.FC<{
           disabledDbDays.push(updatedObject);
           setDisabledDays(disabledDbDays);
         });
+        setHotelChange(false);
       }
     };
     const renderAllDays = () => {
@@ -160,18 +168,17 @@ const CalendarComponent: React.FC<{
         setCalendarLoading("success");
       }
     };
+    fetchDate();
+    setIsMounted(true);
 
-    if (!isMounted) {
-      fetchDate();
-      setIsMounted(true);
-    }
     const interval = setInterval(() => {
+      console.log("fetch");
       fetchDate();
     }, 60000);
     renderAllDays();
 
     return () => clearInterval(interval);
-  }, []);
+  }, [hotelCtx.hotelUUID]);
 
   useEffect(() => {
     const updateCalendarWithBookedDate = () => {
@@ -374,6 +381,10 @@ const CalendarComponent: React.FC<{
 
     return () => clearTimeout(timeout);
   }, [bookedDate]);
+
+  useEffect(() => {
+    setHotelChange(true);
+  }, [hotelCtx.hotelUUID]);
 
   // ! HANDLERS
 
@@ -719,23 +730,45 @@ const CalendarComponent: React.FC<{
   // ! RENDER
   return (
     <div
-      className={`bg-gradient-to-br from-palette-4 to-[#B08968] relative py-8 px-4 rounded-3xl w-full h-[80vh] overflow-y-scroll scrollbar-thin tall:scrollbar-thin scrollbar-thumb-palette-4 scrollbar-thumb-rounded-3xl`}
+      className={`${
+        hotelChange || props.isSelecting
+          ? "bg-black rounded-3xl pointer-events-none"
+          : ""
+      } relative`}
     >
-      {calendarLoading === "success" && (
-        <BigCalendar
-          weekDays={weekDays}
-          renderCalendar={renderedCalendar}
-          currentYear={currYear}
-          months={months}
-          onClick={selectDateHandler}
-          onMouseEnter={selectStartDateToEndDate}
-          blockedDate={renderBookingDate?.endDate}
-        />
-      )}
-
-      {calendarLoading === "loading" && (
-        <ClipLoader loading={true} color={"white"} />
-      )}
+      <div
+        className={`bg-gradient-to-br ${
+          hotelChange || props.isSelecting
+            ? "opacity-80 pointer-events-none"
+            : ""
+        }  from-palette-4 to-[#B08968] py-8 px-4 rounded-3xl w-full h-[80vh] overflow-y-scroll scrollbar-thin tall:scrollbar-thin scrollbar-thumb-palette-4 scrollbar-thumb-rounded-3xl`}
+      >
+        {calendarLoading === "success" && (
+          <BigCalendar
+            weekDays={weekDays}
+            renderCalendar={renderedCalendar}
+            currentYear={currYear}
+            months={months}
+            onClick={selectDateHandler}
+            onMouseEnter={selectStartDateToEndDate}
+            blockedDate={renderBookingDate?.endDate}
+          />
+        )}
+        {props.isSelecting && (
+          <ScaleLoader
+            loading
+            color="#E6CCB2"
+            className="absolute top-1/2 left-1/2"
+          />
+        )}
+        {hotelChange && (
+          <ClipLoader
+            loading
+            color="#E6CCB2"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          />
+        )}
+      </div>
     </div>
   );
 };

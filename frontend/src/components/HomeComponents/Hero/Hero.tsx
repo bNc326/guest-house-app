@@ -6,6 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/effect-cards";
 import { EffectCards, Keyboard } from "swiper";
+import { AnimationOnScroll } from "react-animation-on-scroll";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -17,7 +18,11 @@ const Hero = () => {
       mobileWrap
       hidden
     >
-      <div className="w-11/12 tablet:w-1/2 flex flex-col gap-8">
+      <AnimationOnScroll
+        animatePreScroll={false}
+        animateOut="animate__fadeOutLeft"
+        className="w-11/12 tablet:w-1/2 flex flex-col gap-8 animate__animated animate__fadeInLeft"
+      >
         <div className="text-palette-4 flex flex-col gap-4 tall:items-center">
           <h1 className="text-dynamicTitle font-bold">Derek's Hotel</h1>
           <p className="text-dynamicDesc">
@@ -38,8 +43,12 @@ const Hero = () => {
             bordered
           />
         </div>
-      </div>
-      <div className="w-11/12 mobile:w-4/6 tablet:w-2/5 desktop:w-1/2 flex flex-col pl-0">
+      </AnimationOnScroll>
+      <AnimationOnScroll
+        animatePreScroll={false}
+        animateOut="animate__fadeOutRight"
+        className="w-11/12 mobile:w-4/6 tablet:w-2/5 desktop:w-1/2 flex flex-col pl-0 animate__animated animate__fadeInRight"
+      >
         <Swiper
           effect={"cards"}
           grabCursor={true}
@@ -59,7 +68,7 @@ const Hero = () => {
             <img src={woodenHouse} alt="Wooden house" className="w-full" />
           </SwiperSlide>
         </Swiper>
-      </div>
+      </AnimationOnScroll>
     </Container>
   );
 };

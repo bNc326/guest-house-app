@@ -7,6 +7,7 @@ import {
   CalendarPage,
   DevelopmentPage,
   GalleryPage,
+  GuestHousePage,
 } from "./pages/Pages";
 
 const App = () => {
@@ -18,9 +19,23 @@ const App = () => {
       children: [
         { index: true, element: <HomePage /> },
         { path: "galeria", element: <GalleryPage /> },
+        {
+          path: "vendeghazak",
+          children: [
+            {
+              index: true,
+              element: <GuestHousePage />,
+              id: "guestHouses",
+            },
+          ],
+        },
         { path: "rolunk", element: <DevelopmentPage /> },
         { path: "kapcsolat", element: <DevelopmentPage /> },
-        { path: "naptar", element: <CalendarPage /> },
+        {
+          path: "naptar",
+          element: <CalendarPage />,
+          id: "calendar",
+        },
       ],
     },
   ]);

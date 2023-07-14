@@ -15,6 +15,10 @@ import {
 import { MODAL_ACTION, MODAL_ACTION_TYPE } from "../../models/Modal/ModalModal";
 import { AuthContext } from "../../context/AuthContext";
 import { Outlet } from "../../models/OutletModel";
+import { HotelContext } from "../../context/HotelContextProvider";
+import { useAuthHeader } from "react-auth-kit";
+import ModalContainer from "./ModalContainer";
+import Backdrop from "./Backdrop";
 
 interface ModalData {
   startDate: string;
@@ -38,6 +42,8 @@ const NewModal: React.FC<{
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const authCtx = useContext(AuthContext);
   const outletCtx = useOutletContext() as Outlet;
+  const hotelCtx = useContext(HotelContext);
+  const accessToken = useAuthHeader();
 
   useEffect(() => {
     props.setIsNewModal(true);
@@ -82,13 +88,17 @@ const NewModal: React.FC<{
     setIsloading(true);
     const url = process.env.REACT_APP_BACKEND_API as string;
 
-    const res = await fetch(url + `/disabled-days`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const res = await fetch(
+      url + `/disabled-days?hotel=${hotelCtx.hotelUUID}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: accessToken(),
+        },
+        body: JSON.stringify(data),
+      }
+    );
     if (!res.ok) {
       console.log("error");
       setIsloading(false);
@@ -105,122 +115,55 @@ const NewModal: React.FC<{
   };
 
   return (
-    <>
-      <div className="fixed top-0 left-0 flex items-center justify-center w-full h-screen bg-black/50 z-[1500] backdrop-blur-sm">
-        <div className="bg-white rounded-lg w-11/12 p-4 py-8 shadow-xl flex flex-col gap-2">
-          <div className="border-b-2 border-black/20 py-2 flex justify-between items-center">
-            <span className="font-medium">Új kizárt dátum létrehozás</span>
-            <span
-              className="p-1 rounded-md bg-black/10"
-              onClick={() => closeModalHandler()}
-            >
-              <GrFormClose size={24} />
-            </span>
+    <Backdrop backdropClose closeModalHandler={closeModalHandler} header headerTitle="Új kizárt dátum létrehozás">
+      <form className="flex flex-col gap-4" onSubmit={formSubmitHandler}>
+        <div className="flex flex-col mobile:flex-row gap-4 items-center">
+          <div className="w-full">
+            <label htmlFor="startDate">Kezdő dátum</label>
+            <TextInput
+              icon={BsFillCalendar2RangeFill}
+              onChange={onChangeHandler}
+              name="startDate"
+              id="startDate"
+              defaultValue={`${
+                data.startDate.length === 0
+                  ? ""
+                  : format(new Date(data.startDate), "yyyy-MM-dd")
+              }`}
+              color="gray"
+              type="date"
+            />
           </div>
-          <form className="flex flex-col gap-4" onSubmit={formSubmitHandler}>
-            <div className="flex flex-col mobile:flex-row gap-4 items-center">
-              <div className="w-full">
-                <label htmlFor="startDate">Kezdő dátum</label>
-                <TextInput
-                  icon={BsFillCalendar2RangeFill}
-                  onChange={onChangeHandler}
-                  name="startDate"
-                  id="startDate"
-                  defaultValue={`${
-                    data.startDate.length === 0
-                      ? ""
-                      : format(new Date(data.startDate), "yyyy-MM-dd")
-                  }`}
-                  color="gray"
-                  type="date"
-                />
-              </div>
-              <div className="w-full">
-                <label htmlFor="endDate">Vége dátum</label>
-                <TextInput
-                  icon={BsFillCalendar2RangeFill}
-                  onChange={onChangeHandler}
-                  name="endDate"
-                  id="endDate"
-                  defaultValue={`${
-                    data.endDate.length === 0
-                      ? ""
-                      : format(new Date(data.endDate), "yyyy-MM-dd")
-                  }`}
-                  color="gray"
-                  type="date"
-                />
-              </div>
-            </div>
-
-            <Button disabled={!isFormValid} type="submit">
-              <span className="flex gap-1 items-center">
-                {isLoading ? (
-                  <ClipLoader loading={true} color={"white"} size={"1rem"} />
-                ) : (
-                  <FaSave />
-                )}
-                Létrehozás
-              </span>
-            </Button>
-          </form>
+          <div className="w-full">
+            <label htmlFor="endDate">Vége dátum</label>
+            <TextInput
+              icon={BsFillCalendar2RangeFill}
+              onChange={onChangeHandler}
+              name="endDate"
+              id="endDate"
+              defaultValue={`${
+                data.endDate.length === 0
+                  ? ""
+                  : format(new Date(data.endDate), "yyyy-MM-dd")
+              }`}
+              color="gray"
+              type="date"
+            />
+          </div>
         </div>
-      </div>
-      {/* <Modal show={props.isShow} onClose={closeModalHandler}>
-        <Modal.Header>
-          <span className="font-medium">Új kizárt dátum létrehozás</span>
-        </Modal.Header>
-        <Modal.Body>
-          <form className="flex flex-col gap-4" onSubmit={formSubmitHandler}>
-            <div className="flex flex-col mobile:flex-row gap-4 items-center">
-              <div className="w-full">
-                <label htmlFor="startDate">Kezdő dátum</label>
-                <TextInput
-                  icon={BsFillCalendar2RangeFill}
-                  onChange={onChangeHandler}
-                  name="startDate"
-                  id="startDate"
-                  defaultValue={`${
-                    data.startDate.length === 0
-                      ? ""
-                      : format(new Date(data.startDate), "yyyy-MM-dd")
-                  }`}
-                  color="gray"
-                  type="date"
-                />
-              </div>
-              <div className="w-full">
-                <label htmlFor="endDate">Vége dátum</label>
-                <TextInput
-                  icon={BsFillCalendar2RangeFill}
-                  onChange={onChangeHandler}
-                  name="endDate"
-                  id="endDate"
-                  defaultValue={`${
-                    data.endDate.length === 0
-                      ? ""
-                      : format(new Date(data.endDate), "yyyy-MM-dd")
-                  }`}
-                  color="gray"
-                  type="date"
-                />
-              </div>
-            </div>
 
-            <Button disabled={!isFormValid} type="submit">
-              <span className="flex gap-1 items-center">
-                {isLoading ? (
-                  <ClipLoader loading={true} color={"white"} size={"1rem"} />
-                ) : (
-                  <FaSave />
-                )}
-                Létrehozás
-              </span>
-            </Button>
-          </form>
-        </Modal.Body>
-      </Modal> */}
-    </>
+        <Button disabled={!isFormValid} type="submit">
+          <span className="flex gap-1 items-center">
+            {isLoading ? (
+              <ClipLoader loading={true} color={"white"} size={"1rem"} />
+            ) : (
+              <FaSave />
+            )}
+            Létrehozás
+          </span>
+        </Button>
+      </form>
+    </Backdrop>
   );
 };
 

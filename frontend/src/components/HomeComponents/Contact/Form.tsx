@@ -3,6 +3,16 @@ import WarningSvg from "../../UI/svg/WarningSvg";
 import SuccessSvg from "../../UI/svg/SuccessSvg";
 import emailjs from "@emailjs/browser";
 import { ClipLoader } from "react-spinners";
+import { Alert, TextInput, Textarea } from "flowbite-react";
+import { AnimationOnScroll } from "react-animation-on-scroll";
+import {
+  MdPerson,
+  MdEmail,
+  MdPhone,
+  MdWarning,
+  MdDone,
+  MdMap,
+} from "react-icons/md";
 
 export interface FormInterface extends Record<string, formKey> {
   name: formKey;
@@ -47,6 +57,7 @@ const Form = () => {
       pattern: /^([\s\S]{2,})$/,
     },
   });
+  const [timer, setTimer] = useState<NodeJS.Timeout>();
 
   const resetInput = () => {
     const inputs = ["name", "email", "phone", "message"];
@@ -87,36 +98,36 @@ const Form = () => {
       return;
     }
 
-    const type = e.target.dataset.type as string;
+    const name = e.target.name as string;
     const inputValue = e.target.value as string;
 
     setFormInput((prevState) => {
       return {
         ...prevState,
-        [type]: { ...prevState[type], firstTouch: true },
+        [name]: { ...prevState[name], firstTouch: true },
       };
     });
 
     setFormInput((prevState) => {
       return {
         ...prevState,
-        [type]: { ...prevState[type], value: inputValue },
+        [name]: { ...prevState[name], value: inputValue },
       };
     });
 
-    if (formInput[type].pattern) {
-      if (formInput[type].pattern?.test(inputValue)) {
+    if (formInput[name].pattern) {
+      if (formInput[name].pattern?.test(inputValue)) {
         setFormInput((prevState) => {
           return {
             ...prevState,
-            [type]: { ...prevState[type], valid: true },
+            [name]: { ...prevState[name], valid: true },
           };
         });
       } else {
         setFormInput((prevState) => {
           return {
             ...prevState,
-            [type]: { ...prevState[type], valid: false },
+            [name]: { ...prevState[name], valid: false },
           };
         });
       }
@@ -133,13 +144,14 @@ const Form = () => {
       return;
     }
 
-    const type = e.target.dataset.type as string;
+    const name = e.target.name as string;
 
-    if (!formInput[type].firstTouch) {
+    if (!formInput[name].firstTouch) {
+      console.log("asd");
       setFormInput((prevState) => {
         return {
           ...prevState,
-          [type]: { ...prevState[type], firstTouch: true },
+          [name]: { ...prevState[name], firstTouch: true },
         };
       });
     }
@@ -149,22 +161,22 @@ const Form = () => {
     e.preventDefault();
 
     const timeoutHandler = (mode: string) => {
-      let timeout;
       const startTimeout = () => {
-        timeout = setTimeout(() => {
-          setSendSuccess("no send");
-        }, 7000);
+        clearTimeout(timer);
+        setTimer(
+          setTimeout(() => {
+            setSendSuccess("no send");
+          }, 7000)
+        );
       };
+
       if (mode === "success") {
-        clearTimeout(timeout);
         setSendSuccess("success");
-        startTimeout();
       }
       if (mode === "warning") {
-        clearTimeout(timeout);
         setSendSuccess("warning");
-        startTimeout();
       }
+      startTimeout();
     };
 
     const serviceId = process.env.REACT_APP_SERVICE_ID as string;
@@ -211,45 +223,213 @@ const Form = () => {
     }
   };
   return (
-    <ContactForm
-      className="w-full text-[32px] flex flex-col gap-4"
-      submitHandler={formSubmitHandler}
-      formRef={form}
-      sendForm={sendForm}
-      sendSuccess={sendSuccess}
-    >
-      <div className="flex flex-col justify-center mobile:flex-wrap mobile:flex-row tablet:flex-col gap-4">
-        <FormInput
-          formInput={formInput.name}
-          name={"name"}
-          inputBlurHandler={inputBlurHandler}
-          inputChangeHandler={inputChangeHandler}
-        />
-        <FormInput
-          formInput={formInput.email}
-          name={"email"}
-          inputBlurHandler={inputBlurHandler}
-          inputChangeHandler={inputChangeHandler}
-        />
-        <FormInput
-          name={"phone"}
-          formInput={formInput.phone}
-          inputBlurHandler={inputBlurHandler}
-          inputChangeHandler={inputChangeHandler}
-          order
-        />
-      </div>
-      <FormTextarea
-        name="message"
-        formInput={formInput.message}
-        inputBlurHandler={inputBlurHandler}
-        inputChangeHandler={inputChangeHandler}
-      />
-    </ContactForm>
+    <div className="w-full flex rounded-xl items-center justify-center ">
+      <form
+        className=" w-full h-full flex flex-col justify-center gap-4"
+        onSubmit={formSubmitHandler}
+        ref={form}
+      >
+        <AnimationOnScroll
+          animatePreScroll={false}
+          animateOnce
+          animateIn="animate__fadeInUp"
+        >
+          <TextInput
+            className="text-red-600"
+            icon={MdPerson}
+            value={formInput.name.value}
+            name="name"
+            onChange={inputChangeHandler}
+            onBlur={inputBlurHandler}
+            placeholder="Példa Jani"
+            color={`${
+              formInput.name.firstTouch
+                ? formInput.name.valid
+                  ? "gray"
+                  : "failure"
+                : "gray"
+            }`}
+            helperText={
+              <ErrorMessage
+                success={
+                  formInput.name.firstTouch
+                    ? formInput.name.valid
+                      ? true
+                      : false
+                    : true
+                }
+                message={formInput.name.error}
+              />
+            }
+          />
+        </AnimationOnScroll>
+        <AnimationOnScroll
+          animatePreScroll={false}
+          animateOnce
+          animateIn="animate__fadeInUp"
+        >
+          <TextInput
+            icon={MdEmail}
+            value={formInput.email.value}
+            name="email"
+            onChange={inputChangeHandler}
+            onBlur={inputBlurHandler}
+            placeholder="exmaple@exmaple.com"
+            color={`${
+              formInput.email.firstTouch
+                ? formInput.email.valid
+                  ? "gray"
+                  : "failure"
+                : "gray"
+            }`}
+            helperText={
+              <ErrorMessage
+                success={
+                  formInput.email.firstTouch
+                    ? formInput.email.valid
+                      ? true
+                      : false
+                    : true
+                }
+                message={formInput.email.error}
+              />
+            }
+          />
+        </AnimationOnScroll>
+        <AnimationOnScroll
+          animatePreScroll={false}
+          animateOnce
+          animateIn="animate__fadeInUp"
+        >
+          <TextInput
+            icon={MdPhone}
+            value={formInput.phone.value}
+            name="phone"
+            onChange={inputChangeHandler}
+            onBlur={inputBlurHandler}
+            placeholder="06301234567"
+            color={`${
+              formInput.phone.firstTouch
+                ? formInput.phone.valid
+                  ? "gray"
+                  : "failure"
+                : "gray"
+            }`}
+            helperText={
+              <ErrorMessage
+                success={
+                  formInput.phone.firstTouch
+                    ? formInput.phone.valid
+                      ? true
+                      : false
+                    : true
+                }
+                message={formInput.phone.error}
+              />
+            }
+          />
+        </AnimationOnScroll>
+        <AnimationOnScroll
+          animatePreScroll={false}
+          animateOnce
+          animateIn="animate__fadeInUp"
+        >
+          <Textarea
+            value={formInput.message.value}
+            name="message"
+            onChange={inputChangeHandler}
+            onBlur={inputBlurHandler}
+            placeholder="Üzenet.."
+            rows={8}
+            className="min-h-[200px] max-h-[250px]"
+            color={`${
+              formInput.message.firstTouch
+                ? formInput.message.valid
+                  ? "gray"
+                  : "failure"
+                : "gray"
+            }`}
+            helperText={
+              <ErrorMessage
+                success={
+                  formInput.message.firstTouch
+                    ? formInput.message.valid
+                      ? true
+                      : false
+                    : true
+                }
+                message={formInput.message.error}
+              />
+            }
+          />
+        </AnimationOnScroll>
+        <AnimationOnScroll
+          animatePreScroll={false}
+          animateOnce
+          animateIn="animate__fadeInUp"
+          className="w-full flex flex-col gap-4"
+        >
+          <button
+            disabled={sendForm}
+            className="flex items-center justify-center gap-2 text-palette-2 bg-palette-4 hover:bg-gray-blue transition-colors duration-300 rounded-lg font-bold text-light w-full py-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-palette-blue-5 disabled:hover:opacity-50"
+          >
+            {sendForm && (
+              <ClipLoader loading={true} color={"white"} size={16} />
+            )}
+            Küldés
+          </button>
+          {sendSuccess === "warning" && (
+            <Alert
+              icon={MdWarning}
+              color={"failure"}
+              className="animate__animated animate__headShake"
+            >
+              <span>
+                <p className="flex flex-wrap items-center gap-x-2">
+                  <span className="font-medium">Hoppááá!</span>
+                  <span>Nem sikerült elküldeni az űrlapot!</span>
+                </p>
+              </span>
+            </Alert>
+          )}
+          {sendSuccess === "success" && (
+            <Alert
+              icon={MdDone}
+              color={"success"}
+              className="animate__animated animate__jello"
+            >
+              <span>
+                <p className="flex flex-wrap items-center gap-x-2">
+                  <span className="font-medium">Siker!</span>
+                  <span className="flex gap-2 items-center">
+                    Sikeresen elküldtük az üzenetet!
+                  </span>
+                </p>
+              </span>
+            </Alert>
+          )}
+        </AnimationOnScroll>
+      </form>
+    </div>
   );
 };
 
 export default Form;
+
+export const ErrorMessage: React.FC<{ success: boolean; message: string }> = ({
+  message,
+  success,
+}) => {
+  return (
+    <>
+      {!success && (
+        <>
+          <span className="font-medium mt-0">Hoppááá!</span> {message}
+        </>
+      )}
+    </>
+  );
+};
 
 export type formKey = {
   type?: string;
@@ -282,7 +462,9 @@ export const FormInput: React.FC<FormInput> = (props) => {
   return (
     <div
       className={`relative flex flex-col gap-2 transition-all   ${
-        props.order ? "mobile:order-3 mobile:basis-full" : "w-full mobile:max-w-[calc(50%-1rem/2)] tablet:max-w-none"
+        props.order
+          ? "mobile:order-3 mobile:basis-full"
+          : "w-full mobile:max-w-[calc(50%-1rem/2)] tablet:max-w-none"
       }`}
     >
       <div className={`flex flex-col  relative`}>

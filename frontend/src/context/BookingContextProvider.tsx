@@ -1,6 +1,14 @@
-import { createContext, useState } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useLayoutEffect,
+} from "react";
 import { BookingContextModel } from "models/BookingContext";
 import { intervalToDuration, formatDuration } from "date-fns";
+import { HotelContext } from "./HotelContextProvider";
+import { GuestHouseModel } from "models/GuestHouseModel";
 export const BookingContext = createContext<BookingContextModel>({
   isShowForm: false,
   initialPrice: 0,
@@ -26,6 +34,7 @@ export const BookingContext = createContext<BookingContextModel>({
 const BookingProvider: React.FC<{ children: JSX.Element }> = (props) => {
   const [renderBookingData, setRenderBookingData] = useState({
     isShowForm: false,
+    initialPrice: 0,
     date: {
       firstDate: "",
       endDate: "",
@@ -40,7 +49,7 @@ const BookingProvider: React.FC<{ children: JSX.Element }> = (props) => {
       adults: 0,
     },
   });
-
+  const hotelCtx = useContext(HotelContext);
   const fetchExchangeRate = async (amount: number) => {
     const key = process.env.REACT_APP_EXCHANGE_API_KEY as string;
     const url = `https://v6.exchangerate-api.com/v6/${key}/pair/HUF/EUR/${amount}`;
@@ -54,9 +63,32 @@ const BookingProvider: React.FC<{ children: JSX.Element }> = (props) => {
     }
   };
 
+  useLayoutEffect(() => {
+    const getInitialPrice = () => {
+      hotelCtx.hotels.map((hotel) => {
+        if (hotel.hotelUUID === hotelCtx.hotelUUID) {
+          if (hotel.discountPrice) {
+            setRenderBookingData((prev) => {
+              return { ...prev, initialPrice: hotel.discountPrice as number };
+            });
+          } else {
+            setRenderBookingData((prev) => {
+              return { ...prev, initialPrice: hotel.price as number };
+            });
+          }
+        }
+      });
+    };
+
+    const cleanup = setTimeout(() => {
+      getInitialPrice();
+    }, 100);
+    return () => clearTimeout(cleanup);
+  }, [hotelCtx.hotelUUID]);
+
   const bookingContext: BookingContextModel = {
     isShowForm: renderBookingData.isShowForm,
-    initialPrice: 40000,
+    initialPrice: renderBookingData.initialPrice,
     date: {
       firstDate: renderBookingData.date.firstDate,
       endDate: renderBookingData.date.endDate,
@@ -129,7 +161,6 @@ const BookingProvider: React.FC<{ children: JSX.Element }> = (props) => {
       });
     },
   };
-
   return (
     <BookingContext.Provider value={bookingContext}>
       {props.children}

@@ -7,6 +7,8 @@ import AlertComponent from "../components/UI/Alert";
 import { ALERT_ACTION_TYPE, ALERT_TYPE } from "../models/Alert/AlertModels";
 import { BarLoader } from "react-spinners";
 import { Outlet } from "../models/OutletModel";
+import { useSignOut, useAuthHeader } from "react-auth-kit";
+import { useCookies } from "react-cookie";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -14,21 +16,31 @@ const Logout = () => {
   const [logoutProgress, setLogoutProgress] = useState(false);
   const [timeoutCounter, setTimeoutCounter] = useState(5);
   const { alert, alertDispatch } = useAlert();
+  const signOut = useSignOut();
+  const [cookies] = useCookies();
+
   useEffect(() => {
     const logout = async () => {
+      const refreshToken = cookies["_auth_refresh"];
       setLogoutProgress(true);
       const url = process.env.REACT_APP_BACKEND_API as string;
       const res = await fetch(url + "/auth/logout", {
-        method: "POST",
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: refreshToken }),
       });
       if (!res.ok) {
         setLogoutProgress(false);
       } else {
-        const data = await res.json();
-        authDispatch({ type: AUTH_ACTION_TYPE.LOGOUT });
+        signOut();
         alertDispatch({
           type: ALERT_ACTION_TYPE.SHOW,
-          payload: { alertType: ALERT_TYPE.SUCCESS, message: data.message },
+          payload: {
+            alertType: ALERT_TYPE.SUCCESS,
+            message: "A felhasználó sikeresen kijelentkezett!",
+          },
         });
         setLogoutProgress(false);
         setInterval(() => {

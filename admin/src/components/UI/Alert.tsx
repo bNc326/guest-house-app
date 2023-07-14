@@ -26,7 +26,7 @@ const AlertComponent: React.FC<{
   return (
     <>
       {props.isShow && (
-        <div className="fixed bottom-8 left-0 w-full z-50  flex items-center justify-center animate__animated animate__fadeInUp">
+        <div className="fixed bottom-8 left-0 w-full z-[10000]  flex items-center justify-center animate__animated animate__fadeInUp">
           <Alert
             color={props.type}
             onDismiss={() =>

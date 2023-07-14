@@ -14,10 +14,10 @@ interface ContainerProps {
 }
 
 const Section = styled.section<SectionProps>`
-  height: 100%;
-  min-height: 100vh;
+  min-height: 100%;
   padding-top: 13vh;
   padding-bottom: 13vh;
+  overflow: hidden;
   background: ${(props) => (props.color ? props.color : props.gradient)};
   ${(props) =>
     props.bgImage &&
@@ -37,7 +37,7 @@ const Section = styled.section<SectionProps>`
   }
 `;
 const ContainerStyle = styled.div<ContainerProps>`
-  color: white;
+  color: black;
   display: flex;
   justify-content: center;
   align-items: center;
