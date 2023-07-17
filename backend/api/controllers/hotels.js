@@ -28,11 +28,11 @@ export const getOneHotels = async (req, res, next) => {
 export const sendHotels = async (req, res, next) => {
   try {
     const body = req.body;
-    if (typeof body.hotelName === "string") {
-      const name = body.hotelName.toLowerCase().replaceAll(/\s/g, "-");
+   
+      const name = body.hotelName.toString().trim().toLowerCase().replaceAll(/\s/g, "-");
       const uniqueId = uuid().split("-")[0];
       body.hotelUUID = `${uniqueId}-${name}`;
-    }
+
 
     BookingDynamic(body.hotelUUID).createCollection();
     DisabledDayDynamic(body.hotelUUID).createCollection();
