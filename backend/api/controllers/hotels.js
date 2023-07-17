@@ -27,11 +27,11 @@ export const getOneHotels = async (req, res, next) => {
 export const sendHotels = async (req, res, next) => {
   try {
     const body = req.body;
-    console.log('body', body)
-    console.log('hotelName', body.hotelName)
-    const lowerName = body.hotelName.toLowerCase()
-    const name = lowerName..replaceAll(" ", "-");
-    console.log('name', name)
+    console.log("body", body);
+    console.log("hotelName", body.hotelName);
+    const lowerName = body.hotelName.toLowerCase();
+    const name = lowerName.replaceAll(/\s/g, "-");
+    console.log("name", name);
     const uniqueId = uuid().split("-")[0];
     body.hotelUUID = `${uniqueId}-${name}`;
 
