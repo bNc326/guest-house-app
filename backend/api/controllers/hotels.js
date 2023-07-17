@@ -5,6 +5,7 @@ import {
   DisabledDayDynamic,
   RatingDynamic,
 } from "../utils/dynamicDbCollections.js";
+import mongoose from "mongoose";
 
 export const getHotels = async (req, res, next) => {
   try {
@@ -27,9 +28,11 @@ export const getOneHotels = async (req, res, next) => {
 export const sendHotels = async (req, res, next) => {
   try {
     const body = req.body;
-    const name = body.hotelName.toLowerCase().split(" ").join('-');
-    const uniqueId = uuid().split("-")[0];
-    body.hotelUUID = `${uniqueId}-${name}`;
+   
+      const name = body.hotelName.toString().trim().toLowerCase().split(/\s/g).join('-');
+      const uniqueId = uuid().split("-")[0];
+      body.hotelUUID = `${uniqueId}-${name}`;
+
 
 
     BookingDynamic(body.hotelUUID).createCollection();
@@ -52,8 +55,13 @@ export const sendHotels = async (req, res, next) => {
 
 export const deleteHotels = async (req, res, next) => {
   try {
-    const hotel = await Hotels.findById(req.params.id);
-    await Hotels.findByIdAndDelete(req.params.id);
+    const dropCollections = (uuid) => {
+      mongoose.connection.db.dropCollection(`${uuid}-bookings`);
+      mongoose.connection.db.dropCollection(`${uuid}-disabled-days`);
+      mongoose.connection.db.dropCollection(`${uuid}-ratings`);
+    };
+    const hotel = await Hotels.findByIdAndDelete(req.params.id);
+    dropCollections(hotel.hotelUUID);
     res.status(201).json({
       success: true,
       status: 201,
