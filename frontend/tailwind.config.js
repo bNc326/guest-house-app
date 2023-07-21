@@ -84,8 +84,8 @@ module.exports = {
           "clamp(1.25rem, calc(1.25rem + ((1vw - 0.2rem) * 0.313)), 1.563rem);",
         dynamicHelperText:
           "clamp(0.8rem, calc(0.8rem + ((1vw - 0.2rem) * 0.2)), 1rem);",
-        dynamicErrorMessage:
-          "clamp(0.8rem, calc(0.8rem + ((1vw - 0.2rem) * 0.2)), 1rem);",
+        dynamic404:
+          "clamp(10rem, calc(10rem + ((1vw - 0.2rem) * 25)), 35rem);",
       },
       width: {
         dynamicHelperBox:

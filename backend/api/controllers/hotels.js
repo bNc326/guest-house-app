@@ -1,89 +1,81 @@
-import { Hotels } from "../models/Hotels.js";
-import { v4 as uuid } from "uuid";
-import {
-  BookingDynamic,
-  DisabledDayDynamic,
-  RatingDynamic,
-} from "../utils/dynamicDbCollections.js";
-import mongoose from "mongoose";
+import { Hotel } from "../models/Hotels.js";
 
 export const getHotels = async (req, res, next) => {
   try {
-    const result = await Hotels.find();
+    const result = await Hotel.find();
     res.status(200).send(result);
   } catch (err) {
     next(err);
   }
 };
 
-export const getOneHotels = async (req, res, next) => {
+export const getHotel = async (req, res, next) => {
   try {
-    const result = await Hotels.findOne({ _id: req.params.id });
+    let result;
+    const filter = req.query.filter;
+    if (filter) {
+      const filterArray = filter.split(",");
+      let filterString = "";
+      filterArray.map((text) => {
+        if (text === "booked") {
+          filterString += "bookedDates\xa0";
+        }
+        if (text === "disabled") {
+          filterString += "disabledDays\xa0";
+        }
+        if (text === "ratings") {
+          filterString += "ratings\xa0";
+        }
+      });
+      result = await Hotel.findOne({ _id: req.params.id }).select(
+        `${filterString} -_id`
+      );
+    } else {
+      result = await Hotel.findOne({ _id: req.params.id });
+    }
     res.status(200).send(result);
   } catch (err) {
     next(err);
   }
 };
 
-export const sendHotels = async (req, res, next) => {
+export const createHotel = async (req, res, next) => {
   try {
-    const body = req.body;
-   
-      const name = body.hotelName.toString().trim().toLowerCase().split(/\s/g).join('-');
-      const uniqueId = uuid().split("-")[0];
-      body.hotelUUID = `${uniqueId}-${name}`;
-
-
-
-    BookingDynamic(body.hotelUUID).createCollection();
-    DisabledDayDynamic(body.hotelUUID).createCollection();
-    RatingDynamic(body.hotelUUID).createCollection();
-
-    const newHotels = new Hotels(body);
+    const newHotels = new Hotel(req.body);
     await newHotels.save();
 
     res.status(201).json({
       success: true,
       status: 201,
       message: `Sikeresen létrehoztad a ${req.body.hotelName} nevű vendégházat!`,
-      admin: req.body.admin,
     });
   } catch (err) {
     next(err);
   }
 };
 
-export const deleteHotels = async (req, res, next) => {
+export const deleteHotel = async (req, res, next) => {
   try {
-    const dropCollections = (uuid) => {
-      mongoose.connection.db.dropCollection(`${uuid}-bookings`);
-      mongoose.connection.db.dropCollection(`${uuid}-disabled-days`);
-      mongoose.connection.db.dropCollection(`${uuid}-ratings`);
-    };
-    const hotel = await Hotels.findByIdAndDelete(req.params.id);
-    dropCollections(hotel.hotelUUID);
+    const hotel = await Hotel.findByIdAndDelete(req.params.id);
     res.status(201).json({
       success: true,
       status: 201,
       message: `Sikeresen törölted a ${hotel.hotelName} nevű vendégházat!`,
-      admin: req.body.admin,
-      id: req.params.id,
     });
   } catch (err) {
     next(err);
   }
 };
 
-export const editHotels = async (req, res, next) => {
+export const editHotel = async (req, res, next) => {
   try {
-    await Hotels.findByIdAndUpdate(req.params.id, {
+    await Hotel.findByIdAndUpdate(req.params.id, {
       $set: req.body,
     });
     res.status(201).json({
       success: true,
       status: 201,
       message: `Sikeresen szerkesztetted a ${req.body.hotelName} nevű vendégházat!`,
-      admin: req.body.admin,
       id: req.params.id,
     });
   } catch (err) {

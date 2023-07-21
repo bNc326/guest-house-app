@@ -2,8 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import auth from "./api/routes/auth.js";
-import weather from "./api/routes/weather.js";
-import Booking from "./api/routes/booking/booking.js";
+import Booking from "./api/routes/booking.js";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -59,7 +58,6 @@ app.get("/api/isLoaded", (req, res, next) => {
   }
 });
 app.use("/api/auth", auth);
-app.use("/api/weather", weather);
 app.use("/api/booking", validateHotel, Booking);
 app.use("/api/disabled-days", validateHotel, DisabledDays);
 app.use("/api/hotels", Hotels);

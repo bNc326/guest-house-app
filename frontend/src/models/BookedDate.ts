@@ -1,8 +1,8 @@
 interface BookedDate {
-  id: string;
-  startDate?: Date | string;
-  endDate?: Date | string;
-  status: "Pending" | "Accepted" | 'Ejected';
+  _id: string;
+  startDate: Date | string;
+  endDate: Date | string;
+  status: string;
 }
 
 export default BookedDate;

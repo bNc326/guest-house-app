@@ -1,21 +1,23 @@
-export type Impressum = {
-  NTAK_regNumber: string;
-  city: string;
-  country: string;
-  postalCode: number;
-  street: string;
-};
+import BookedDate from "./BookedDate";
+import { DisabledDaysModel as DisabledDay } from "./DisabledDaysModel";
+import { Ratings as Rating } from "./Ratings";
 
 export interface GuestHouseModel {
   _id: string;
-  hotelUUID: string;
   hotelName: string;
-  description: string;
-  maxPersonAmount: number;
-  roomAmount: number;
-  discountPrice: number | null;
+  country: String;
+  postalCode: number;
+  city: string;
+  street: string;
+  NTAK: string;
   price: number;
-  impressum: Impressum;
+  discountPrice?: number;
+  roomAmount: number;
+  maxPersonAmount: number;
+  description: string;
   service: string[];
   feature: string[];
+  bookedDates: BookedDate[],
+  disabledDays: DisabledDay[],
+  ratings: Rating[]
 }

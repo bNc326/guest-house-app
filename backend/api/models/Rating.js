@@ -2,14 +2,19 @@ import mongoose from "mongoose";
 
 export const RatingSchema = new mongoose.Schema(
   {
-    name: String,
-    email: String,
-    message: {
-      normal: String,
-      positive: String,
-      negative: String,
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    message: { type: String, required: true },
+    positives: { type: String },
+    negatives: { type: String },
+    rating: { type: Number, min: 0, max: 5, required: true },
+    hotel: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "hotels",
     },
-    rating: Number,
   },
   { timestamps: true }
 );
+
+export const Rating = mongoose.model("ratings", RatingSchema);

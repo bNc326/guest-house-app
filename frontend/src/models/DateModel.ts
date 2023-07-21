@@ -21,3 +21,10 @@ interface DateModel {
 }
 
 export default DateModel;
+
+class Date {
+  constructor() {
+    
+  }
+}
+

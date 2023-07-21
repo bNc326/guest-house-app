@@ -1,6 +1,5 @@
 import { useState, useContext, useEffect } from "react";
 import { useRevalidator, useRouteLoaderData } from "react-router-dom";
-import Weather from "components/CalendarComponents/Weather";
 import CalendarComponent from "components/CalendarComponents/Calendar";
 import { formKey } from "components/HomeComponents/Contact/Form";
 import { BookingContext } from "context/BookingContextProvider";
@@ -125,7 +124,7 @@ const Calendar = () => {
   const changeHotelHandler = (e: React.ChangeEvent) => {
     if (!(e.target instanceof HTMLSelectElement)) return;
 
-    hotelCtx.setHotelUUID(e.target.value);
+    hotelCtx.setHotelId(e.target.value);
   };
 
   const inputChangeHandler = (e: React.ChangeEvent) => {
@@ -253,7 +252,7 @@ const Calendar = () => {
         status: "Pending",
       };
 
-      const url = `${process.env.REACT_APP_BACKEND_API}/booking?hotel=${hotelCtx.hotelUUID}`;
+      const url = `${process.env.REACT_APP_BACKEND_API}/booking?hotel=${hotelCtx.hotelId}`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -301,7 +300,7 @@ const Calendar = () => {
             />
           </BookingPreview>
         )}
-        {hotelCtx.hotelUUID && !bookingCtx.isShowForm && (
+        {hotelCtx.hotelId && !bookingCtx.isShowForm && (
           <>
             <div className="relative flex flex-col gap-4 w-11/12 max-w-[1920px] overflow-hidden">
               <div className="w-full flex flex-col mobile:flex-row gap-2 items-center ">
@@ -315,9 +314,9 @@ const Calendar = () => {
                   {hotelCtx?.hotels.map((hotel) => (
                     <option
                       className="hover:bg-red-600"
-                      value={hotel.hotelUUID}
+                      value={hotel._id}
                       key={hotel._id}
-                      selected={hotelCtx.hotelUUID === hotel.hotelUUID}
+                      selected={hotelCtx.hotelId === hotel._id}
                     >
                       {hotel.hotelName}
                     </option>
@@ -332,7 +331,7 @@ const Calendar = () => {
             <HelperBox />
           </>
         )}
-        {!hotelCtx.hotelUUID && <HotelModal hotels={hotelCtx?.hotels} />}
+        {!hotelCtx.hotelId && <HotelModal hotels={hotelCtx?.hotels} />}
         {bookingSuccess.isSuccess && (
           <BookingSuccessModal
             message={bookingSuccess.message}

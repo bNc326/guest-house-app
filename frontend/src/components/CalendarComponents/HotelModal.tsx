@@ -19,7 +19,7 @@ const HotelModal: React.FC<{ hotels: GuestHouseModel[] }> = ({ hotels }) => {
           hotels.map((hotel) => (
             <div
               key={hotel._id}
-              onClick={() => hotelCtx.setHotelUUID(hotel.hotelUUID)}
+              onClick={() => hotelCtx.setHotelId(hotel._id)}
               className="text-center bg-palette-4 w-full rounded-lg p-1 text-white font-semibold cursor-pointer hover:bg-palette-4/80 transition-all ease-in-out duration-300"
             >
               <span>{hotel.hotelName}</span>

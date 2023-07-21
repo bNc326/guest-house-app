@@ -1,85 +1,125 @@
-import { RatingDynamic } from "../utils/dynamicDbCollections.js";
+import { Rating } from "../models/Rating.js";
+import { Hotel } from "../models/Hotels.js";
+
+const handleUpdateRatings = (hotel, id, body) => {
+  const findRating = hotel.ratings.find(
+    (rating) => rating._id.valueOf() === id
+  );
+  findRating.rating = body.rating;
+  hotel.save();
+};
+
+const handleDeleteRatings = (hotel, ids) => {
+  ids.map((id) => {
+    const index = hotel.ratings.findIndex(
+      (rating) => rating._id.valueOf() === id
+    );
+    if (index !== -1) {
+      hotel.ratings = [
+        ...hotel.ratings.slice(0, index),
+        ...hotel.ratings.slice(index + 1),
+      ];
+    }
+  });
+  hotel.save();
+};
+
+export const getRatings = async (req, res, next) => {
+  try {
+    const result = await Rating.find({ hotel: req.hotel }).sort({
+      createdAt: -1,
+    });
+    res.status(200).send(result);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const getRating = async (req, res, next) => {
   try {
-    const Rating = RatingDynamic(req.hotelParams)
-    const result = await Rating.find();
+    const result = await Rating.findById({ _id: req.params.id });
+    if (result === null) {
+      res.status(404).json({
+        success: false,
+        status: 404,
+        message: `Nem található a ${req.params.id} azonosítójú értékelés!`,
+        id: req.params.id,
+      });
+      return;
+    }
     res.status(200).send(result);
   } catch (err) {
     next(err);
   }
 };
 
-export const getOneRating = async (req, res, next) => {
+export const createRating = async (req, res, next) => {
   try {
-    const Rating = RatingDynamic(req.hotelParams)
-    const result = await Rating.findOne({ _id: req.params.id });
-    res.status(200).send(result);
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const sendRating = async (req, res, next) => {
-  try {
-    const Rating = RatingDynamic(req.hotelParams)
     const newRating = new Rating(req.body);
+    newRating.hotel = req.hotel;
     await newRating.save();
-
-    res.status(201).json({
-      success: true,
-      status: 201,
-      message: `Köszönjük értékelését! Adminisztrátor jóváhagyására vár! Részleteket elküldtük emailben!`,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const deleteManyRating = async (req, res, next) => {
     try {
-      const Rating = RatingDynamic(req.hotelParams)
-      await Rating.deleteMany({ _id: { $in: req.body } });
+      const rating = {
+        _id: newRating._id,
+        rating: newRating.rating,
+      };
+      await Hotel.findByIdAndUpdate(req.hotel, {
+        $push: { ratings: rating },
+      });
       res.status(201).json({
         success: true,
         status: 201,
-        message: "Sikeresen törölted az értékeléseket!",
+        message: `Köszönjük az értékelésed! Sokat jelent számunkra hogy szántál ránk 2 percet!`,
+      });
+    } catch (error) {
+      next(error);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteRatings = async (req, res, next) => {
+  try {
+    await Rating.deleteMany({ _id: { $in: req.body } });
+    try {
+      const hotel = await Hotel.findById(req.hotel);
+      handleDeleteRatings(hotel, req.body);
+      res.status(201).json({
+        success: true,
+        status: 201,
+        message: "Sikeresen törölted az értékelést/eket!",
         id: req.body,
       });
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      next(error);
     }
-  };
-
-export const deleteRating = async (req, res, next) => {
-  try {
-    const Rating = RatingDynamic(req.hotelParams)
-    await Rating.findByIdAndDelete(req.params.id);
-    res.status(201).json({
-      success: true,
-      status: 201,
-      message: `Sikeresen törölted a ${req.params.id} azonosítójú értékelést!`,
-      admin: req.body.admin,
-      id: req.params.id,
-    });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 
 export const editRating = async (req, res, next) => {
   try {
-    const Rating = RatingDynamic(req.hotelParams)
     await Rating.findByIdAndUpdate(req.params.id, {
       $set: req.body,
     });
-    res.status(201).json({
-      success: true,
-      status: 201,
-      message: `Sikeresen szerkesztetted a ${req.params.id} azonosítójú értékelést!`,
-      admin: req.body.admin,
-      id: req.params.id,
-    });
-  } catch (err) {
-    next(err);
+    try {
+      
+      const hotel = await Hotel.findById(req.hotel);
+      handleUpdateRatings(hotel, req.params.id, req.body);
+
+      res.status(201).json({
+        success: true,
+        status: 201,
+        message: `Sikeresen szerkesztetted a ${req.params.id} azonosítójú értékelést!`,
+        admin: req.body.admin,
+        id: req.params.id,
+      });
+    } catch (error) {
+      next(error);
+    }
+  } catch (error) {
+    next(error);
   }
 };

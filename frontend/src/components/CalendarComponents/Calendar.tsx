@@ -1,7 +1,8 @@
+import { json } from "react-router-dom";
 import DateModel from "../../models/DateModel";
 import { DbDateModel, DisabledDbDays } from "../../models/DbDateModel";
 import { getDaysInMonth, format } from "date-fns";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useLayoutEffect } from "react";
 import { v4 as uuid } from "uuid";
 import BigCalendar from "./BigCalendar";
 import BookingDate from "../../models/BookingDate";
@@ -10,6 +11,8 @@ import { ClipLoader, ScaleLoader } from "react-spinners";
 import { BookingContext } from "context/BookingContextProvider";
 import { DisabledDaysModel } from "models/DisabledDaysModel";
 import { HotelContext } from "context/HotelContextProvider";
+import InfiniteScroll from "react-infinite-scroll-component";
+import UnavailableDates from "models/UnavailableDates";
 
 const CalendarComponent: React.FC<{
   isSelecting: boolean;
@@ -24,27 +27,11 @@ const CalendarComponent: React.FC<{
     "Szombat",
     "Vasárnap",
   ];
-  const months: string[] = [
-    "Január",
-    "Február",
-    "Március",
-    "Április",
-    "Május",
-    "Június",
-    "Július",
-    "Augusztus",
-    "Szeptember",
-    "Október",
-    "November",
-    "December",
-  ];
   const currentDate = new Date();
   const currYear: number = currentDate.getFullYear();
-  const [isMounted, setIsMounted] = useState(false);
+  const [renderedMonth, setRenderedMonth] = useState<number>(12);
   const [renderedCalendar, setRenderedCalendar] = useState<DateModel[][]>([]);
-  const [calendarLoading, setCalendarLoading] = useState<
-    "no loading" | "loading" | "change state" | "success"
-  >("no loading");
+  const [calendarLoading, setCalendarLoading] = useState<boolean>(true);
   const [hotelChange, setHotelChange] = useState<boolean>(false);
   const [renderBookingDate, setRenderBookingDate] = useState<BookingDate>({});
   const [firstTouch, setFirstTouch] = useState<boolean>(false);
@@ -63,53 +50,41 @@ const CalendarComponent: React.FC<{
   // ! ASYNC FUNCTIONS
 
   useEffect(() => {
-    const filterAcceptedDate = (item: DbDateModel) => {
-      if (item.status === "Accepted" || item.status === "Pending") {
-        return item;
-      }
-    };
-    const fetchDate = async () => {
-      let dbDate: BookedDate[] = [];
-      const disabledDbDays: DisabledDaysModel[] = [];
+    const fetchUnavailableDates = async () => {
       const url = process.env.REACT_APP_BACKEND_API as string;
+
       const response = await fetch(
-        `${url}/booking?hotel=${hotelCtx?.hotelUUID}`
+        `${url}/hotels/${hotelCtx.hotelId}?filter=booked,disabled`
       );
-      const disabledDaysResponse = await fetch(
-        `${url}/disabled-days?hotel=${hotelCtx?.hotelUUID}`
-      );
+
       if (!response.ok) {
-        //TODO: Handle error
-        console.log("hiba");
+        console.log("error");
+        return json({
+          status: 404,
+          message: "Nem sikerült az adata lekérése!",
+        });
       } else {
-        const data = await response.json();
-        const disabledDaysData = await disabledDaysResponse.json();
-        data.filter(filterAcceptedDate).map((item: DbDateModel) => {
-          const updatedObject: BookedDate = {
-            id: item._id,
-            startDate: item.startDate,
-            endDate: item.endDate,
-            status: item.status,
-          };
-          dbDate.push(updatedObject);
-          setBookedDate(dbDate);
-        });
-        disabledDaysData.map((item: DisabledDbDays) => {
-          const updatedObject: DisabledDaysModel = {
-            id: item._id,
-            startDate: item.startDate,
-            endDate: item.endDate,
-          };
-          disabledDbDays.push(updatedObject);
-          setDisabledDays(disabledDbDays);
-        });
-        setHotelChange(false);
+        const data: UnavailableDates = await response.json();
+        console.log(data);
+        if (data.bookedDates) {
+          setBookedDate(data.bookedDates);
+        }
+        if (data.disabledDays) {
+          setDisabledDays(data.disabledDays);
+        }
       }
     };
+    const cleanup = setTimeout(() => {
+      fetchUnavailableDates();
+    });
+    return () => clearTimeout(cleanup);
+  }, [hotelCtx.hotelId]);
+
+  useLayoutEffect(() => {
     const renderAllDays = () => {
       let monthCounter = 0;
       const updatedRenderCalendar: DateModel[][] = [];
-      for (monthCounter; monthCounter <= 11; monthCounter++) {
+      for (monthCounter; monthCounter <= renderedMonth - 1; monthCounter++) {
         let updatedRenderDays: DateModel[] = [];
         const date = new Date(currYear, monthCounter, 1);
         const allDaysInMonth = getDaysInMonth(date);
@@ -165,20 +140,16 @@ const CalendarComponent: React.FC<{
         }
         updatedRenderCalendar.push(updatedRenderDays);
         setRenderedCalendar(updatedRenderCalendar);
-        setCalendarLoading("success");
       }
     };
-    fetchDate();
-    setIsMounted(true);
+    const cleanup = setTimeout(() => {
+      renderAllDays();
+      setCalendarLoading(false);
+      setHotelChange(false);
+    });
 
-    const interval = setInterval(() => {
-      console.log("fetch");
-      fetchDate();
-    }, 60000);
-    renderAllDays();
-
-    return () => clearInterval(interval);
-  }, [hotelCtx.hotelUUID]);
+    return () => clearTimeout(cleanup);
+  }, [hotelCtx.hotelId, renderedMonth]);
 
   useEffect(() => {
     const updateCalendarWithBookedDate = () => {
@@ -384,7 +355,7 @@ const CalendarComponent: React.FC<{
 
   useEffect(() => {
     setHotelChange(true);
-  }, [hotelCtx.hotelUUID]);
+  }, [hotelCtx.hotelId]);
 
   // ! HANDLERS
 
@@ -727,6 +698,12 @@ const CalendarComponent: React.FC<{
       return;
     }
   };
+
+  const handleLoadMonth = () => {
+    setTimeout(() => {
+      setRenderedMonth((prev) => prev + 3);
+    }, 3000);
+  };
   // ! RENDER
   return (
     <div
@@ -737,37 +714,49 @@ const CalendarComponent: React.FC<{
       } relative`}
     >
       <div
+        id="calendar-scroll"
         className={`bg-gradient-to-br ${
           hotelChange || props.isSelecting
             ? "opacity-80 pointer-events-none"
             : ""
-        }  from-palette-4 to-[#B08968] py-8 px-4 rounded-3xl w-full h-[80vh] overflow-y-scroll scrollbar-thin tall:scrollbar-thin scrollbar-thumb-palette-4 scrollbar-thumb-rounded-3xl`}
+        }  from-palette-4 to-[#B08968] py-8 px-4 rounded-3xl w-full h-[80vh] overflow-auto scrollbar-thin tall:scrollbar-thin scrollbar-thumb-palette-4 scrollbar-thumb-rounded-3xl`}
       >
-        {calendarLoading === "success" && (
-          <BigCalendar
-            weekDays={weekDays}
-            renderCalendar={renderedCalendar}
-            currentYear={currYear}
-            months={months}
-            onClick={selectDateHandler}
-            onMouseEnter={selectStartDateToEndDate}
-            blockedDate={renderBookingDate?.endDate}
-          />
-        )}
-        {props.isSelecting && (
-          <ScaleLoader
-            loading
-            color="#E6CCB2"
-            className="absolute top-1/2 left-1/2"
-          />
-        )}
-        {hotelChange && (
-          <ClipLoader
-            loading
-            color="#E6CCB2"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-          />
-        )}
+        <InfiniteScroll
+          dataLength={renderedCalendar.length}
+          next={handleLoadMonth}
+          hasMore={true}
+          loader={
+            <span className="w-full flex items-center justify-center py-2">
+              <ClipLoader size={20} color="#DDB892" loading />
+            </span>
+          }
+          scrollableTarget={"calendar-scroll"}
+          style={{ overflow: "hidden" }}
+        >
+          {!calendarLoading && (
+            <BigCalendar
+              weekDays={weekDays}
+              renderCalendar={renderedCalendar}
+              onClick={selectDateHandler}
+              onMouseEnter={selectStartDateToEndDate}
+              blockedDate={renderBookingDate?.endDate}
+            />
+          )}
+          {props.isSelecting && (
+            <ScaleLoader
+              loading
+              color="#E6CCB2"
+              className="absolute top-1/2 left-1/2"
+            />
+          )}
+          {hotelChange && (
+            <ClipLoader
+              loading
+              color="#E6CCB2"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            />
+          )}
+        </InfiniteScroll>
       </div>
     </div>
   );

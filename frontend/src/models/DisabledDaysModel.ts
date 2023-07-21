@@ -1,5 +1,5 @@
 export interface DisabledDaysModel {
-  id: string;
+  _id: string;
   startDate: string | Date;
   endDate: string | Date;
 }

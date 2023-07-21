@@ -1,13 +1,9 @@
 import React, { useContext } from "react";
-import Container from "components/UI/Container";
 import HotelCard from "components/GuestHouseComponents/HotelCard";
-import { useRouteLoaderData } from "react-router-dom";
-import { GuestHouseModel } from "models/GuestHouseModel";
 import { HotelContext } from "context/HotelContextProvider";
 import { ClipLoader } from "react-spinners";
 
 const GuestHouses = () => {
-  const data = useRouteLoaderData("guestHouses") as GuestHouseModel[];
   const hotelCtx = useContext(HotelContext);
   return (
     <section className="guest-house-bg w-full min-h-[100%] flex justify-center p-4 pt-20">
