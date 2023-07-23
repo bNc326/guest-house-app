@@ -1,5 +1,6 @@
 import { json } from "react-router-dom";
-import DateModel from "../../models/DateModel";
+import DateModel, { Day } from "../../models/DateModel";
+import Calendar from "models/Calendar";
 import { DbDateModel, DisabledDbDays } from "../../models/DbDateModel";
 import { getDaysInMonth, format } from "date-fns";
 import { useEffect, useState, useContext, useLayoutEffect } from "react";
@@ -46,6 +47,7 @@ const CalendarComponent: React.FC<{
   const [disabledDays, setDisabledDays] = useState<DisabledDaysModel[]>([]);
   const bookingCtx = useContext(BookingContext);
   const hotelCtx = useContext(HotelContext);
+  const calendar = new Calendar(renderedMonth);
 
   // ! ASYNC FUNCTIONS
 
@@ -82,76 +84,19 @@ const CalendarComponent: React.FC<{
 
   useLayoutEffect(() => {
     const renderAllDays = () => {
-      let monthCounter = 0;
-      const updatedRenderCalendar: DateModel[][] = [];
-      for (monthCounter; monthCounter <= renderedMonth - 1; monthCounter++) {
-        let updatedRenderDays: DateModel[] = [];
-        const date = new Date(currYear, monthCounter, 1);
-        const allDaysInMonth = getDaysInMonth(date);
-        const lastDaysOfPreviousMonth = new Date(
-          currYear,
-          monthCounter,
-          -1 + 1
-        ).getDate();
-        let firstDayOfMonth = new Date(currYear, monthCounter, 1).getDay();
-        // ! fixed weekdays
-        if (firstDayOfMonth === 0) {
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-          firstDayOfMonth = 7;
-        }
-        // * prev Month
-        for (
-          let i = lastDaysOfPreviousMonth - firstDayOfMonth + 2;
-          i <= lastDaysOfPreviousMonth;
-          i++
-        ) {
-          updatedRenderDays = [
-            ...updatedRenderDays,
-            {
-              id: uuid(),
-              arrayIndex: monthCounter,
-              value: "",
-              prevMonth: true,
-            },
-          ];
-        }
-        // * current Month
-        for (let i = 1; i <= allDaysInMonth; i++) {
-          updatedRenderDays = [
-            ...updatedRenderDays,
-            {
-              id: uuid(),
-              arrayIndex: monthCounter,
-              value: i,
-              prevMonth: false,
-              nextMonth: false,
-              date: format(new Date(currYear, monthCounter, i), "yyyy-MM-dd"),
-              today:
-                format(new Date(), "yyyy-MM-dd") ===
-                format(new Date(currYear, monthCounter, i), "yyyy-MM-dd")
-                  ? true
-                  : false,
-              selected: false,
-              disabled:
-                new Date(currYear, monthCounter, i) < new Date() ? true : false,
-              booked: false,
-            },
-          ];
-        }
-        updatedRenderCalendar.push(updatedRenderDays);
-        setRenderedCalendar(updatedRenderCalendar);
-      }
+      setRenderedCalendar(calendar.calendar);
     };
+
     const cleanup = setTimeout(() => {
       renderAllDays();
       setCalendarLoading(false);
       setHotelChange(false);
-    });
+    }, 100);
 
     return () => clearTimeout(cleanup);
-  }, [hotelCtx.hotelId, renderedMonth]);
+  }, [hotelCtx.hotelId]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const updateCalendarWithBookedDate = () => {
       if (renderedCalendar.length !== 0 && bookedDate.length !== 0) {
         const updatedRenderDays = [...renderedCalendar];
@@ -353,9 +298,11 @@ const CalendarComponent: React.FC<{
     return () => clearTimeout(timeout);
   }, [bookedDate]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setHotelChange(true);
   }, [hotelCtx.hotelId]);
+
+  console.log(getDaysInMonth(new Date(2023).setMonth(15)));
 
   // ! HANDLERS
 
@@ -701,7 +648,7 @@ const CalendarComponent: React.FC<{
 
   const handleLoadMonth = () => {
     setTimeout(() => {
-      setRenderedMonth((prev) => prev + 3);
+      calendar.renderNewMonth(2, setRenderedCalendar);
     }, 3000);
   };
   // ! RENDER
