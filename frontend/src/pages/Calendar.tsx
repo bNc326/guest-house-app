@@ -85,7 +85,7 @@ const Calendar = () => {
       valid: false,
       error: "Adj meg egy irányítószámot!",
       firstTouch: false,
-      pattern: /^\d{4,}$/,
+      pattern: /^\d{1,}$/,
     },
     adults: {
       value: 0,
@@ -230,25 +230,19 @@ const Calendar = () => {
         Number(formInput.adults.value as number) +
         Number(formInput.children.value as number);
       const bookingBody: SendBookingModel = {
-        price: {
-          EUR: bookingCtx.price.EUR,
-          HUF: bookingCtx.price.HUF,
-        },
-        costumer: {
-          address: {
-            country: formInput.country.value as string,
-            postalCode: formInput.postalCode.value as number,
-            city: formInput.city.value as string,
-            street: formInput.address.value as string,
-          },
-          name: formInput.name.value as string,
-          email: formInput.email.value as string,
-          phone: formInput.phone.value as string,
-        },
         startDate: bookingCtx.date.firstDate,
         endDate: bookingCtx.date.endDate,
         nightAmount: bookingCtx.nightAmount,
         personsAmount: personsAmount,
+        EUR: bookingCtx.price.EUR,
+        HUF: bookingCtx.price.HUF,
+        name: formInput.name.value as string,
+        email: formInput.email.value as string,
+        phone: formInput.phone.value as string,
+        country: formInput.country.value as string,
+        postalCode: formInput.postalCode.value as number,
+        city: formInput.city.value as string,
+        street: formInput.address.value as string,
         status: "Pending",
       };
 

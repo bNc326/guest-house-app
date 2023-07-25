@@ -1,21 +1,33 @@
-export type Impressum = {
-  NTAK_regNumber: string;
-  city: string;
-  country: string;
-  postalCode: number;
-  street: string;
-};
+import { InputValidator } from "./Input";
 
 export interface GuestHouseModel {
-  _id: string;
-  hotelUUID: string;
+  _id?: string;
   hotelName: string;
-  description: string;
-  maxPersonAmount: number;
-  roomAmount: number;
-  discountPrice: number | null;
+  country: string;
+  postalCode: number;
+  city: string;
+  street: string;
+  NTAK: string;
   price: number;
-  impressum: Impressum;
-  service: string[];
-  feature: string[];
+  discountPrice: number;
+  roomAmount: number;
+  maxPersonAmount: number;
+  description: string;
+  services: Array<any>;
+  feature: Array<any>;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface InputValidate extends Record<string, any> {
+  hotelName: InputValidator;
+  price: InputValidator;
+  roomAmount: InputValidator;
+  maxPersonAmount: InputValidator;
+  description: InputValidator;
+  country: InputValidator;
+  postalCode: InputValidator;
+  city: InputValidator;
+  street: InputValidator;
+  NTAK: InputValidator;
 }

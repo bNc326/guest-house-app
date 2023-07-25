@@ -47,7 +47,12 @@ const CalendarComponent: React.FC<{
   const [disabledDays, setDisabledDays] = useState<DisabledDaysModel[]>([]);
   const bookingCtx = useContext(BookingContext);
   const hotelCtx = useContext(HotelContext);
-  const calendar = new Calendar(renderedMonth);
+  const [hasMore, setHasMore] = useState(true);
+  const calendar = new Calendar(
+    renderedMonth,
+    renderedCalendar,
+    setRenderedCalendar
+  );
 
   // ! ASYNC FUNCTIONS
 
@@ -78,13 +83,13 @@ const CalendarComponent: React.FC<{
     };
     const cleanup = setTimeout(() => {
       fetchUnavailableDates();
-    });
+    }, 100);
     return () => clearTimeout(cleanup);
-  }, [hotelCtx.hotelId]);
+  }, [hotelCtx.hotelId, renderedMonth]);
 
   useLayoutEffect(() => {
     const renderAllDays = () => {
-      setRenderedCalendar(calendar.calendar);
+      calendar.createInitialCalendar();
     };
 
     const cleanup = setTimeout(() => {
@@ -98,149 +103,7 @@ const CalendarComponent: React.FC<{
 
   useLayoutEffect(() => {
     const updateCalendarWithBookedDate = () => {
-      if (renderedCalendar.length !== 0 && bookedDate.length !== 0) {
-        const updatedRenderDays = [...renderedCalendar];
-
-        const resetBookedDate = () => {
-          for (let month = 0; month < updatedRenderDays.length; month++) {
-            for (let day = 0; day < updatedRenderDays[month].length; day++) {
-              updatedRenderDays[month][day].booked = false;
-              updatedRenderDays[month][day].startBooked = false;
-              updatedRenderDays[month][day].endBooked = false;
-              updatedRenderDays[month][day].pendingBooking = false;
-              updatedRenderDays[month][day].startPendingBooking = false;
-              updatedRenderDays[month][day].endPendingBooking = false;
-            }
-          }
-        };
-        resetBookedDate();
-        bookedDate.map((booked) => {
-          for (let month in renderedCalendar) {
-            const firstIndex = renderedCalendar[month].findIndex(
-              (day) =>
-                day.date ===
-                  format(new Date(`${booked.startDate}`), "yyyy-MM-dd") &&
-                booked.status !== "Pending"
-            );
-            const secondIndex = renderedCalendar[month].findIndex(
-              (day) =>
-                day.date ===
-                  format(new Date(`${booked.endDate}`), "yyyy-MM-dd") &&
-                booked.status !== "Pending"
-            );
-
-            if (firstIndex !== -1 && secondIndex !== -1) {
-              for (let i = firstIndex; i <= secondIndex; i++) {
-                if (firstIndex === i && booked.status !== "Pending") {
-                  updatedRenderDays[month][i].startBooked = true;
-                } else if (secondIndex === i) {
-                  updatedRenderDays[month][i].endBooked = true;
-                } else {
-                  updatedRenderDays[month][i].booked = true;
-                }
-              }
-            } else if (firstIndex !== -1 && secondIndex === -1) {
-              for (
-                let i = firstIndex;
-                i < updatedRenderDays[month].length;
-                i++
-              ) {
-                if (firstIndex === i && booked.status !== "Pending") {
-                  updatedRenderDays[month][i].startBooked = true;
-                } else if (secondIndex === i) {
-                  updatedRenderDays[month][i].endBooked = true;
-                } else {
-                  updatedRenderDays[month][i].booked = true;
-                }
-              }
-            } else if (firstIndex === -1 && secondIndex !== -1) {
-              for (let i = 0; i <= secondIndex; i++) {
-                if (firstIndex === i && booked.status !== "Pending") {
-                  updatedRenderDays[month][i].startBooked = true;
-                } else if (secondIndex === i) {
-                  updatedRenderDays[month][i].endBooked = true;
-                } else {
-                  updatedRenderDays[month][i].booked = true;
-                }
-              }
-            }
-            updatedRenderDays[month].map((day) => {
-              if ((day.startBooked && day.endBooked) === true) {
-                day.startBooked = false;
-                day.endBooked = false;
-                day.booked = true;
-              }
-            });
-          }
-        });
-        bookedDate.map((booked) => {
-          for (let month in renderedCalendar) {
-            const firstIndex = renderedCalendar[month].findIndex(
-              (day) =>
-                day.date ===
-                  format(new Date(`${booked.startDate}`), "yyyy-MM-dd") &&
-                booked.status === "Pending"
-            );
-            const secondIndex = renderedCalendar[month].findIndex(
-              (day) =>
-                day.date ===
-                  format(new Date(`${booked.endDate}`), "yyyy-MM-dd") &&
-                booked.status === "Pending"
-            );
-
-            if (firstIndex !== -1 && secondIndex !== -1) {
-              for (let i = firstIndex; i <= secondIndex; i++) {
-                if (firstIndex === i) {
-                  updatedRenderDays[month][i].startPendingBooking = true;
-                } else if (secondIndex === i) {
-                  updatedRenderDays[month][i].endPendingBooking = true;
-                } else {
-                  updatedRenderDays[month][i].pendingBooking = true;
-                }
-              }
-            } else if (firstIndex !== -1 && secondIndex === -1) {
-              for (
-                let i = firstIndex;
-                i < updatedRenderDays[month].length;
-                i++
-              ) {
-                if (firstIndex === i) {
-                  updatedRenderDays[month][i].startPendingBooking = true;
-                } else if (secondIndex === i) {
-                  updatedRenderDays[month][i].endPendingBooking = true;
-                } else {
-                  updatedRenderDays[month][i].pendingBooking = true;
-                }
-              }
-            } else if (firstIndex === -1 && secondIndex !== -1) {
-              for (let i = 0; i <= secondIndex; i++) {
-                if (firstIndex === i) {
-                  updatedRenderDays[month][i].startPendingBooking = true;
-                } else if (secondIndex === i) {
-                  updatedRenderDays[month][i].endPendingBooking = true;
-                } else {
-                  updatedRenderDays[month][i].pendingBooking = true;
-                }
-              }
-            }
-            updatedRenderDays[month].map((day) => {
-              if ((day.startPendingBooking && day.endPendingBooking) === true) {
-                day.startPendingBooking = false;
-                day.endPendingBooking = false;
-                day.pendingBooking = true;
-              }
-              if (
-                (day.startBooked === true && day.endPendingBooking === true) ||
-                (day.endBooked === true && day.startPendingBooking === true)
-              ) {
-                day.bookedAndPendingBooked = true;
-              }
-            });
-          }
-        });
-
-        setRenderedCalendar(updatedRenderDays);
-      }
+      calendar.getBookedDate(bookedDate);
     };
 
     const updatedCalendarWithDisabledDays = () => {
@@ -292,17 +155,25 @@ const CalendarComponent: React.FC<{
 
     const timeout = setTimeout(() => {
       updateCalendarWithBookedDate();
-      updatedCalendarWithDisabledDays();
-    }, 300);
+      // updatedCalendarWithDisabledDays();
+    });
 
     return () => clearTimeout(timeout);
   }, [bookedDate]);
 
   useLayoutEffect(() => {
     setHotelChange(true);
+    setRenderedMonth(12);
   }, [hotelCtx.hotelId]);
 
-  console.log(getDaysInMonth(new Date(2023).setMonth(15)));
+  useLayoutEffect(() => {
+    if (bookedDate.length !== 0) {
+      calendar.getBookedDate(bookedDate);
+    }
+    if (renderedMonth >= 36) {
+      setHasMore(false);
+    }
+  }, [renderedMonth]);
 
   // ! HANDLERS
 
@@ -648,8 +519,8 @@ const CalendarComponent: React.FC<{
 
   const handleLoadMonth = () => {
     setTimeout(() => {
-      calendar.renderNewMonth(2, setRenderedCalendar);
-    }, 3000);
+      calendar.renderNewMonth(3, setRenderedMonth);
+    }, 4000);
   };
   // ! RENDER
   return (
@@ -671,7 +542,7 @@ const CalendarComponent: React.FC<{
         <InfiniteScroll
           dataLength={renderedCalendar.length}
           next={handleLoadMonth}
-          hasMore={true}
+          hasMore={hasMore}
           loader={
             <span className="w-full flex items-center justify-center py-2">
               <ClipLoader size={20} color="#DDB892" loading />

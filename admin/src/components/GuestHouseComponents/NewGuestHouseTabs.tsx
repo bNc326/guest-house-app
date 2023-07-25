@@ -8,15 +8,12 @@ import {
 import { FaUsers } from "react-icons/fa";
 import { BsPlusSquare, BsTrash3, BsTools } from "react-icons/bs";
 import { TbEdit, TbEditOff } from "react-icons/tb";
-import { HotelsModelObject } from "../../models/Hotels/HotelsModel";
-import { InputValidate } from "./NewGuestHouseForm";
+import { GuestHouseModel, InputValidate } from "../../models/GuestHouseModel";
 
 interface ReactProps {
-  data: HotelsModelObject;
-  newListHandler: (e: React.MouseEvent) => void;
+  data: GuestHouseModel;
   inputValidate: InputValidate;
-  deleteListHandler: (e: React.MouseEvent) => void;
-  editListHandler: (e: React.MouseEvent) => void;
+
   changeInputHandler: (e: React.ChangeEvent) => void;
   inputBlurHandler: (e: React.ChangeEvent) => void;
 }
@@ -25,10 +22,9 @@ const NewGuestHouseTabs = forwardRef(
   (props: ReactProps, ref: React.LegacyRef<HTMLDivElement>) => {
     const {
       data,
-      newListHandler,
+
       inputValidate,
-      deleteListHandler,
-      editListHandler,
+
       changeInputHandler,
       inputBlurHandler,
     } = props;
@@ -39,11 +35,12 @@ const NewGuestHouseTabs = forwardRef(
             <div className="flex flex-col mobile:flex-row w-full gap-4">
               <div className="w-full">
                 <TextInput
+                  type="text"
                   addon={<MdDriveFileRenameOutline size="1.50rem" />}
                   value={data.hotelName}
                   onChange={changeInputHandler}
                   onBlur={inputBlurHandler}
-                  data-key={"hotelName"}
+                  name="hotelName"
                   color={`${
                     inputValidate.hotelName.firstTouch
                       ? inputValidate.hotelName.valid
@@ -67,11 +64,12 @@ const NewGuestHouseTabs = forwardRef(
               </div>
               <div className="w-full">
                 <TextInput
+                  type="text"
                   addon={<span className="font-bold">FT</span>}
                   value={data.price}
                   onChange={changeInputHandler}
                   onBlur={inputBlurHandler}
-                  data-key={"price"}
+                  name="price"
                   color={`${
                     inputValidate.price.firstTouch
                       ? inputValidate.price.valid
@@ -100,9 +98,9 @@ const NewGuestHouseTabs = forwardRef(
                 <TextInput
                   icon={MdHotel}
                   value={data.roomAmount}
+                  name="roomAmount"
                   onChange={changeInputHandler}
                   onBlur={inputBlurHandler}
-                  data-key={"roomAmount"}
                   type="number"
                   id="roomAmount"
                   color={`${
@@ -127,15 +125,15 @@ const NewGuestHouseTabs = forwardRef(
                 />
               </div>
               <div className="w-full">
-                <Label htmlFor="costumerAmount" value="Max személyek száma" />
+                <Label htmlFor="maxPersonAmount" value="Max személyek száma" />
                 <TextInput
                   icon={FaUsers}
                   value={data.maxPersonAmount}
                   onChange={changeInputHandler}
                   onBlur={inputBlurHandler}
-                  data-key={"maxPersonAmount"}
+                  name="maxPersonAmount"
                   type="number"
-                  id="costumerAmount"
+                  id="maxPersonAmount"
                   color={`${
                     inputValidate.maxPersonAmount.firstTouch
                       ? inputValidate.maxPersonAmount.valid
@@ -160,21 +158,18 @@ const NewGuestHouseTabs = forwardRef(
             </div>
             <div className="flex justify-center">
               <div className="w-full">
-                <Label
-                  htmlFor="NTAK_regNumber"
-                  value="NTAK regisztrációs szám"
-                />
+                <Label htmlFor="NTAK" value="NTAK regisztrációs szám" />
                 <TextInput
+                  type="text"
                   addon={<span className="font-bold">NTAK</span>}
-                  value={data.impressum.NTAK_regNumber}
+                  value={data.NTAK}
                   onChange={changeInputHandler}
                   onBlur={inputBlurHandler}
-                  data-group={"impressum"}
-                  data-key={"NTAK_regNumber"}
-                  id="NTAK_regNumber"
+                  name="NTAK"
+                  id="NTAK"
                   color={`${
-                    inputValidate.impressum.NTAK_regNumber.firstTouch
-                      ? inputValidate.impressum.NTAK_regNumber.valid
+                    inputValidate.NTAK.firstTouch
+                      ? inputValidate.NTAK.valid
                         ? "gray"
                         : "failure"
                       : "gray"
@@ -182,13 +177,13 @@ const NewGuestHouseTabs = forwardRef(
                   helperText={
                     <ErrorMessage
                       success={
-                        inputValidate.impressum.NTAK_regNumber.firstTouch
-                          ? inputValidate.impressum.NTAK_regNumber.valid
+                        inputValidate.NTAK.firstTouch
+                          ? inputValidate.NTAK.valid
                             ? true
                             : false
                           : true
                       }
-                      message={inputValidate.impressum.NTAK_regNumber.error}
+                      message={inputValidate.NTAK.error}
                     />
                   }
                 />
@@ -205,7 +200,7 @@ const NewGuestHouseTabs = forwardRef(
                   value={data.description}
                   onChange={changeInputHandler}
                   onBlur={inputBlurHandler}
-                  data-key={"description"}
+                  name="description"
                   color={`${
                     inputValidate.description.firstTouch
                       ? inputValidate.description.valid
@@ -231,17 +226,17 @@ const NewGuestHouseTabs = forwardRef(
             <div className="flex flex-col gap-4">
               <div className="flex gap-4 w-full">
                 <div className="w-full">
-                  <Label value="Ország" htmlFor="Country" />
+                  <Label value="Ország" htmlFor="country" />
                   <TextInput
-                    id="Country"
-                    value={data.impressum.country}
+                    type="text"
+                    id="country"
+                    value={data.country}
                     onChange={changeInputHandler}
                     onBlur={inputBlurHandler}
-                    data-group={"impressum"}
-                    data-key={"country"}
+                    name="country"
                     color={`${
-                      inputValidate.impressum.country.firstTouch
-                        ? inputValidate.impressum.country.valid
+                      inputValidate.country.firstTouch
+                        ? inputValidate.country.valid
                           ? "gray"
                           : "failure"
                         : "gray"
@@ -249,13 +244,13 @@ const NewGuestHouseTabs = forwardRef(
                     helperText={
                       <ErrorMessage
                         success={
-                          inputValidate.impressum.country.firstTouch
-                            ? inputValidate.impressum.country.valid
+                          inputValidate.country.firstTouch
+                            ? inputValidate.country.valid
                               ? true
                               : false
                             : true
                         }
-                        message={inputValidate.impressum.country.error}
+                        message={inputValidate.country.error}
                       />
                     }
                   />
@@ -263,17 +258,17 @@ const NewGuestHouseTabs = forwardRef(
               </div>
               <div className="flex flex-col mobile:flex-row gap-4 w-full">
                 <div className="w-full">
-                  <Label value="Irányítószám" htmlFor="PostalCode" />
+                  <Label value="Irányítószám" htmlFor="postalCode" />
                   <TextInput
-                    id="PostalCode"
-                    value={data.impressum.postalCode}
+                    type="text"
+                    id="postalCode"
+                    value={data.postalCode}
                     onChange={changeInputHandler}
                     onBlur={inputBlurHandler}
-                    data-group={"impressum"}
-                    data-key={"postalCode"}
+                    name="postalCode"
                     color={`${
-                      inputValidate.impressum.postalCode.firstTouch
-                        ? inputValidate.impressum.postalCode.valid
+                      inputValidate.postalCode.firstTouch
+                        ? inputValidate.postalCode.valid
                           ? "gray"
                           : "failure"
                         : "gray"
@@ -281,29 +276,29 @@ const NewGuestHouseTabs = forwardRef(
                     helperText={
                       <ErrorMessage
                         success={
-                          inputValidate.impressum.postalCode.firstTouch
-                            ? inputValidate.impressum.postalCode.valid
+                          inputValidate.postalCode.firstTouch
+                            ? inputValidate.postalCode.valid
                               ? true
                               : false
                             : true
                         }
-                        message={inputValidate.impressum.postalCode.error}
+                        message={inputValidate.postalCode.error}
                       />
                     }
                   />
                 </div>
                 <div className="w-full">
-                  <Label value="Város" htmlFor="City" />
+                  <Label value="Város" htmlFor="city" />
                   <TextInput
-                    id="City"
-                    value={data.impressum.city}
+                    type="text"
+                    id="city"
+                    value={data.city}
                     onChange={changeInputHandler}
                     onBlur={inputBlurHandler}
-                    data-group={"impressum"}
-                    data-key={"city"}
+                    name="city"
                     color={`${
-                      inputValidate.impressum.city.firstTouch
-                        ? inputValidate.impressum.city.valid
+                      inputValidate.city.firstTouch
+                        ? inputValidate.city.valid
                           ? "gray"
                           : "failure"
                         : "gray"
@@ -311,13 +306,13 @@ const NewGuestHouseTabs = forwardRef(
                     helperText={
                       <ErrorMessage
                         success={
-                          inputValidate.impressum.city.firstTouch
-                            ? inputValidate.impressum.city.valid
+                          inputValidate.city.firstTouch
+                            ? inputValidate.city.valid
                               ? true
                               : false
                             : true
                         }
-                        message={inputValidate.impressum.city.error}
+                        message={inputValidate.city.error}
                       />
                     }
                   />
@@ -325,15 +320,15 @@ const NewGuestHouseTabs = forwardRef(
                 <div className="w-full">
                   <Label value="Utca, házszám" htmlFor="street" />
                   <TextInput
+                    type="text"
                     id="street"
-                    value={data.impressum.street}
+                    value={data.street}
                     onChange={changeInputHandler}
                     onBlur={inputBlurHandler}
-                    data-group={"impressum"}
-                    data-key={"street"}
+                    name="street"
                     color={`${
-                      inputValidate.impressum.street.firstTouch
-                        ? inputValidate.impressum.street.valid
+                      inputValidate.street.firstTouch
+                        ? inputValidate.street.valid
                           ? "gray"
                           : "failure"
                         : "gray"
@@ -341,13 +336,13 @@ const NewGuestHouseTabs = forwardRef(
                     helperText={
                       <ErrorMessage
                         success={
-                          inputValidate.impressum.street.firstTouch
-                            ? inputValidate.impressum.street.valid
+                          inputValidate.street.firstTouch
+                            ? inputValidate.street.valid
                               ? true
                               : false
                             : true
                         }
-                        message={inputValidate.impressum.street.error}
+                        message={inputValidate.street.error}
                       />
                     }
                   />
@@ -356,7 +351,7 @@ const NewGuestHouseTabs = forwardRef(
             </div>
           </div>
         </Tabs.Item>
-        <Tabs.Item title="Szolgáltatások/Extrák">
+        {/* <Tabs.Item title="Szolgáltatások/Extrák">
           <div className="flex flex-col gap-4" ref={ref}>
             <div className="w-full flex flex-col gap-4">
               <div
@@ -555,7 +550,7 @@ const NewGuestHouseTabs = forwardRef(
               </ul>
             </div>
           </div>
-        </Tabs.Item>
+        </Tabs.Item> */}
       </Tabs.Group>
     );
   }

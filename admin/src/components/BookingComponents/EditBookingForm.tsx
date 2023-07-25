@@ -17,51 +17,47 @@ import { HotelContext } from "../../context/HotelContextProvider";
 import { useAuthHeader } from "react-auth-kit";
 
 export interface InputValidate extends Record<string, any> {
-  costumer: {
-    address: {
-      country: {
-        pattern: RegExp;
-        valid: boolean;
-        firstTouch: boolean;
-        error: string;
-      };
-      postalCode: {
-        pattern: RegExp;
-        valid: boolean;
-        firstTouch: boolean;
-        error: string;
-      };
-      city: {
-        pattern: RegExp;
-        valid: boolean;
-        firstTouch: boolean;
-        error: string;
-      };
-      street: {
-        pattern: RegExp;
-        valid: boolean;
-        firstTouch: boolean;
-        error: string;
-      };
-    };
-    name: {
-      pattern: RegExp;
-      valid: boolean;
-      firstTouch: boolean;
-      error: string;
-    };
-    email: {
-      pattern: RegExp;
-      valid: boolean;
-      firstTouch: boolean;
-      error: string;
-    };
-    phone: {
-      pattern: RegExp;
-      valid: boolean;
-      firstTouch: boolean;
-      error: string;
-    };
+  country: {
+    pattern: RegExp;
+    valid: boolean;
+    firstTouch: boolean;
+    error: string;
+  };
+  postalCode: {
+    pattern: RegExp;
+    valid: boolean;
+    firstTouch: boolean;
+    error: string;
+  };
+  city: {
+    pattern: RegExp;
+    valid: boolean;
+    firstTouch: boolean;
+    error: string;
+  };
+  street: {
+    pattern: RegExp;
+    valid: boolean;
+    firstTouch: boolean;
+    error: string;
+  };
+  name: {
+    pattern: RegExp;
+    valid: boolean;
+    firstTouch: boolean;
+    error: string;
+  };
+  email: {
+    pattern: RegExp;
+    valid: boolean;
+    firstTouch: boolean;
+    error: string;
+  };
+  phone: {
+    pattern: RegExp;
+    valid: boolean;
+    firstTouch: boolean;
+    error: string;
   };
   startDate: {
     pattern: null;
@@ -94,52 +90,6 @@ const EditBookingForm: React.FC<{
 }> = (props) => {
   const data = props.data;
   const inputData: InputValidate = {
-    costumer: {
-      address: {
-        country: {
-          pattern: /^(\S\D{1,})$/,
-          valid: true,
-          firstTouch: false,
-          error: "hiba!",
-        },
-        postalCode: {
-          pattern: /^\d{4,}$/,
-          valid: true,
-          firstTouch: false,
-          error: "hiba!",
-        },
-        city: {
-          pattern: /^(\S\D{1,})$/,
-          valid: true,
-          firstTouch: false,
-          error: "hiba!",
-        },
-        street: {
-          pattern: /^(\S\D{1,})+(\s\d{1,})+(\/)?([\s\S]{1,})?$/,
-          valid: true,
-          firstTouch: false,
-          error: "hiba!",
-        },
-      },
-      name: {
-        pattern: /^(\S\D{1,})$/,
-        valid: true,
-        firstTouch: false,
-        error: "hiba!",
-      },
-      email: {
-        pattern: /^\S+@\S+\.\S+$/,
-        valid: true,
-        firstTouch: false,
-        error: "hiba!",
-      },
-      phone: {
-        pattern: /^\+?[0-9][0-9]{10,10}$/,
-        valid: true,
-        firstTouch: false,
-        error: "hiba!",
-      },
-    },
     startDate: {
       pattern: null,
       valid: true,
@@ -164,6 +114,48 @@ const EditBookingForm: React.FC<{
       firstTouch: false,
       error: "hiba!",
     },
+    name: {
+      pattern: /^(\S\D{1,})$/,
+      valid: true,
+      firstTouch: false,
+      error: "hiba!",
+    },
+    email: {
+      pattern: /^\S+@\S+\.\S+$/,
+      valid: true,
+      firstTouch: false,
+      error: "hiba!",
+    },
+    phone: {
+      pattern: /^\+?[0-9][0-9]{10,10}$/,
+      valid: true,
+      firstTouch: false,
+      error: "hiba!",
+    },
+    country: {
+      pattern: /^(\S\D{1,})$/,
+      valid: true,
+      firstTouch: false,
+      error: "hiba!",
+    },
+    postalCode: {
+      pattern: /^\d{4,}$/,
+      valid: true,
+      firstTouch: false,
+      error: "hiba!",
+    },
+    city: {
+      pattern: /^(\S\D{1,})$/,
+      valid: true,
+      firstTouch: false,
+      error: "hiba!",
+    },
+    street: {
+      pattern: /^(\S\D{1,})+(\s\d{1,})+(\/)?([\s\S]{1,})?$/,
+      valid: true,
+      firstTouch: false,
+      error: "hiba!",
+    },
   };
   const [editableData, setEditableData] = useState(cloneDeep(data));
   const backup = cloneDeep(props.data);
@@ -177,7 +169,6 @@ const EditBookingForm: React.FC<{
   const outletCtx = useOutletContext() as Outlet;
   const hotelCtx = useContext(HotelContext);
   const accessToken = useAuthHeader();
-
   // ! SIDE EFFECT: backup equal with editableDate?
 
   useEffect(() => {
@@ -208,328 +199,52 @@ const EditBookingForm: React.FC<{
   const inputChangeHandler = (e: React.ChangeEvent) => {
     if (!(e.target instanceof HTMLInputElement)) return;
     const value = e.target.value;
-    const group = e.target.dataset.group as string;
-    const depthGroup = e.target.dataset.depthGroup as string;
-    const objectKey = e.target.dataset.key as string;
-
-    const testInput = (deepestGroup: string | null) => {
-      if (deepestGroup === group) {
-        if (inputValidate[group][objectKey].pattern !== null) {
-          const testValid = inputValidate[group][objectKey].pattern.test(value);
-          testValid
-            ? setInputValidate((prevState) => {
-                return {
-                  ...prevState,
-                  [group]: {
-                    ...prevState[group],
-                    [objectKey]: {
-                      ...prevState[group][objectKey],
-                      valid: true,
-                    },
-                  },
-                };
-              })
-            : setInputValidate((prevState) => {
-                return {
-                  ...prevState,
-                  [group]: {
-                    ...prevState[group],
-                    [objectKey]: {
-                      ...prevState[group][objectKey],
-                      valid: false,
-                    },
-                  },
-                };
-              });
-        }
-      }
-
-      if (deepestGroup === depthGroup) {
-        if (inputValidate[group][depthGroup][objectKey].pattern !== null) {
-          const testValid =
-            inputValidate[group][depthGroup][objectKey].pattern.test(value);
-          testValid
-            ? setInputValidate((prevState) => {
-                return {
-                  ...prevState,
-                  [group]: {
-                    ...prevState[group],
-                    [depthGroup]: {
-                      ...prevState[group][depthGroup],
-                      [objectKey]: {
-                        ...prevState[group][depthGroup][objectKey],
-                        valid: true,
-                      },
-                    },
-                  },
-                };
-              })
-            : setInputValidate((prevState) => {
-                return {
-                  ...prevState,
-                  [group]: {
-                    ...prevState[group],
-                    [depthGroup]: {
-                      ...prevState[group][depthGroup],
-                      [objectKey]: {
-                        ...prevState[group][depthGroup][objectKey],
-                        valid: false,
-                      },
-                    },
-                  },
-                };
-              });
-        }
-      }
-
-      if (deepestGroup === null) {
-        if (inputValidate[objectKey].pattern !== null) {
-          const testValid = inputValidate[objectKey].pattern.test(value);
-          testValid
-            ? setInputValidate((prevState) => {
-                return {
-                  ...prevState,
-                  [objectKey]: { ...prevState[objectKey], valid: true },
-                };
-              })
-            : setInputValidate((prevState) => {
-                return {
-                  ...prevState,
-                  [objectKey]: { ...prevState[objectKey], valid: false },
-                };
-              });
-        }
+    const name = e.target.name as string;
+    if (!inputValidate[name].firstTouch) {
+      setInputValidate((prev) => ({
+        ...prev,
+        [name]: { ...prev[name], firstTouch: true },
+      }));
+    }
+    const testInput = () => {
+      if (inputValidate[name].pattern !== null) {
+        const testValid = inputValidate[name].pattern.test(value);
+        testValid
+          ? setInputValidate((prev) => {
+              return { ...prev, [name]: { ...prev[name], valid: true } };
+            })
+          : setInputValidate((prev) => {
+              return { ...prev, [name]: { ...prev[name], valid: false } };
+            });
       }
     };
-
-    if (group && !depthGroup) {
-      setEditableData((prevState) => {
-        return {
-          ...prevState,
-          [group]: { ...prevState[group], [objectKey]: value },
-        };
-      });
-
-      setInputValidate((prevState) => {
-        return {
-          ...prevState,
-          [group]: {
-            ...prevState[group],
-            [objectKey]: {
-              ...prevState[group][objectKey],
-              firstTouch: true,
-            },
-          },
-        };
-      });
-
-      testInput(group);
-    }
-
-    if (group && depthGroup) {
-      setEditableData((prevState) => {
-        return {
-          ...prevState,
-          [group]: {
-            ...prevState[group],
-            [depthGroup]: {
-              ...prevState[group][depthGroup],
-              [objectKey]: value,
-            },
-          },
-        };
-      });
-
-      setInputValidate((prevState) => {
-        return {
-          ...prevState,
-          [group]: {
-            ...prevState[group],
-            [depthGroup]: {
-              ...prevState[group][depthGroup],
-              [objectKey]: {
-                ...prevState[group][depthGroup][objectKey],
-                firstTouch: true,
-              },
-            },
-          },
-        };
-      });
-
-      testInput(depthGroup);
-    }
-
-    if (!group && !depthGroup) {
-      if (objectKey === "startDate" || objectKey === "endDate") {
-        const isoFormat = `${value}T23:00:00.000Z`;
-        setEditableData((prevState) => ({
-          ...prevState,
-          [objectKey]: value,
-        }));
-
-        testInput(null);
-      } else {
-        setEditableData((prevState) => ({
-          ...prevState,
-          [objectKey]: value,
-        }));
-
-        setInputValidate((prevState) => {
-          return {
-            ...prevState,
-            [objectKey]: { ...prevState[objectKey], firstTouch: true },
-          };
-        });
-
-        testInput(null);
-      }
-    }
+    setEditableData((prev) => ({ ...prev, [name]: value }));
+    testInput();
   };
 
   const inputBlurHandler = (e: React.ChangeEvent) => {
     if (!(e.target instanceof HTMLInputElement)) return;
-
     const value = e.target.value;
-    const group = e.target.dataset.group as string;
-    const depthGroup = e.target.dataset.depthGroup as string;
-    const objectKey = e.target.dataset.key as string;
+    const name = e.target.name as string;
 
-    const testInput = (deepestGroup: string | null) => {
-      if (deepestGroup === group) {
-        if (inputValidate[group][objectKey].pattern !== null) {
-          const testValid = inputValidate[group][objectKey].pattern.test(value);
-          testValid
-            ? setInputValidate((prevState) => {
-                return {
-                  ...prevState,
-                  [group]: {
-                    ...prevState[group],
-                    [objectKey]: {
-                      ...prevState[group][objectKey],
-                      valid: true,
-                    },
-                  },
-                };
-              })
-            : setInputValidate((prevState) => {
-                return {
-                  ...prevState,
-                  [group]: {
-                    ...prevState[group],
-                    [objectKey]: {
-                      ...prevState[group][objectKey],
-                      valid: false,
-                    },
-                  },
-                };
-              });
-        }
-      }
-
-      if (deepestGroup === depthGroup) {
-        if (inputValidate[group][depthGroup][objectKey].pattern !== null) {
-          const testValid =
-            inputValidate[group][depthGroup][objectKey].pattern.test(value);
-          testValid
-            ? setInputValidate((prevState) => {
-                return {
-                  ...prevState,
-                  [group]: {
-                    ...prevState[group],
-                    [depthGroup]: {
-                      ...prevState[group][depthGroup],
-                      [objectKey]: {
-                        ...prevState[group][depthGroup][objectKey],
-                        valid: true,
-                      },
-                    },
-                  },
-                };
-              })
-            : setInputValidate((prevState) => {
-                return {
-                  ...prevState,
-                  [group]: {
-                    ...prevState[group],
-                    [depthGroup]: {
-                      ...prevState[group][depthGroup],
-                      [objectKey]: {
-                        ...prevState[group][depthGroup][objectKey],
-                        valid: false,
-                      },
-                    },
-                  },
-                };
-              });
-        }
-      }
-
-      if (deepestGroup === null) {
-        if (inputValidate[objectKey].pattern !== null) {
-          const testValid = inputValidate[objectKey].pattern.test(value);
-          testValid
-            ? setInputValidate((prevState) => {
-                return {
-                  ...prevState,
-                  [objectKey]: { ...prevState[objectKey], valid: true },
-                };
-              })
-            : setInputValidate((prevState) => {
-                return {
-                  ...prevState,
-                  [objectKey]: { ...prevState[objectKey], valid: false },
-                };
-              });
-        }
+    const testInput = () => {
+      if (inputValidate[name].pattern !== null) {
+        const testValid = inputValidate[name].pattern.test(value);
+        testValid
+          ? setInputValidate((prev) => {
+              return { ...prev, [name]: { ...prev[name], valid: true } };
+            })
+          : setInputValidate((prev) => {
+              return { ...prev, [name]: { ...prev[name], valid: false } };
+            });
       }
     };
 
-    if (group && !depthGroup) {
-      setInputValidate((prevState) => {
-        return {
-          ...prevState,
-          [group]: {
-            ...prevState[group],
-            [objectKey]: {
-              ...prevState[group][objectKey],
-              firstTouch: true,
-            },
-          },
-        };
-      });
-      testInput(group);
-    }
-
-    if (group && depthGroup) {
-      setInputValidate((prevState) => {
-        return {
-          ...prevState,
-          [group]: {
-            ...prevState[group],
-            [depthGroup]: {
-              ...prevState[group][depthGroup],
-              [objectKey]: {
-                ...prevState[group][depthGroup][objectKey],
-                firstTouch: true,
-              },
-            },
-          },
-        };
-      });
-
-      testInput(depthGroup);
-    }
-
-    if (!group && !depthGroup) {
-      setInputValidate((prevState) => {
-        return {
-          ...prevState,
-          [objectKey]: { ...prevState[objectKey], firstTouch: true },
-        };
-      });
-
-      testInput(null);
-    }
+    setInputValidate((prev) => ({
+      ...prev,
+      [name]: { ...prev[name], firstTouch: true },
+    }));
+    testInput();
   };
 
   const submitEditHandler = async (e: React.FormEvent) => {
@@ -572,7 +287,7 @@ const EditBookingForm: React.FC<{
       const url = process.env.REACT_APP_BACKEND_API as string;
       setEditLoading(true);
       const response = await fetch(
-        url + `/booking/${data._id}?hotel=${hotelCtx.hotelUUID}`,
+        url + `/booking/${data._id}?hotel=${hotelCtx.hotelId}`,
         {
           method: "PUT",
           headers: {
@@ -607,7 +322,7 @@ const EditBookingForm: React.FC<{
       }
     }
   };
-
+  console.log(inputValidate);
   return (
     <article className="p-4 bg-gray-200 laptop:shadow-lg flex flex-col space-y-8 laptop:rounded-3xl w-full laptop:w-4/5 desktop:w-1/2">
       <form onSubmit={submitEditHandler}>
@@ -617,6 +332,7 @@ const EditBookingForm: React.FC<{
           inputValidate={inputValidate}
           inputBlurHandler={inputBlurHandler}
         />
+
         <ButtonArea
           data={data}
           objectsEqual={objectsEqual}

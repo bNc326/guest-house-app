@@ -46,7 +46,7 @@ const EditModal: React.FC<{
       const url = process.env.REACT_APP_BACKEND_API as string;
 
       const res = await fetch(
-        url + `/disabled-days/${props.id}?hotel=${hotelCtx.hotelUUID}`,
+        url + `/disabled-days/${props.id}?hotel=${hotelCtx.hotelId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -119,7 +119,7 @@ const EditModal: React.FC<{
     setIsloading(true);
     const url = process.env.REACT_APP_BACKEND_API as string;
 
-    const res = await fetch(url + `/disabled-days/${props.id}`, {
+    const res = await fetch(url + `/disabled-days/${props.id}?hotel=${hotelCtx.hotelId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

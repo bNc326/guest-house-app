@@ -50,27 +50,27 @@ const EditBookingPreview: React.FC<{
               <ul className="text-dynamicList flex flex-col ">
                 <li className="flex items-center gap-1">
                   <HiUser />
-                  {data.costumer.name}
+                  {data.name}
                 </li>
                 <li className="flex items-center gap-1">
                   <HiMail />
-                  {data.costumer.email}
+                  {data.email}
                 </li>
                 <li className="flex items-center gap-1">
                   <HiPhone />
-                  {data.costumer.phone}
+                  {data.phone}
                 </li>
               </ul>
             </div>
             <div>
               <h3 className="font-bold text-dynamicDesc">Cím</h3>
               <ul className="text-dynamicList flex flex-col">
-                <li>{data.costumer.address.country}</li>
+                <li>{data.country}</li>
                 <li>
-                  {data.costumer.address.postalCode},{" "}
-                  {data.costumer.address.city}
+                  {data.postalCode},{" "}
+                  {data.city}
                 </li>
-                <li>{data.costumer.address.street}</li>
+                <li>{data.street}</li>
               </ul>
             </div>
           </div>
@@ -102,7 +102,7 @@ const EditBookingPreview: React.FC<{
           <li className="flex justify-between py-1 border-b-[0.5px] border-black/20">
             Összeg
             <span className="font-bold">
-              {data.price.HUF} Ft / {data.price.EUR} &#8364;
+              {data.HUF} Ft / {data.EUR} &#8364;
             </span>
           </li>
         </ul>

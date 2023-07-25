@@ -18,10 +18,10 @@ import Table, {
 } from "../../components/UI/Table";
 import { format } from "date-fns";
 import { HiTrash } from "react-icons/hi";
-import { HotelsModel } from "../../models/Hotels/HotelsModel";
+import { GuestHouseModel } from "../../models/GuestHouseModel";
 
 const GuestHouses = () => {
-  const data = useRouteLoaderData("guest-house") as HotelsModel;
+  const data = useRouteLoaderData("guest-house") as GuestHouseModel[];
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const revalidator = useRevalidator();
   const navigate = useNavigate();
@@ -94,7 +94,6 @@ const GuestHouses = () => {
   }, [deleteCheckbox]);
   //*\
 
-
   return (
     <section className="w-full flex flex-col gap-4">
       <div className="flex justify-between items-center w-full shadow-lg rounded-md p-4 bg-gray-300 font-medium">
@@ -119,8 +118,10 @@ const GuestHouses = () => {
                 {hotel._id}
               </TableCell>
               <TableCell>{hotel.hotelName}</TableCell>
-              <TableCell>{hotel.price}</TableCell>
-              <TableCell>{hotel.impressum.NTAK_regNumber}</TableCell>
+              <TableCell>
+                {hotel.discountPrice ? hotel.discountPrice : hotel.price}
+              </TableCell>
+              <TableCell>{hotel.NTAK}</TableCell>
 
               <TableButton to={hotel._id ? hotel._id : ""} type="edit" />
             </TableRow>
@@ -132,7 +133,6 @@ const GuestHouses = () => {
           </div>
         )}
       </div>
-
     </section>
   );
 };
@@ -140,8 +140,10 @@ const GuestHouses = () => {
 export default GuestHouses;
 
 export async function loader() {
-  const url = process.env.REACT_APP_BACKEND_API as string
-  const response = await fetch(url + `/hotels`);
+  const url = process.env.REACT_APP_BACKEND_API as string;
+  const response = await fetch(
+    url + `/hotels?filter=-bookedDates,-disabledDays,-ratings`
+  );
 
   if (!response.ok) {
     throw json({ message: "fetch failed" }, { status: 500 });

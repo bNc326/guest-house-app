@@ -235,6 +235,7 @@ const Form = () => {
           animateIn="animate__fadeInUp"
         >
           <TextInput
+            type="text"
             className="text-red-600"
             icon={MdPerson}
             value={formInput.name.value}
@@ -269,6 +270,7 @@ const Form = () => {
           animateIn="animate__fadeInUp"
         >
           <TextInput
+            type="text"
             icon={MdEmail}
             value={formInput.email.value}
             name="email"
@@ -302,6 +304,7 @@ const Form = () => {
           animateIn="animate__fadeInUp"
         >
           <TextInput
+            type="text"
             icon={MdPhone}
             value={formInput.phone.value}
             name="phone"

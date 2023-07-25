@@ -2,7 +2,18 @@ import { Hotel } from "../models/Hotels.js";
 
 export const getHotels = async (req, res, next) => {
   try {
-    const result = await Hotel.find();
+    let result;
+    const filter = req.query.filter;
+    if (filter) {
+      const filterArray = filter.split(",");
+      let filterString = "";
+      filterArray.map((text) => {
+        filterString += `${text}\xa0`;
+      });
+      result = await Hotel.find().select(filterString);
+    } else {
+      result = await Hotel.find();
+    }
     res.status(200).send(result);
   } catch (err) {
     next(err);
