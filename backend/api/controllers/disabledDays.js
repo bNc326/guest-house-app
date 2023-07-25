@@ -1,87 +1,128 @@
-import { DisabledDayDynamic } from "../utils/dynamicDbCollections.js";
+import { DisabledDays } from "../models/DisabledDays.js";
+import { Hotel } from "../models/Hotels.js";
+
+const handleUpdateBookedDates = (hotel, id, body) => {
+  const findDisabledDay = hotel.disabledDays.find(
+    (date) => date._id.valueOf() === id
+  );
+  findDisabledDay.startDate = body.startDate;
+  findDisabledDay.endDate = body.endDate;
+  hotel.save();
+};
+
+const handleDeleteDisabledDays = (hotel, ids) => {
+  ids.map((id) => {
+    const index = hotel.disabledDays.findIndex(
+      (date) => date._id.valueOf() === id
+    );
+    if (index !== -1) {
+      hotel.disabledDays = [
+        ...hotel.disabledDays.slice(0, index),
+        ...hotel.disabledDays.slice(index + 1),
+      ];
+    }
+  });
+  hotel.save();
+};
 
 export const getDisabledDays = async (req, res, next) => {
   try {
-    const DisabledDays = DisabledDayDynamic(req.hotelParams)
-    const result = await DisabledDays.find().sort({ createdAt: -1 });
+    const result = await DisabledDays.find({ hotel: req.hotel }).sort({
+      createdAt: -1,
+    });
     res.status(200).send(result);
   } catch (err) {
     next(err);
   }
 };
 
-export const getOneDisabledDays = async (req, res, next) => {
+export const getDisabledDay = async (req, res, next) => {
   try {
-    const DisabledDays = DisabledDayDynamic(req.hotelParams)
-    const result = await DisabledDays.findOne({ _id: req.params.id });
+    const result = await DisabledDays.findById({ _id: req.params.id });
+    if (result === null) {
+      res.status(404).json({
+        success: false,
+        status: 404,
+        message: `Nem található a ${req.params.id} azonosítójú kizárt nap!`,
+        id: req.params.id,
+      });
+      return;
+    }
     res.status(200).send(result);
   } catch (err) {
     next(err);
   }
 };
 
-export const sendDisabledDays = async (req, res, next) => {
+export const createDisabledDay = async (req, res, next) => {
   try {
-    const DisabledDays = DisabledDayDynamic(req.hotelParams)
-    const newDisabledDays = new DisabledDays(req.body);
-    await newDisabledDays.save();
-
-    res.status(201).json({
-      success: true,
-      status: 201,
-      message: `Sikeresen létrehoztad a kizárt napot!`,
-      admin: req.body.admin,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const deleteManyDisabledDays = async (req, res, next) => {
-  try {
-    const DisabledDays = DisabledDayDynamic(req.hotelParams)
-    await DisabledDays.deleteMany({ _id: { $in: req.body } });
-    res.status(201).json({
-      success: true,
-      status: 201,
-      message: "Sikeresen törölted a kizárt napot/okat!",
-      id: req.body,
-    });
-  } catch (err) {
-    next(err);
+    const newDisabledDay = new DisabledDays(req.body);
+    newDisabledDay.hotel = req.hotel;
+    await newDisabledDay.save();
+    try {
+      const disabledDay = {
+        _id: newDisabledDay._id,
+        startDate: newDisabledDay.startDate,
+        endDate: newDisabledDay.endDate,
+      };
+      await Hotel.findByIdAndUpdate(req.hotel, {
+        $push: { disabledDays: disabledDay },
+      });
+      res.status(201).json({
+        success: true,
+        status: 201,
+        message: `Sikeresen létrehoztad a kizárt napot!`,
+        admin: req.body.admin,
+      });
+    } catch (error) {
+      next(error);
+    }
+  } catch (error) {
+    next(error);
   }
 };
 
 export const deleteDisabledDays = async (req, res, next) => {
   try {
-    const DisabledDays = DisabledDayDynamic(req.hotelParams)
-    await DisabledDays.findByIdAndDelete(req.params.id);
-    res.status(201).json({
-      success: true,
-      status: 201,
-      message: `Sikeresen törölted a ${req.params.id} azonosítójú kizárt napot!`,
-      admin: req.body.admin,
-      id: req.params.id,
-    });
-  } catch (err) {
-    next(err);
+    await DisabledDays.deleteMany({ _id: { $in: req.body } });
+    try {
+      const hotel = await Hotel.findById(req.hotel);
+      handleDeleteDisabledDays(hotel, req.body);
+
+      res.status(201).json({
+        success: true,
+        status: 201,
+        message: "Sikeresen törölted a kizárt napot/okat!",
+        id: req.body,
+      });
+    } catch (error) {
+      next(error);
+    }
+  } catch (error) {
+    next(error);
   }
 };
 
-export const editDisabledDays = async (req, res, next) => {
+export const editDisabledDay = async (req, res, next) => {
   try {
-    const DisabledDays = DisabledDayDynamic(req.hotelParams)
     await DisabledDays.findByIdAndUpdate(req.params.id, {
       $set: req.body,
     });
-    res.status(201).json({
-      success: true,
-      status: 201,
-      message: `Sikeresen szerkesztetted a ${req.params.id} azonosítójú kizárt napot!`,
-      admin: req.body.admin,
-      id: req.params.id,
-    });
-  } catch (err) {
-    next(err);
+    try {
+      const hotel = await Hotel.findById(req.hotel);
+      handleUpdateBookedDates(hotel, req.params.id, req.body);
+
+      res.status(201).json({
+        success: true,
+        status: 201,
+        message: `Sikeresen szerkesztetted a ${req.params.id} azonosítójú kizárt napot!`,
+        admin: req.body.admin,
+        id: req.params.id,
+      });
+    } catch (error) {
+      next(error);
+    }
+  } catch (error) {
+    next(error);
   }
 };

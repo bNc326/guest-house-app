@@ -4,8 +4,6 @@ import { getMonth } from "date-fns";
 const BigCalendar: React.FC<{
   weekDays: string[];
   renderCalendar: DateModel[][];
-  currentYear: number;
-  months: string[];
   blockedDate?: Date | string;
   onClick?: (e: React.MouseEvent<EventTarget>) => void;
   onMouseEnter?: (e: React.MouseEvent<EventTarget>) => void;
@@ -19,6 +17,19 @@ const BigCalendar: React.FC<{
     });
   }, [currentMonth]);
 
+  const handleGetDate = (month: number, returnData: "month" | "year") => {
+    const date = new Date();
+    date.setDate(1);
+    date.setMonth(month);
+    const local = "hu-HU";
+    if (returnData === "month") {
+      return date.toLocaleDateString(local, { month: "short" });
+    }
+    if (returnData === "year") {
+      return date.toLocaleDateString(local, { year: "numeric" });
+    }
+  };
+
   return (
     <div
       ref={calendar}
@@ -29,12 +40,13 @@ const BigCalendar: React.FC<{
           key={monthIndex}
           className="bg-calendar w-[calc(100%)] mobile:w-[calc(50%-1rem/2)] laptop:w-[calc(33%-1rem/2)] h-full rounded-3xl shadow-shadow relative"
         >
-
           {/* Current Year*/}
           <div className="flex justify-center py-2 z-50 text-palette-2">
             <h2 className="text-dynamicTitle3 font-medium">
-              <span className="font-bold">{props.currentYear}</span>{" "}
-              {props.months[monthIndex]}
+              <span className="font-bold">
+                {handleGetDate(monthIndex, "year")}
+              </span>{" "}
+              {handleGetDate(monthIndex, "month")}
             </h2>
           </div>
 

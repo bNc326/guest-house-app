@@ -7,7 +7,7 @@ const dirPath = "./store/images/gallery";
 const filePath = "./store/gallery/gallery.json";
 const removePath = "./store/images/gallery/";
 
-export const getGallery = (req, res, next) => {
+export const getImages = (req, res, next) => {
   try {
     fs.readFile(filePath, (err, file) => {
       const data = JSON.parse(file);
@@ -19,7 +19,7 @@ export const getGallery = (req, res, next) => {
   }
 };
 
-export const getOneImage = (req, res, next) => {
+export const getImage = (req, res, next) => {
   try {
     fs.readFile(filePath, (err, file) => {
       const data = JSON.parse(file);
@@ -117,7 +117,7 @@ export const editImage = (req, res, next) => {
   }
 };
 
-export const deleteImage = (req, res, next) => {
+export const deleteImages = (req, res, next) => {
   try {
     const deleteItems = req.body;
     fs.readFile(filePath, (err, file) => {

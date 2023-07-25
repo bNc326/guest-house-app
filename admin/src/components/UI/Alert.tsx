@@ -35,7 +35,7 @@ const AlertComponent: React.FC<{
             className=""
           >
             <span className="px-2">
-              <span className="font-medium">
+              <span className="font-bold">
                 {props.type === ALERT_TYPE.SUCCESS ? "Siker!" : ""}
                 {props.type === ALERT_TYPE.FAILURE ? "Hoppáá!" : ""}
               </span>{" "}

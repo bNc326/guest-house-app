@@ -66,7 +66,7 @@ const BookingProvider: React.FC<{ children: JSX.Element }> = (props) => {
   useLayoutEffect(() => {
     const getInitialPrice = () => {
       hotelCtx.hotels.map((hotel) => {
-        if (hotel.hotelUUID === hotelCtx.hotelUUID) {
+        if (hotel._id === hotelCtx.hotelId) {
           if (hotel.discountPrice) {
             setRenderBookingData((prev) => {
               return { ...prev, initialPrice: hotel.discountPrice as number };
@@ -84,7 +84,7 @@ const BookingProvider: React.FC<{ children: JSX.Element }> = (props) => {
       getInitialPrice();
     }, 100);
     return () => clearTimeout(cleanup);
-  }, [hotelCtx.hotelUUID]);
+  }, [hotelCtx.hotelId]);
 
   const bookingContext: BookingContextModel = {
     isShowForm: renderBookingData.isShowForm,

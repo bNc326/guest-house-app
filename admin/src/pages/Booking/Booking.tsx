@@ -182,7 +182,7 @@ const Booking = () => {
   const deleteItemsHandler = async () => {
     const url = process.env.REACT_APP_BACKEND_API as string;
 
-    const res = await fetch(url + `/booking?hotel=${hotelCtx.hotelUUID}`, {
+    const res = await fetch(url + `/booking?hotel=${hotelCtx.hotelId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -259,11 +259,11 @@ const Booking = () => {
               <TableCell>
                 {format(new Date(date.endDate), "yyyy-MM-dd")}
               </TableCell>
-              <TableCell>{date.costumer.email}</TableCell>
-              <TableCell>{date.costumer.name}</TableCell>
+              <TableCell>{date.email}</TableCell>
+              <TableCell>{date.name}</TableCell>
               <TableCell>{date.nightAmount}</TableCell>
-              <TableCell>{date.price.HUF} Ft</TableCell>
-              <TableCell>{date.price.EUR} &#8364;</TableCell>
+              <TableCell>{date.HUF} Ft</TableCell>
+              <TableCell>{date.EUR} &#8364;</TableCell>
               <TableCell>
                 {format(new Date(date.createdAt), "yyyy-MM-dd")}
               </TableCell>
@@ -285,7 +285,7 @@ const Booking = () => {
                 )}
               </TableCell>
               <TableButton
-                to={`${date._id}?hotel=${hotelCtx.hotelUUID}`}
+                to={`${date._id}?hotel=${hotelCtx.hotelId}`}
                 type="edit"
               />
             </TableRow>

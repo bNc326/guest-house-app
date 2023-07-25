@@ -1,19 +1,19 @@
 import express from "express";
 import { uploads } from "../utils/uploads.js";
 import {
-  getGallery,
-  getOneImage,
+  getImages,
+  getImage,
   editImage,
-  deleteImage,
+  deleteImages,
   uploadImage,
 } from "../controllers/gallery.js";
 import { verifyToken } from "../utils/verifyToken.js";
 const router = express.Router();
 
-router.get("/", getGallery);
+router.get("/", getImages);
 router.post("/upload", verifyToken, uploads.array("images"), uploadImage);
-router.get("/:id", getOneImage);
+router.get("/:id", getImage);
 router.put("/:id", verifyToken, editImage);
-router.delete("/", verifyToken, deleteImage);
+router.delete("/", verifyToken, deleteImages);
 
 export default router;

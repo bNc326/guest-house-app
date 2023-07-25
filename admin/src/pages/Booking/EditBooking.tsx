@@ -42,7 +42,7 @@ const EditBooking = () => {
       }
 
       const response = await fetch(
-        url + `/booking/${params.bookingId}?hotel=${hotelCtx.hotelUUID}`,
+        url + `/booking/${params.bookingId}?hotel=${hotelCtx.hotelId}`,
         {
           method: "PUT",
           headers: {

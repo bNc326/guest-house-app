@@ -1,20 +1,18 @@
 import express from "express";
 import {
+  getRatings,
+  createRating,
   getRating,
-  sendRating,
-  getOneRating,
   editRating,
-  deleteRating,
-  deleteManyRating,
+  deleteRatings,
 } from "../controllers/rating.js";
 import { verifyToken } from "../utils/verifyToken.js";
 const router = express.Router();
 
-router.get("/", getRating);
-router.post("/", sendRating);
-router.delete("/", verifyToken, deleteManyRating);
-router.get("/:id", getOneRating);
+router.get("/", getRatings);
+router.post("/", createRating);
+router.delete("/", verifyToken, deleteRatings);
+router.get("/:id", getRating);
 router.put("/:id", verifyToken, editRating);
-router.delete("/:id", verifyToken, deleteRating);
 
 export default router;

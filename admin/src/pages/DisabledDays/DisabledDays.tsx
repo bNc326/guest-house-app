@@ -176,7 +176,7 @@ const DisabledDays = () => {
     const url = process.env.REACT_APP_BACKEND_API as string;
 
     const res = await fetch(
-      url + `/disabled-days?hotel=${hotelCtx.hotelUUID}`,
+      url + `/disabled-days?hotel=${hotelCtx.hotelId}`,
       {
         method: "DELETE",
         headers: {

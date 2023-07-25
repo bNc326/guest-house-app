@@ -32,7 +32,7 @@ const ChangeHotelComponent: React.FC<{ path: string }> = ({ path }) => {
 
     const value = e.target.value as string;
 
-    hotelCtx.setHotelUUID(value);
+    hotelCtx.setHotelId(value);
     setHotelQuery((prev) => {
       prev.set("hotel", value);
       return prev;
@@ -49,9 +49,9 @@ const ChangeHotelComponent: React.FC<{ path: string }> = ({ path }) => {
       >
         {hotels?.map((hotel) => (
           <option
-            value={hotel.hotelUUID}
+            value={hotel._id}
             key={hotel._id}
-            selected={hotel.hotelUUID === hotelQuery.get("hotel")}
+            selected={hotel._id === hotelQuery.get("hotel")}
           >
             {hotel.hotelName}
           </option>

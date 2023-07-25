@@ -30,7 +30,7 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel; index: number }> = ({
 }) => {
   const navigate = useNavigate();
   const hotelCtx = useContext(HotelContext);
-  const address = `${hotel.impressum.postalCode} ${hotel.impressum.city}, ${hotel.impressum.street}`;
+  const address = `${hotel.postalCode} ${hotel.city}, ${hotel.street}`;
 
   return (
     <div className="w-full h-full rounded-xl bg-palette-2  shadow-lg flex flex-col items-center mobile:flex-row p-4 gap-4">
@@ -270,7 +270,7 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel; index: number }> = ({
             </div>
             <button
               onClick={() => {
-                hotelCtx.setHotelUUID(hotel.hotelUUID);
+                hotelCtx.setHotelId(hotel._id);
                 navigate("/naptar", { relative: "path" });
               }}
               className="w-full flex gap-2 items-center justify-center bg-palette-4 hover:opacity-80 text-palette-2 font-bold p-2 rounded-md shadow-md transition-all ease-in-out duration-300"

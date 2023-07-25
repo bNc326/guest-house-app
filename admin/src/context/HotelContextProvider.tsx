@@ -1,31 +1,34 @@
 import { createContext, useState, useEffect } from "react";
 import { GuestHouseModel } from "../models/GuestHouseModel";
-
-type hotelUUID = {
-  hotelUUID: string | null;
-  setHotelUUID: React.Dispatch<React.SetStateAction<string | null>>;
+type Hotels = {
+  hotels: GuestHouseModel[];
+  hotelId: string | null;
+  setHotelId: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
-export const HotelContext = createContext<hotelUUID>({
-  hotelUUID: null,
-  setHotelUUID: () => {},
+export const HotelContext = createContext<Hotels>({
+  hotels: [],
+  hotelId: null,
+  setHotelId: () => {},
 });
 
 export const HotelContextProvider: React.FC<{ children?: JSX.Element }> = ({
   children,
 }) => {
-  const [hotelUUID, setHotelUUID] = useState<string | null>(null);
+  const [hotelId, setHotelId] = useState<string | null>(null);
+  const [hotels, setHotels] = useState<GuestHouseModel[]>([]);
+
   useEffect(() => {
     const fetchHotel = async () => {
       const url = process.env.REACT_APP_BACKEND_API as string;
-
       const response = await fetch(`${url}/hotels`);
 
       if (!response.ok) {
         console.log("error");
       } else {
         const data: GuestHouseModel[] = await response.json();
-        setHotelUUID(data[0].hotelUUID);
+        setHotels(data);
+        setHotelId(data[0]._id ? data[0]._id : null);
       }
     };
 
@@ -35,7 +38,7 @@ export const HotelContextProvider: React.FC<{ children?: JSX.Element }> = ({
     return () => clearTimeout(cleanup);
   }, []);
   return (
-    <HotelContext.Provider value={{ hotelUUID, setHotelUUID }}>
+    <HotelContext.Provider value={{ hotels, hotelId, setHotelId }}>
       {children}
     </HotelContext.Provider>
   );

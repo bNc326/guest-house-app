@@ -1,20 +1,18 @@
 import express from "express";
 import {
   getDisabledDays,
-  getOneDisabledDays,
-  sendDisabledDays,
-  deleteManyDisabledDays,
+  getDisabledDay,
+  createDisabledDay,
   deleteDisabledDays,
-  editDisabledDays,
+  editDisabledDay,
 } from "../controllers/disabledDays.js";
 import { verifyToken } from "../utils/verifyToken.js";
 const router = express.Router();
 
 router.get("/", getDisabledDays);
-router.post("/", sendDisabledDays);
-router.delete("/", verifyToken, deleteManyDisabledDays);
-router.get("/:id", verifyToken, getOneDisabledDays);
-router.put("/:id", verifyToken,  editDisabledDays);
-router.delete("/:id", verifyToken, deleteDisabledDays);
+router.post("/", createDisabledDay);
+router.delete("/", verifyToken, deleteDisabledDays);
+router.get("/:id", verifyToken, getDisabledDay);
+router.put("/:id", verifyToken,  editDisabledDay);
 
 export default router;

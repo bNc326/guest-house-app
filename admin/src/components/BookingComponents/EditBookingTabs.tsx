@@ -21,16 +21,16 @@ const EditBookingTabs: React.FC<{
         <article className="flex flex-col  gap-4">
           <div className="flex flex-col mobile:flex-row gap-4">
             <div className="w-full">
+              <Label htmlFor="name" value="Név" />
               <TextInput
                 className="w-full"
-                icon={HiUser}
-                data-group={"costumer"}
-                data-key={"name"}
                 name="name"
-                value={data.costumer.name}
+                id="name"
+                type="text"
+                value={data.name}
                 color={`${
-                  inputValidate.costumer.name.firstTouch
-                    ? inputValidate.costumer.name.valid
+                  inputValidate.name.firstTouch
+                    ? inputValidate.name.valid
                       ? "gray"
                       : "failure"
                     : "gray"
@@ -38,13 +38,13 @@ const EditBookingTabs: React.FC<{
                 helperText={
                   <ErrorMessage
                     success={
-                      inputValidate.costumer.name.firstTouch
-                        ? inputValidate.costumer.name.valid
+                      inputValidate.name.firstTouch
+                        ? inputValidate.name.valid
                           ? true
                           : false
                         : true
                     }
-                    message={inputValidate.costumer.name.error}
+                    message={inputValidate.name.error}
                   />
                 }
                 onChange={inputChangeHandler}
@@ -52,15 +52,17 @@ const EditBookingTabs: React.FC<{
               />
             </div>
             <div className="w-full">
+              <Label htmlFor="email" value="Email" />
               <TextInput
                 className="w-full"
                 icon={HiMail}
-                data-group={"costumer"}
-                data-key={"email"}
-                value={data.costumer.email}
+                name="email"
+                id="email"
+                value={data.email}
+                type="text"
                 color={`${
-                  inputValidate.costumer.email.firstTouch
-                    ? inputValidate.costumer.email.valid
+                  inputValidate.email.firstTouch
+                    ? inputValidate.email.valid
                       ? "gray"
                       : "failure"
                     : "gray"
@@ -68,13 +70,13 @@ const EditBookingTabs: React.FC<{
                 helperText={
                   <ErrorMessage
                     success={
-                      inputValidate.costumer.email.firstTouch
-                        ? inputValidate.costumer.email.valid
+                      inputValidate.email.firstTouch
+                        ? inputValidate.email.valid
                           ? true
                           : false
                         : true
                     }
-                    message={inputValidate.costumer.email.error}
+                    message={inputValidate.email.error}
                   />
                 }
                 onChange={inputChangeHandler}
@@ -82,15 +84,16 @@ const EditBookingTabs: React.FC<{
               />
             </div>
             <div className="w-full">
+              <Label htmlFor="phone" value="Telefonszám" />
               <TextInput
                 className="w-full"
-                icon={HiPhone}
-                data-group={"costumer"}
-                data-key={"phone"}
-                value={data.costumer.phone}
+                name="phone"
+                id="phone"
+                type="text"
+                value={data.phone}
                 color={`${
-                  inputValidate.costumer.phone.firstTouch
-                    ? inputValidate.costumer.phone.valid
+                  inputValidate.phone.firstTouch
+                    ? inputValidate.phone.valid
                       ? "gray"
                       : "failure"
                     : "gray"
@@ -98,13 +101,13 @@ const EditBookingTabs: React.FC<{
                 helperText={
                   <ErrorMessage
                     success={
-                      inputValidate.costumer.phone.firstTouch
-                        ? inputValidate.costumer.phone.valid
+                      inputValidate.phone.firstTouch
+                        ? inputValidate.phone.valid
                           ? true
                           : false
                         : true
                     }
-                    message={inputValidate.costumer.phone.error}
+                    message={inputValidate.phone.error}
                   />
                 }
                 onChange={inputChangeHandler}
@@ -119,14 +122,12 @@ const EditBookingTabs: React.FC<{
                 id="country"
                 type="text"
                 required={true}
-                data-group={"costumer"}
-                data-depth-group={"address"}
-                data-key={"country"}
+                name="country"
                 shadow={true}
-                value={data.costumer.address.country}
+                value={data.country}
                 color={`${
-                  inputValidate.costumer.address.country.firstTouch
-                    ? inputValidate.costumer.address.country.valid
+                  inputValidate.country.firstTouch
+                    ? inputValidate.country.valid
                       ? "gray"
                       : "failure"
                     : "gray"
@@ -134,13 +135,13 @@ const EditBookingTabs: React.FC<{
                 helperText={
                   <ErrorMessage
                     success={
-                      inputValidate.costumer.address.country.firstTouch
-                        ? inputValidate.costumer.address.country.valid
+                      inputValidate.country.firstTouch
+                        ? inputValidate.country.valid
                           ? true
                           : false
                         : true
                     }
-                    message={inputValidate.costumer.address.country.error}
+                    message={inputValidate.country.error}
                   />
                 }
                 onChange={inputChangeHandler}
@@ -153,16 +154,14 @@ const EditBookingTabs: React.FC<{
               <Label htmlFor="postalCode" value="Irányszítószám" />
               <TextInput
                 id="postalCode"
-                data-group={"costumer"}
-                data-depth-group={"address"}
-                data-key={"postalCode"}
+                name="postalCode"
                 type="text"
                 required={true}
                 shadow={true}
-                value={data.costumer.address.postalCode}
+                value={data.postalCode}
                 color={`${
-                  inputValidate.costumer.address.postalCode.firstTouch
-                    ? inputValidate.costumer.address.postalCode.valid
+                  inputValidate.postalCode.firstTouch
+                    ? inputValidate.postalCode.valid
                       ? "gray"
                       : "failure"
                     : "gray"
@@ -170,13 +169,13 @@ const EditBookingTabs: React.FC<{
                 helperText={
                   <ErrorMessage
                     success={
-                      inputValidate.costumer.address.postalCode.firstTouch
-                        ? inputValidate.costumer.address.postalCode.valid
+                      inputValidate.postalCode.firstTouch
+                        ? inputValidate.postalCode.valid
                           ? true
                           : false
                         : true
                     }
-                    message={inputValidate.costumer.address.postalCode.error}
+                    message={inputValidate.postalCode.error}
                   />
                 }
                 onChange={inputChangeHandler}
@@ -187,16 +186,14 @@ const EditBookingTabs: React.FC<{
               <Label htmlFor="city" value="Város/falu" />
               <TextInput
                 id="city"
-                data-group={"costumer"}
-                data-depth-group={"address"}
-                data-key={"city"}
+                name="city"
                 type="text"
                 required={true}
                 shadow={true}
-                value={data.costumer.address.city}
+                value={data.city}
                 color={`${
-                  inputValidate.costumer.address.city.firstTouch
-                    ? inputValidate.costumer.address.city.valid
+                  inputValidate.city.firstTouch
+                    ? inputValidate.city.valid
                       ? "gray"
                       : "failure"
                     : "gray"
@@ -204,13 +201,13 @@ const EditBookingTabs: React.FC<{
                 helperText={
                   <ErrorMessage
                     success={
-                      inputValidate.costumer.address.city.firstTouch
-                        ? inputValidate.costumer.address.city.valid
+                      inputValidate.city.firstTouch
+                        ? inputValidate.city.valid
                           ? true
                           : false
                         : true
                     }
-                    message={inputValidate.costumer.address.city.error}
+                    message={inputValidate.city.error}
                   />
                 }
                 onChange={inputChangeHandler}
@@ -221,16 +218,14 @@ const EditBookingTabs: React.FC<{
               <Label htmlFor="street" value="utca/házszám" />
               <TextInput
                 id="street"
-                data-group={"costumer"}
-                data-depth-group={"address"}
-                data-key={"street"}
+                name="street"
                 type="text"
                 required={true}
                 shadow={true}
-                value={data.costumer.address.street}
+                value={data.street}
                 color={`${
-                  inputValidate.costumer.address.street.firstTouch
-                    ? inputValidate.costumer.address.street.valid
+                  inputValidate.street.firstTouch
+                    ? inputValidate.street.valid
                       ? "gray"
                       : "failure"
                     : "gray"
@@ -238,13 +233,13 @@ const EditBookingTabs: React.FC<{
                 helperText={
                   <ErrorMessage
                     success={
-                      inputValidate.costumer.address.street.firstTouch
-                        ? inputValidate.costumer.address.street.valid
+                      inputValidate.street.firstTouch
+                        ? inputValidate.street.valid
                           ? true
                           : false
                         : true
                     }
-                    message={inputValidate.costumer.address.street.error}
+                    message={inputValidate.street.error}
                   />
                 }
                 onChange={inputChangeHandler}
@@ -260,10 +255,11 @@ const EditBookingTabs: React.FC<{
             <div className="w-full">
               <Label htmlFor="startDate" value="Érkezés" />
               <TextInput
+                disabled
                 icon={BsCalendarDateFill}
                 type="date"
                 id="startDate"
-                data-key={"startDate"}
+                name="startDate"
                 value={format(new Date(data.startDate), "yyyy-MM-dd")}
                 onChange={inputChangeHandler}
                 min={"2022-11-13"}
@@ -286,10 +282,11 @@ const EditBookingTabs: React.FC<{
             <div className="w-full">
               <Label htmlFor="endDate" value="Távozás" />
               <TextInput
+                disabled
                 icon={BsCalendarDateFill}
                 type="date"
                 id="endDate"
-                data-key={"endDate"}
+                name="endDate"
                 value={format(new Date(data.endDate), "yyyy-MM-dd")}
                 onChange={inputChangeHandler}
                 min={"2022-11-13"}
@@ -312,12 +309,13 @@ const EditBookingTabs: React.FC<{
           </div>
           <div className="flex gap-4">
             <div className="w-full">
-              <Label htmlFor="nightamount" value="Éjszakák száma" />
+              <Label htmlFor="nightAmount" value="Éjszakák száma" />
               <TextInput
+                disabled
                 icon={MdHotel}
                 type="number"
-                id="nightamount"
-                data-key={"nightAmount"}
+                id="nightAmount"
+                name="nightAmount"
                 min={0}
                 value={data.nightAmount}
                 color={`${
@@ -346,9 +344,10 @@ const EditBookingTabs: React.FC<{
             <div className="w-full">
               <Label htmlFor="personsAmount" value="Személyek száma" />
               <TextInput
+                disabled
                 icon={FaUsers}
                 id="personsAmount"
-                data-key={"personsAmount"}
+                name="personsAmount"
                 min={0}
                 type="number"
                 value={data.personsAmount}
@@ -380,25 +379,23 @@ const EditBookingTabs: React.FC<{
             <div className="w-full">
               <Label htmlFor="HUF" value="HUF" />
               <TextInput
+                disabled
                 addon={<span className="font-bold">FT</span>}
                 type="text"
                 id="HUF"
-                data-group="price"
-                data-key="HUF"
-                value={data.price.HUF}
-                disabled
+                name="HUF"
+                value={data.HUF}
               />
             </div>
             <div className="w-full">
               <Label htmlFor="EUR" value="EUR" />
               <TextInput
+                disabled
                 addon={<FaEuroSign />}
                 id="EUR"
-                data-group="price"
-                data-key="EUR"
+                name="EUR"
                 type="text"
-                value={data.price.EUR}
-                disabled
+                value={data.EUR}
               />
             </div>
           </div>

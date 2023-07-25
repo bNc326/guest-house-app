@@ -2,20 +2,20 @@ import { createContext, useState, useEffect } from "react";
 import { GuestHouseModel } from "models/GuestHouseModel";
 type Hotels = {
   hotels: GuestHouseModel[]
-  hotelUUID: string | null;
-  setHotelUUID: React.Dispatch<React.SetStateAction<string | null>>;
+  hotelId: string | null;
+  setHotelId: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
 export const HotelContext = createContext<Hotels>({
   hotels: [],
-  hotelUUID: null,
-  setHotelUUID: () => {},
+  hotelId: null,
+  setHotelId: () => {},
 });
 
 export const HotelContextProvider: React.FC<{ children?: JSX.Element }> = ({
   children,
 }) => {
-  const [hotelUUID, setHotelUUID] = useState<string | null>(null);
+  const [hotelId, setHotelId] = useState<string | null>(null);
   const [hotels, setHotels] = useState<GuestHouseModel[]>([]);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export const HotelContextProvider: React.FC<{ children?: JSX.Element }> = ({
     return () => clearTimeout(cleanup);
   }, []);
   return (
-    <HotelContext.Provider value={{ hotels, hotelUUID, setHotelUUID }}>
+    <HotelContext.Provider value={{ hotels, hotelId, setHotelId }}>
       {children}
     </HotelContext.Provider>
   );

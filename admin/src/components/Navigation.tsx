@@ -34,12 +34,12 @@ const Navigation: React.FC<{
     },
     {
       id: 2,
-      path: `foglalasi-naptar?hotel=${hotelCtx.hotelUUID}`,
+      path: `foglalasi-naptar?hotel=${hotelCtx.hotelId}`,
       linkName: "Foglalások",
     },
     {
       id: 3,
-      path: `lezart-naptar?hotel=${hotelCtx.hotelUUID}`,
+      path: `lezart-naptar?hotel=${hotelCtx.hotelId}`,
       linkName: "Lezárt napok",
     },
     {

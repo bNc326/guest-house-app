@@ -1,7 +1,9 @@
-import DateModel from "../../models/DateModel";
+import { json } from "react-router-dom";
+import DateModel, { Day } from "../../models/DateModel";
+import Calendar from "models/Calendar";
 import { DbDateModel, DisabledDbDays } from "../../models/DbDateModel";
 import { getDaysInMonth, format } from "date-fns";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useLayoutEffect } from "react";
 import { v4 as uuid } from "uuid";
 import BigCalendar from "./BigCalendar";
 import BookingDate from "../../models/BookingDate";
@@ -10,6 +12,8 @@ import { ClipLoader, ScaleLoader } from "react-spinners";
 import { BookingContext } from "context/BookingContextProvider";
 import { DisabledDaysModel } from "models/DisabledDaysModel";
 import { HotelContext } from "context/HotelContextProvider";
+import InfiniteScroll from "react-infinite-scroll-component";
+import UnavailableDates from "models/UnavailableDates";
 
 const CalendarComponent: React.FC<{
   isSelecting: boolean;
@@ -24,27 +28,11 @@ const CalendarComponent: React.FC<{
     "Szombat",
     "Vasárnap",
   ];
-  const months: string[] = [
-    "Január",
-    "Február",
-    "Március",
-    "Április",
-    "Május",
-    "Június",
-    "Július",
-    "Augusztus",
-    "Szeptember",
-    "Október",
-    "November",
-    "December",
-  ];
   const currentDate = new Date();
   const currYear: number = currentDate.getFullYear();
-  const [isMounted, setIsMounted] = useState(false);
+  const [renderedMonth, setRenderedMonth] = useState<number>(12);
   const [renderedCalendar, setRenderedCalendar] = useState<DateModel[][]>([]);
-  const [calendarLoading, setCalendarLoading] = useState<
-    "no loading" | "loading" | "change state" | "success"
-  >("no loading");
+  const [calendarLoading, setCalendarLoading] = useState<boolean>(true);
   const [hotelChange, setHotelChange] = useState<boolean>(false);
   const [renderBookingDate, setRenderBookingDate] = useState<BookingDate>({});
   const [firstTouch, setFirstTouch] = useState<boolean>(false);
@@ -59,272 +47,63 @@ const CalendarComponent: React.FC<{
   const [disabledDays, setDisabledDays] = useState<DisabledDaysModel[]>([]);
   const bookingCtx = useContext(BookingContext);
   const hotelCtx = useContext(HotelContext);
+  const [hasMore, setHasMore] = useState(true);
+  const calendar = new Calendar(
+    renderedMonth,
+    renderedCalendar,
+    setRenderedCalendar
+  );
 
   // ! ASYNC FUNCTIONS
 
   useEffect(() => {
-    const filterAcceptedDate = (item: DbDateModel) => {
-      if (item.status === "Accepted" || item.status === "Pending") {
-        return item;
-      }
-    };
-    const fetchDate = async () => {
-      let dbDate: BookedDate[] = [];
-      const disabledDbDays: DisabledDaysModel[] = [];
+    const fetchUnavailableDates = async () => {
       const url = process.env.REACT_APP_BACKEND_API as string;
+
       const response = await fetch(
-        `${url}/booking?hotel=${hotelCtx?.hotelUUID}`
+        `${url}/hotels/${hotelCtx.hotelId}?filter=booked,disabled`
       );
-      const disabledDaysResponse = await fetch(
-        `${url}/disabled-days?hotel=${hotelCtx?.hotelUUID}`
-      );
+
       if (!response.ok) {
-        //TODO: Handle error
-        console.log("hiba");
+        console.log("error");
+        return json({
+          status: 404,
+          message: "Nem sikerült az adata lekérése!",
+        });
       } else {
-        const data = await response.json();
-        const disabledDaysData = await disabledDaysResponse.json();
-        data.filter(filterAcceptedDate).map((item: DbDateModel) => {
-          const updatedObject: BookedDate = {
-            id: item._id,
-            startDate: item.startDate,
-            endDate: item.endDate,
-            status: item.status,
-          };
-          dbDate.push(updatedObject);
-          setBookedDate(dbDate);
-        });
-        disabledDaysData.map((item: DisabledDbDays) => {
-          const updatedObject: DisabledDaysModel = {
-            id: item._id,
-            startDate: item.startDate,
-            endDate: item.endDate,
-          };
-          disabledDbDays.push(updatedObject);
-          setDisabledDays(disabledDbDays);
-        });
-        setHotelChange(false);
+        const data: UnavailableDates = await response.json();
+        console.log(data);
+        if (data.bookedDates) {
+          setBookedDate(data.bookedDates);
+        }
+        if (data.disabledDays) {
+          setDisabledDays(data.disabledDays);
+        }
       }
     };
+    const cleanup = setTimeout(() => {
+      fetchUnavailableDates();
+    }, 100);
+    return () => clearTimeout(cleanup);
+  }, [hotelCtx.hotelId, renderedMonth]);
+
+  useLayoutEffect(() => {
     const renderAllDays = () => {
-      let monthCounter = 0;
-      const updatedRenderCalendar: DateModel[][] = [];
-      for (monthCounter; monthCounter <= 11; monthCounter++) {
-        let updatedRenderDays: DateModel[] = [];
-        const date = new Date(currYear, monthCounter, 1);
-        const allDaysInMonth = getDaysInMonth(date);
-        const lastDaysOfPreviousMonth = new Date(
-          currYear,
-          monthCounter,
-          -1 + 1
-        ).getDate();
-        let firstDayOfMonth = new Date(currYear, monthCounter, 1).getDay();
-        // ! fixed weekdays
-        if (firstDayOfMonth === 0) {
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-          firstDayOfMonth = 7;
-        }
-        // * prev Month
-        for (
-          let i = lastDaysOfPreviousMonth - firstDayOfMonth + 2;
-          i <= lastDaysOfPreviousMonth;
-          i++
-        ) {
-          updatedRenderDays = [
-            ...updatedRenderDays,
-            {
-              id: uuid(),
-              arrayIndex: monthCounter,
-              value: "",
-              prevMonth: true,
-            },
-          ];
-        }
-        // * current Month
-        for (let i = 1; i <= allDaysInMonth; i++) {
-          updatedRenderDays = [
-            ...updatedRenderDays,
-            {
-              id: uuid(),
-              arrayIndex: monthCounter,
-              value: i,
-              prevMonth: false,
-              nextMonth: false,
-              date: format(new Date(currYear, monthCounter, i), "yyyy-MM-dd"),
-              today:
-                format(new Date(), "yyyy-MM-dd") ===
-                format(new Date(currYear, monthCounter, i), "yyyy-MM-dd")
-                  ? true
-                  : false,
-              selected: false,
-              disabled:
-                new Date(currYear, monthCounter, i) < new Date() ? true : false,
-              booked: false,
-            },
-          ];
-        }
-        updatedRenderCalendar.push(updatedRenderDays);
-        setRenderedCalendar(updatedRenderCalendar);
-        setCalendarLoading("success");
-      }
+      calendar.createInitialCalendar();
     };
-    fetchDate();
-    setIsMounted(true);
 
-    const interval = setInterval(() => {
-      console.log("fetch");
-      fetchDate();
-    }, 60000);
-    renderAllDays();
+    const cleanup = setTimeout(() => {
+      renderAllDays();
+      setCalendarLoading(false);
+      setHotelChange(false);
+    }, 100);
 
-    return () => clearInterval(interval);
-  }, [hotelCtx.hotelUUID]);
+    return () => clearTimeout(cleanup);
+  }, [hotelCtx.hotelId]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const updateCalendarWithBookedDate = () => {
-      if (renderedCalendar.length !== 0 && bookedDate.length !== 0) {
-        const updatedRenderDays = [...renderedCalendar];
-
-        const resetBookedDate = () => {
-          for (let month = 0; month < updatedRenderDays.length; month++) {
-            for (let day = 0; day < updatedRenderDays[month].length; day++) {
-              updatedRenderDays[month][day].booked = false;
-              updatedRenderDays[month][day].startBooked = false;
-              updatedRenderDays[month][day].endBooked = false;
-              updatedRenderDays[month][day].pendingBooking = false;
-              updatedRenderDays[month][day].startPendingBooking = false;
-              updatedRenderDays[month][day].endPendingBooking = false;
-            }
-          }
-        };
-        resetBookedDate();
-        bookedDate.map((booked) => {
-          for (let month in renderedCalendar) {
-            const firstIndex = renderedCalendar[month].findIndex(
-              (day) =>
-                day.date ===
-                  format(new Date(`${booked.startDate}`), "yyyy-MM-dd") &&
-                booked.status !== "Pending"
-            );
-            const secondIndex = renderedCalendar[month].findIndex(
-              (day) =>
-                day.date ===
-                  format(new Date(`${booked.endDate}`), "yyyy-MM-dd") &&
-                booked.status !== "Pending"
-            );
-
-            if (firstIndex !== -1 && secondIndex !== -1) {
-              for (let i = firstIndex; i <= secondIndex; i++) {
-                if (firstIndex === i && booked.status !== "Pending") {
-                  updatedRenderDays[month][i].startBooked = true;
-                } else if (secondIndex === i) {
-                  updatedRenderDays[month][i].endBooked = true;
-                } else {
-                  updatedRenderDays[month][i].booked = true;
-                }
-              }
-            } else if (firstIndex !== -1 && secondIndex === -1) {
-              for (
-                let i = firstIndex;
-                i < updatedRenderDays[month].length;
-                i++
-              ) {
-                if (firstIndex === i && booked.status !== "Pending") {
-                  updatedRenderDays[month][i].startBooked = true;
-                } else if (secondIndex === i) {
-                  updatedRenderDays[month][i].endBooked = true;
-                } else {
-                  updatedRenderDays[month][i].booked = true;
-                }
-              }
-            } else if (firstIndex === -1 && secondIndex !== -1) {
-              for (let i = 0; i <= secondIndex; i++) {
-                if (firstIndex === i && booked.status !== "Pending") {
-                  updatedRenderDays[month][i].startBooked = true;
-                } else if (secondIndex === i) {
-                  updatedRenderDays[month][i].endBooked = true;
-                } else {
-                  updatedRenderDays[month][i].booked = true;
-                }
-              }
-            }
-            updatedRenderDays[month].map((day) => {
-              if ((day.startBooked && day.endBooked) === true) {
-                day.startBooked = false;
-                day.endBooked = false;
-                day.booked = true;
-              }
-            });
-          }
-        });
-        bookedDate.map((booked) => {
-          for (let month in renderedCalendar) {
-            const firstIndex = renderedCalendar[month].findIndex(
-              (day) =>
-                day.date ===
-                  format(new Date(`${booked.startDate}`), "yyyy-MM-dd") &&
-                booked.status === "Pending"
-            );
-            const secondIndex = renderedCalendar[month].findIndex(
-              (day) =>
-                day.date ===
-                  format(new Date(`${booked.endDate}`), "yyyy-MM-dd") &&
-                booked.status === "Pending"
-            );
-
-            if (firstIndex !== -1 && secondIndex !== -1) {
-              for (let i = firstIndex; i <= secondIndex; i++) {
-                if (firstIndex === i) {
-                  updatedRenderDays[month][i].startPendingBooking = true;
-                } else if (secondIndex === i) {
-                  updatedRenderDays[month][i].endPendingBooking = true;
-                } else {
-                  updatedRenderDays[month][i].pendingBooking = true;
-                }
-              }
-            } else if (firstIndex !== -1 && secondIndex === -1) {
-              for (
-                let i = firstIndex;
-                i < updatedRenderDays[month].length;
-                i++
-              ) {
-                if (firstIndex === i) {
-                  updatedRenderDays[month][i].startPendingBooking = true;
-                } else if (secondIndex === i) {
-                  updatedRenderDays[month][i].endPendingBooking = true;
-                } else {
-                  updatedRenderDays[month][i].pendingBooking = true;
-                }
-              }
-            } else if (firstIndex === -1 && secondIndex !== -1) {
-              for (let i = 0; i <= secondIndex; i++) {
-                if (firstIndex === i) {
-                  updatedRenderDays[month][i].startPendingBooking = true;
-                } else if (secondIndex === i) {
-                  updatedRenderDays[month][i].endPendingBooking = true;
-                } else {
-                  updatedRenderDays[month][i].pendingBooking = true;
-                }
-              }
-            }
-            updatedRenderDays[month].map((day) => {
-              if ((day.startPendingBooking && day.endPendingBooking) === true) {
-                day.startPendingBooking = false;
-                day.endPendingBooking = false;
-                day.pendingBooking = true;
-              }
-              if (
-                (day.startBooked === true && day.endPendingBooking === true) ||
-                (day.endBooked === true && day.startPendingBooking === true)
-              ) {
-                day.bookedAndPendingBooked = true;
-              }
-            });
-          }
-        });
-
-        setRenderedCalendar(updatedRenderDays);
-      }
+      calendar.getBookedDate(bookedDate);
     };
 
     const updatedCalendarWithDisabledDays = () => {
@@ -376,15 +155,25 @@ const CalendarComponent: React.FC<{
 
     const timeout = setTimeout(() => {
       updateCalendarWithBookedDate();
-      updatedCalendarWithDisabledDays();
-    }, 300);
+      // updatedCalendarWithDisabledDays();
+    });
 
     return () => clearTimeout(timeout);
   }, [bookedDate]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setHotelChange(true);
-  }, [hotelCtx.hotelUUID]);
+    setRenderedMonth(12);
+  }, [hotelCtx.hotelId]);
+
+  useLayoutEffect(() => {
+    if (bookedDate.length !== 0) {
+      calendar.getBookedDate(bookedDate);
+    }
+    if (renderedMonth >= 36) {
+      setHasMore(false);
+    }
+  }, [renderedMonth]);
 
   // ! HANDLERS
 
@@ -727,6 +516,12 @@ const CalendarComponent: React.FC<{
       return;
     }
   };
+
+  const handleLoadMonth = () => {
+    setTimeout(() => {
+      calendar.renderNewMonth(3, setRenderedMonth);
+    }, 4000);
+  };
   // ! RENDER
   return (
     <div
@@ -737,37 +532,49 @@ const CalendarComponent: React.FC<{
       } relative`}
     >
       <div
+        id="calendar-scroll"
         className={`bg-gradient-to-br ${
           hotelChange || props.isSelecting
             ? "opacity-80 pointer-events-none"
             : ""
-        }  from-palette-4 to-[#B08968] py-8 px-4 rounded-3xl w-full h-[80vh] overflow-y-scroll scrollbar-thin tall:scrollbar-thin scrollbar-thumb-palette-4 scrollbar-thumb-rounded-3xl`}
+        }  from-palette-4 to-[#B08968] py-8 px-4 rounded-3xl w-full h-[80vh] overflow-auto scrollbar-thin tall:scrollbar-thin scrollbar-thumb-palette-4 scrollbar-thumb-rounded-3xl`}
       >
-        {calendarLoading === "success" && (
-          <BigCalendar
-            weekDays={weekDays}
-            renderCalendar={renderedCalendar}
-            currentYear={currYear}
-            months={months}
-            onClick={selectDateHandler}
-            onMouseEnter={selectStartDateToEndDate}
-            blockedDate={renderBookingDate?.endDate}
-          />
-        )}
-        {props.isSelecting && (
-          <ScaleLoader
-            loading
-            color="#E6CCB2"
-            className="absolute top-1/2 left-1/2"
-          />
-        )}
-        {hotelChange && (
-          <ClipLoader
-            loading
-            color="#E6CCB2"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-          />
-        )}
+        <InfiniteScroll
+          dataLength={renderedCalendar.length}
+          next={handleLoadMonth}
+          hasMore={hasMore}
+          loader={
+            <span className="w-full flex items-center justify-center py-2">
+              <ClipLoader size={20} color="#DDB892" loading />
+            </span>
+          }
+          scrollableTarget={"calendar-scroll"}
+          style={{ overflow: "hidden" }}
+        >
+          {!calendarLoading && (
+            <BigCalendar
+              weekDays={weekDays}
+              renderCalendar={renderedCalendar}
+              onClick={selectDateHandler}
+              onMouseEnter={selectStartDateToEndDate}
+              blockedDate={renderBookingDate?.endDate}
+            />
+          )}
+          {props.isSelecting && (
+            <ScaleLoader
+              loading
+              color="#E6CCB2"
+              className="absolute top-1/2 left-1/2"
+            />
+          )}
+          {hotelChange && (
+            <ClipLoader
+              loading
+              color="#E6CCB2"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            />
+          )}
+        </InfiniteScroll>
       </div>
     </div>
   );
