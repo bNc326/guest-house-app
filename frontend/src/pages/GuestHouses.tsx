@@ -1,5 +1,7 @@
 import React, { useContext } from "react";
-import HotelCard from "components/GuestHouseComponents/HotelCard";
+import 
+
+HotelCard from "components/GuestHouseComponents/HotelCard";
 import { HotelContext } from "context/HotelContextProvider";
 import { ClipLoader } from "react-spinners";
 
@@ -10,7 +12,7 @@ const GuestHouses = () => {
       <div className="w-[1366px] flex gap-4">
         <article
           id={"scroll_guesthouse"}
-          className="w-full h-full flex items-center flex-col gap-4"
+          className="w-full h-max flex items-center flex-col gap-4"
         >
           {hotelCtx.hotels &&
             hotelCtx.hotels.map((hotel, index) => (
