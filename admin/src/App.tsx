@@ -19,6 +19,7 @@ import NewGuestHouses from "./pages/GuestHouses/NewGuestHouses";
 import Logout from "./pages/Logout";
 import Gallery, { loader as galleryLoader } from "./pages/Gallery/Gallery";
 import { RequireAuth } from "react-auth-kit";
+import Rating from "./pages/Rating";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -76,9 +77,7 @@ const App = () => {
           id: "gallery",
           element: <Gallery />,
         },
-        { path: "kapcsolat", element: <h1>kapcsolat</h1> },
-        { path: "email", element: <h1>email</h1> },
-        { path: "ertekeles", element: <h1>Értékelés</h1> },
+        { path: "ertekeles", element: <Rating /> },
       ],
     },
     { path: "login", element: <Login /> },

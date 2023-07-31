@@ -97,7 +97,7 @@ const GuestHouses = () => {
   return (
     <section className="w-full flex flex-col gap-4">
       <div className="flex justify-between items-center w-full shadow-lg rounded-md p-4 bg-gray-300 font-medium">
-        Új kizárt dátum
+        Új Vendégház létrehozása
         <span
           className="cursor-pointer hover:scale-110 transition-all duration-300 ease-in-out"
           onClick={() => navigate("uj-vendeghaz")}
@@ -129,7 +129,7 @@ const GuestHouses = () => {
         </Table>
         {!data.length && (
           <div className="w-full text-center font-medium text-lg py-4">
-            Nincs még kizárt nap
+            Nincs még vendégház létrehozva!
           </div>
         )}
       </div>

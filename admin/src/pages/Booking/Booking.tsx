@@ -226,6 +226,7 @@ const Booking = () => {
         </div>
       )}
       <ChangeHotelComponent path="foglalasi-naptar" />
+      {}
       <div className="overflow-x-scroll">
         <Table
           tableHead={tableHead}
@@ -305,10 +306,15 @@ export default Booking;
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   const hotelQuery = request.url.split("hotel=")[1];
-
+  if (hotelQuery === null) {
+    return {
+      status: 404,
+      success: false,
+      message: "Nincs még létrehozva vendégház!",
+    };
+  }
   const url = process.env.REACT_APP_BACKEND_API as string;
   const response = await fetch(`${url}/booking?hotel=${hotelQuery}`);
-
   if (!response.ok) {
     throw json({ message: "fetch failed" }, { status: 500 });
   } else {

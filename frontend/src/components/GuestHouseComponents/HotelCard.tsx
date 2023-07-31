@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useLayoutEffect, useState } from "react";
+import { useNavigate, NavLink } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 import { TbAirConditioning } from "react-icons/tb";
 import { BiArea } from "react-icons/bi";
@@ -31,7 +31,50 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel; index: number }> = ({
   const navigate = useNavigate();
   const hotelCtx = useContext(HotelContext);
   const address = `${hotel.postalCode} ${hotel.city}, ${hotel.street}`;
+  const [ratingCount, setRatingCount] = useState<number>(0);
+  const [stars, setStars] = useState<React.ReactNode[]>([]);
 
+  useLayoutEffect(() => {
+    let count: number = 0;
+    const calcRatingAvg = () => {
+      if (hotel.ratings.length !== 0) {
+        const calcAvg = (): number => {
+          return sum / numberCount;
+        };
+        const numberCount: number = hotel.ratings.length;
+        let sum: number = 0;
+
+        hotel.ratings.map((rating) => {
+          sum += rating.rating;
+        });
+
+        setRatingCount(calcAvg());
+        count = calcAvg();
+      }
+    };
+
+    const renderStars = () => {
+      setStars([]);
+      for (let i = 1; i <= 5; i++) {
+        if (i <= count) {
+          setStars((prev) => [...prev, <Rating.Star filled />]);
+        } else {
+          setStars((prev) => [
+            ...prev,
+            <Rating.Star key={i} className="fill-gray-700" />,
+          ]);
+        }
+      }
+    };
+
+    const cleanup = setTimeout(() => {
+      calcRatingAvg();
+      renderStars();
+    }, 100);
+    return () => clearTimeout(cleanup);
+  }, []);
+
+  console.log("stars", stars);
   return (
     <div className="w-full h-full rounded-xl bg-palette-2  shadow-lg flex flex-col items-center mobile:flex-row p-4 gap-4">
       <div className="w-full shadow-md">
@@ -188,37 +231,25 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel; index: number }> = ({
         <div className="w-full flex flex-col justify-center h-full bg-palette-3/60  shadow-md rounded-xl p-2 relative">
           <Rating className="flex flex-col ">
             <div className="flex  w-full justify-center">
-              <Rating.Star filled />
-              <Rating.Star filled />
-              <Rating.Star filled />
-              <Rating.Star filled />
-              <Rating.Star className="fill-gray-700" />
+              {stars?.map((star) => star)}
             </div>
             <div className="flex flex-col items-center w-full">
               <p className="font-bold text-dynamicTitle3">
-                <CountUp
-                  end={4.95}
-                  decimals={2}
-                  duration={5}
-                  enableScrollSpy
-                  scrollSpyOnce
-                />
+                <CountUp end={ratingCount} decimals={2} duration={3} />
+                <span className="text-dynamicMedium">/5</span>
               </p>
-              <a
-                className="font-medium underline hover:no-underline"
-                href="asd"
+              <AnimationOnScroll
+                animateOnce
+                animatePreScroll={false}
+                animateIn={"animate__fadeInUp"}
+                className={`whitespace-nowrap text-dynamicMedium hover:underline ${
+                  index === 0 ? "animate__animated animate__fadeInUp" : ""
+                }`}
               >
-                <AnimationOnScroll
-                  animateOnce
-                  animatePreScroll={false}
-                  animateIn={"animate__fadeInUp"}
-                  className={`whitespace-nowrap text-dynamicMedium ${
-                    index === 0 ? "animate__animated animate__fadeInUp" : ""
-                  }`}
-                >
-                  13 Értékelés
-                </AnimationOnScroll>
-              </a>
+                <NavLink to={`ertekeles?hotel=${hotel._id}`}>
+                  {hotel.ratings.length} Értékelés
+                </NavLink>
+              </AnimationOnScroll>
             </div>
           </Rating>
           <div className="text-center h-full flex flex-col justify-end gap-1">
