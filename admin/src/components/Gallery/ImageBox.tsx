@@ -21,7 +21,10 @@ const ImageBox: React.FC<Props> = ({
     <>
       {imageSrc &&
         imageSrc.map((img, index) => (
-          <div className="w-full mobile:w-[calc(33%-.8rem)] tablet:w-[calc(25%-.8rem)] laptop:w-[calc(20%-.8rem)] flex flex-col rounded-3xl overflow-hidden shadow-shadow relative">
+          <div
+            key={img.id}
+            className="w-full mobile:w-[calc(33%-.8rem)] tablet:w-[calc(25%-.8rem)] laptop:w-[calc(20%-.8rem)] flex flex-col rounded-3xl overflow-hidden shadow-shadow relative"
+          >
             <input
               onChange={changeCheckboxHandler}
               checked={deleteCheckbox[index]?.checked}
