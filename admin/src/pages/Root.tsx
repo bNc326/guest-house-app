@@ -24,46 +24,6 @@ const Root = () => {
   const authUser = useAuthUser();
   const user = authUser() as details;
 
-  // useEffect(() => {
-  //   const checkAdmin = async () => {
-  //     const url = process.env.REACT_APP_BACKEND_API as string;
-  //     const res = await fetch(url + "/auth/authenticate");
-  //     const data = await res.json();
-  //     if (data.success === false) {
-  //       authDispatch({ type: AUTH_ACTION_TYPE.FAILURE });
-  //       setIsAdmin(false);
-  //       navigate("/login");
-  //       return;
-  //     }
-  //     if (!user) {
-  //       authDispatch({ type: AUTH_ACTION_TYPE.FAILURE });
-  //       setIsAdmin(false);
-  //       navigate("/login");
-  //       return;
-  //     }
-  //     if (user.username === "demo") {
-  //       const item = JSON.parse(localStorage.getItem("isDemo") as any) as {
-  //         isDemo: boolean;
-  //         isTippOff: boolean;
-  //       };
-  //       if (item) {
-  //         setIsDemo(item.isDemo);
-  //         setIsTippOff(item.isTippOff);
-  //       } else {
-  //         setIsDemo(true);
-  //         setIsTippOff(false);
-  //       }
-  //       setDemoMounted(true);
-  //     } else {
-  //       localStorage.removeItem("isDemo");
-  //     }
-  //     setIsAdmin(true);
-  //   };
-  //   const cleanup = setTimeout(() => {
-  //     checkAdmin();
-  //   }, 100);
-  //   return () => clearTimeout(cleanup);
-  // }, []);
 
   useLayoutEffect(() => {
     const setItemToLocalstorage = async () => {

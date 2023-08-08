@@ -1,11 +1,13 @@
 import { Rating } from "../models/Rating.js";
 import { Hotel } from "../models/Hotels.js";
+import { getIo } from "../../socket.js";
 
 const handleUpdateRatings = (hotel, id, body) => {
   const findRating = hotel.ratings.find(
     (rating) => rating._id.valueOf() === id
   );
-  findRating.rating = body.rating;
+  findRating.rating = body.rating ? body.rating : findRating.rating;
+  findRating.status = body.status ? body.status : findRating.status;
   hotel.save();
 };
 
@@ -58,10 +60,15 @@ export const createRating = async (req, res, next) => {
     const newRating = new Rating(req.body);
     newRating.hotel = req.hotel;
     await newRating.save();
+    getIo().emit(`${req.hotel}-ratings`, {
+      action: "new",
+      payload: newRating,
+    });
     try {
       const rating = {
         _id: newRating._id,
         rating: newRating.rating,
+        status: newRating.status,
       };
       await Hotel.findByIdAndUpdate(req.hotel, {
         $push: { ratings: rating },
@@ -82,6 +89,10 @@ export const createRating = async (req, res, next) => {
 export const deleteRatings = async (req, res, next) => {
   try {
     await Rating.deleteMany({ _id: { $in: req.body } });
+    getIo().emit(`${req.hotel}-ratings`, {
+      action: "delete",
+      payload: req.body,
+    });
     try {
       const hotel = await Hotel.findById(req.hotel);
       handleDeleteRatings(hotel, req.body);
@@ -101,11 +112,16 @@ export const deleteRatings = async (req, res, next) => {
 
 export const editRating = async (req, res, next) => {
   try {
-    await Rating.findByIdAndUpdate(req.params.id, {
+    const updateRating = await Rating.findByIdAndUpdate(req.params.id, {
       $set: req.body,
     });
+    const updateBody = req.body;
+    req.body._id = updateRating._id;
+    getIo().emit(`${req.hotel}-ratings`, {
+      action: "update",
+      payload: updateBody,
+    });
     try {
-      
       const hotel = await Hotel.findById(req.hotel);
       handleUpdateRatings(hotel, req.params.id, req.body);
 

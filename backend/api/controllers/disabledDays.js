@@ -1,12 +1,17 @@
 import { DisabledDays } from "../models/DisabledDays.js";
 import { Hotel } from "../models/Hotels.js";
+import { getIo } from "../../socket.js";
 
 const handleUpdateBookedDates = (hotel, id, body) => {
   const findDisabledDay = hotel.disabledDays.find(
     (date) => date._id.valueOf() === id
   );
-  findDisabledDay.startDate = body.startDate;
-  findDisabledDay.endDate = body.endDate;
+  findDisabledDay.startDate = body.startDate
+    ? body.startDate
+    : findDisabledDay.startDate;
+  findDisabledDay.endDate = body.endDate
+    ? body.endDate
+    : findDisabledDay.endDate;
   hotel.save();
 };
 
@@ -59,6 +64,10 @@ export const createDisabledDay = async (req, res, next) => {
     const newDisabledDay = new DisabledDays(req.body);
     newDisabledDay.hotel = req.hotel;
     await newDisabledDay.save();
+    getIo().emit(`${req.hotel}-disabled-days`, {
+      action: "new",
+      payload: newDisabledDay,
+    });
     try {
       const disabledDay = {
         _id: newDisabledDay._id,
@@ -85,6 +94,10 @@ export const createDisabledDay = async (req, res, next) => {
 export const deleteDisabledDays = async (req, res, next) => {
   try {
     await DisabledDays.deleteMany({ _id: { $in: req.body } });
+    getIo().emit(`${req.hotel}-disabled-days`, {
+      action: "delete",
+      payload: req.body,
+    });
     try {
       const hotel = await Hotel.findById(req.hotel);
       handleDeleteDisabledDays(hotel, req.body);
@@ -105,8 +118,17 @@ export const deleteDisabledDays = async (req, res, next) => {
 
 export const editDisabledDay = async (req, res, next) => {
   try {
-    await DisabledDays.findByIdAndUpdate(req.params.id, {
-      $set: req.body,
+    const updateDisabledDay = await DisabledDays.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      }
+    );
+    const updateBody = req.body;
+    req.body._id = updateDisabledDay._id;
+    getIo().emit(`${req.hotel}-disabled-days`, {
+      action: "update",
+      payload: updateBody,
     });
     try {
       const hotel = await Hotel.findById(req.hotel);

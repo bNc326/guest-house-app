@@ -1,5 +1,6 @@
 import { Booking } from "../models/Booking.js";
 import { Hotel } from "../models/Hotels.js";
+import { getIo } from "../../socket.js";
 
 const handleUpdateStatus = (hotel, id, status) => {
   const updateHotel = hotel.bookedDates.find(
@@ -10,10 +11,14 @@ const handleUpdateStatus = (hotel, id, status) => {
 };
 
 const handleUpdateBookedDates = (hotel, id, body) => {
-  const findBookedDate = hotel.bookedDates.find((date) => date._id.valueOf() === id);
-  findBookedDate.startDate = body.startDate;
-  findBookedDate.endDate = body.endDate;
-  findBookedDate.status = body.status;
+  const findBookedDate = hotel.bookedDates.find(
+    (date) => date._id.valueOf() === id
+  );
+  findBookedDate.startDate = body.startDate
+    ? body.startDate
+    : findBookedDate.startDate;
+  findBookedDate.endDate = body.endDate ? body.endDate : findBookedDate.endDate;
+  findBookedDate.status = body.status ? body.status : findBookedDate.status;
   hotel.save();
 };
 
@@ -66,6 +71,10 @@ export const createBookedDate = async (req, res, next) => {
     const newBooking = new Booking(req.body);
     newBooking.hotel = req.hotel;
     await newBooking.save();
+    getIo().emit(`${req.hotel}-booking`, {
+      action: "new",
+      payload: newBooking,
+    });
     try {
       const bookedDate = {
         _id: newBooking._id,
@@ -95,6 +104,10 @@ export const createBookedDate = async (req, res, next) => {
 export const deleteBookedDates = async (req, res, next) => {
   try {
     await Booking.deleteMany({ _id: { $in: req.body } });
+    getIo().emit(`${req.hotel}-booking`, {
+      action: "delete",
+      payload: req.body,
+    });
     try {
       const hotel = await Hotel.findById(req.hotel);
       handleDeleteBookedDates(hotel, req.body);
@@ -115,8 +128,14 @@ export const deleteBookedDates = async (req, res, next) => {
 
 export const editBookedDate = async (req, res, next) => {
   try {
-    await Booking.findByIdAndUpdate(req.params.id, {
+    const updateBookedDate = await Booking.findByIdAndUpdate(req.params.id, {
       $set: req.body,
+    });
+    const updateBody = req.body;
+    req.body._id = updateBookedDate._id;
+    getIo().emit(`${req.hotel}-booking`, {
+      action: "update",
+      payload: updateBody,
     });
     try {
       const hotel = await Hotel.findById(req.hotel);

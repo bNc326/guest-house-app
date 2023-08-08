@@ -79,6 +79,7 @@ export const HotelsSchema = new mongoose.Schema(
         {
           _id: { type: mongoose.Schema.Types.ObjectId, ref: "ratings" },
           rating: { type: Number, min: 0, max: 5, required: true },
+          status: { type: String, required: true },
         },
       ],
       required: true,

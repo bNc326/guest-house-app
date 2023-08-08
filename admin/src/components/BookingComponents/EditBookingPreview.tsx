@@ -9,19 +9,18 @@ import { Params } from "react-router-dom";
 import { format } from "date-fns";
 import { HiUser, HiPhone, HiMail } from "react-icons/hi";
 const EditBookingPreview: React.FC<{
-  params: Readonly<Params<string>>;
   data: BookingDateObject;
   isSureDispatch: React.Dispatch<IS_SURE_ACTION>;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ params, data, isSureDispatch, setShowModal }) => {
+}> = ({ data, isSureDispatch, setShowModal }) => {
   return (
-    <article className="p-4 bg-gray-200 laptop:shadow-lg flex flex-col space-y-8 laptop:rounded-3xl w-full laptop:w-4/5 desktop:w-1/2">
+    <article className="p-4 border-gray-300 border flex flex-col space-y-8 rounded-lg w-full laptop:w-4/5 desktop:w-1/2">
       <div className="w-full flex flex-col tablet:flex-row gap-4">
         <div className=" w-full flex flex-col gap-2 justify-between">
           <span>
             <h2 className="text-dynamicTitle3 font-bold uppercase">Foglalás</h2>
             <h3 className="text-dynamicMedium opacity-50 font-medium">
-              foglalás azonosító: {params.bookingId}
+              foglalás azonosító: {data._id}
             </h3>
           </span>
           <h4 className="text-dynamicDesc">

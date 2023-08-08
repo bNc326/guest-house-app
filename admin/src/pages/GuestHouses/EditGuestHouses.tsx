@@ -6,9 +6,10 @@ import AlertComponent from "../../components/UI/Alert";
 import useAlert from "../../hooks/useAlert";
 
 const EditGuestHouses = () => {
+  //TODO add more filed to form pl: discount price
   const data = useRouteLoaderData("editGuestHouse") as GuestHouseModel;
   return (
-    <article className="p-4 shadow-xl flex justify-center space-y-8 rounded-3xl w-full">
+    <article className="p-4 flex justify-center space-y-8 rounded-3xl w-full">
       <EditGuestHouseForm data={data} />
     </article>
   );

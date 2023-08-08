@@ -2,8 +2,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { HotelContext } from "../context/HotelContextProvider";
 import { useSearchParams } from "react-router-dom";
 import { GuestHouseModel } from "../models/GuestHouseModel";
+import { Select } from "flowbite-react";
 
-const ChangeHotelComponent: React.FC<{ path: string }> = ({ path }) => {
+const ChangeHotelComponent = () => {
   const [hotels, setHotels] = useState<GuestHouseModel[]>([]);
   let [hotelQuery, setHotelQuery] = useSearchParams();
   const hotelCtx = useContext(HotelContext);
@@ -40,12 +41,10 @@ const ChangeHotelComponent: React.FC<{ path: string }> = ({ path }) => {
   };
   return (
     <div className="w-full flex flex-col mobile:flex-row gap-2 items-center ">
-      <h2 className="text-dynamicDesc font-semibold">
-        Másik vendégházat választok
-      </h2>
-      <select
+      <Select
+        sizing={"sm"}
         onChange={changeHotelHandler}
-        className="w-full mobile:w-[unset] ring-0 border-0 outline-none rounded-lg bg-gray-300 text-gray-900 font-semibold focus:ring-0 active:ring-0 shadow-md"
+        className="w-full mobile:w-[unset] ring-0 border-0 outline-none rounded-lg bg-gray-300 text-gray-900 font-semibold focus:ring-0 active:ring-0 text-dynamicSmall"
       >
         {hotels?.map((hotel) => (
           <option
@@ -56,7 +55,7 @@ const ChangeHotelComponent: React.FC<{ path: string }> = ({ path }) => {
             {hotel.hotelName}
           </option>
         ))}
-      </select>
+      </Select>
     </div>
   );
 };

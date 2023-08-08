@@ -19,7 +19,10 @@ import { HotelContext } from "../../context/HotelContextProvider";
 import { useAuthHeader } from "react-auth-kit";
 import ModalContainer from "./ModalContainer";
 import Backdrop from "./Backdrop";
-
+import {
+  RefreshContext,
+  RefreshEnum,
+} from "../../context/RefreshContextProvider";
 interface ModalData {
   startDate: string;
   endDate: string;
@@ -43,6 +46,7 @@ const NewModal: React.FC<{
   const authCtx = useContext(AuthContext);
   const outletCtx = useOutletContext() as Outlet;
   const hotelCtx = useContext(HotelContext);
+  const refreshCtx = useContext(RefreshContext);
   const accessToken = useAuthHeader();
 
   useEffect(() => {
@@ -88,23 +92,21 @@ const NewModal: React.FC<{
     setIsloading(true);
     const url = process.env.REACT_APP_BACKEND_API as string;
 
-    const res = await fetch(
-      url + `/disabled-days?hotel=${hotelCtx.hotelId}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: accessToken(),
-        },
-        body: JSON.stringify(data),
-      }
-    );
+    const res = await fetch(url + `/disabled-days?hotel=${hotelCtx.hotelId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: accessToken(),
+      },
+      body: JSON.stringify(data),
+    });
     if (!res.ok) {
       console.log("error");
       setIsloading(false);
     } else {
       const data = await res.json();
-      props.modalDispatch({ type: MODAL_ACTION_TYPE.HIDE });
+      refreshCtx.handleRefresh(RefreshEnum.START);
+      resetModalData();
       outletCtx.alertDispatch({
         type: ALERT_ACTION_TYPE.SHOW,
         payload: { alertType: ALERT_TYPE.SUCCESS, message: data.message },
@@ -115,7 +117,12 @@ const NewModal: React.FC<{
   };
 
   return (
-    <Backdrop backdropClose closeModalHandler={closeModalHandler} header headerTitle="Új kizárt dátum létrehozás">
+    <Backdrop
+      backdropClose
+      closeModalHandler={closeModalHandler}
+      header
+      headerTitle="Új kizárt dátum létrehozás"
+    >
       <form className="flex flex-col gap-4" onSubmit={formSubmitHandler}>
         <div className="flex flex-col mobile:flex-row gap-4 items-center">
           <div className="w-full">
