@@ -5,6 +5,7 @@ import {
   ALERT_ACTION,
   ALERT_ACTION_TYPE,
 } from "../../models/Alert/AlertModels";
+import { MdWarning, MdCheckCircleOutline, MdOutlineInfo } from "react-icons/md";
 const AlertComponent: React.FC<{
   isShow: boolean;
   type: string;
@@ -34,10 +35,18 @@ const AlertComponent: React.FC<{
             }
             className=""
           >
-            <span className="px-2">
-              <span className="font-bold">
+            <span className="px-2 flex gap-1 items-center">
+              <span>
+                {props.type === ALERT_TYPE.SUCCESS && (
+                  <MdCheckCircleOutline size={24} />
+                )}
+                {props.type === ALERT_TYPE.FAILURE && <MdWarning size={24} />}
+                {props.type === ALERT_TYPE.INFO && <MdOutlineInfo size={24} />}
+              </span>
+              <span className="font-semibold">
                 {props.type === ALERT_TYPE.SUCCESS ? "Siker!" : ""}
                 {props.type === ALERT_TYPE.FAILURE ? "Hoppáá!" : ""}
+                {props.type === ALERT_TYPE.INFO ? "Info!" : ""}
               </span>{" "}
               {props.message}
             </span>
