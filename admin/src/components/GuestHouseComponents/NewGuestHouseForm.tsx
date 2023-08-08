@@ -38,7 +38,7 @@ const NewGuestHouseForm: React.FC<{}> = (props) => {
     },
     discountPrice: {
       pattern: null,
-      valid: false,
+      valid: true,
       firstTouch: false,
       error: "",
       value: data.discountPrice,
