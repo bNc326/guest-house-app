@@ -7,7 +7,10 @@ import {
   DevelopmentPage,
   GalleryPage,
   GuestHousePage,
+  RatingPage,
+  NewRatingPage,
 } from "./pages/Pages";
+import { loader as RatingLoader } from "./pages/Ratings";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -25,6 +28,21 @@ const App = () => {
               index: true,
               element: <GuestHousePage />,
               id: "guestHouses",
+            },
+            {
+              path: "ertekeles",
+              children: [
+                {
+                  index: true,
+                  element: <RatingPage />,
+                  loader: RatingLoader,
+                  id: "rating",
+                },
+                {
+                  path: "uj",
+                  element: <NewRatingPage />,
+                },
+              ],
             },
           ],
         },

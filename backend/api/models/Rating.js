@@ -8,6 +8,7 @@ export const RatingSchema = new mongoose.Schema(
     positives: { type: String },
     negatives: { type: String },
     rating: { type: Number, min: 0, max: 5, required: true },
+    anonymus: {type: Boolean,},
     hotel: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
