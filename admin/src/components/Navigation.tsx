@@ -9,6 +9,7 @@ import {
   BsPersonVcard,
   BsStar,
 } from "react-icons/bs";
+import { MdStar } from "react-icons/md";
 import { FaHome } from "react-icons/fa";
 import { Badge, Tooltip } from "flowbite-react";
 import { HiArrowLeft } from "react-icons/hi";
@@ -52,11 +53,11 @@ const Navigation: React.FC<{
       path: "galeria",
       linkName: "Galéria",
     },
-    // {
-    //   id: 5,
-    //   path: "kapcsolat",
-    //   linkName: "Kapcsolat",
-    // },
+    {
+      id: 5,
+      path: `ertekeles?hotel=${hotelCtx.hotelId}`,
+      linkName: "Értékelés",
+    },
     // { id: 6, path: "email", linkName: "Email" },
     // { id: 7, path: "ertekeles", linkName: "Értékelés" },
   ];
@@ -90,7 +91,7 @@ const Navigation: React.FC<{
     <BsCalendar2X size={"1.5rem"} />,
     <BsHouseDoor size={"1.5rem"} />,
     <BsImages size={"1.5rem"} />,
-    // <BsPersonVcard size={"1.5rem"} />,
+    <MdStar size={"1.5rem"} />,
     // <BsEnvelopeAt size={"1.5rem"} />,
     // <BsStar size={"1.5rem"} />,
   ];
