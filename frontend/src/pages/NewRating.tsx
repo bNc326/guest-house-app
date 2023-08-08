@@ -325,6 +325,7 @@ const NewRating = () => {
         negatives: inputValidate.negatives?.value,
         rating: inputValidate.rating.value,
         anonymus: inputValidate.anonymus?.checked,
+        status: 'Pending'
       };
       const url = process.env.REACT_APP_BACKEND_API as string;
 
