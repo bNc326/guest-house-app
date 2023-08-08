@@ -11,7 +11,7 @@ import Hotels from "./api/routes/hotels.js";
 import Rating from "./api/routes/rating.js";
 import Gallery from "./api/routes/gallery.js";
 import { validateHotel } from "./api/utils/validateHotel.js";
-import { createError } from "./api/utils/error.js";
+import { initServer } from "./socket.js";
 
 const app = express();
 
@@ -37,11 +37,9 @@ mongoose.connection.on("disconnected", () => {
 
 // * Middleware
 
-const whitelist = [
-  "http://localhost:8800/api/"
-];
+const whitelist = ["http://localhost:8800/api/"];
 const corsOptions = {
-  origin: '*',
+  origin: "*",
   credentials: true,
 };
 
@@ -81,7 +79,13 @@ app.get("/", (req, res) => {
   res.send("Welcome to backend!");
 });
 
-app.listen(8800, () => {
+const server = app.listen(8800, () => {
   connectDB();
   console.log("Server running on port 8800");
+});
+
+const io = initServer(server);
+
+io.on("connection", (socket) => {
+  console.log("client connected");
 });

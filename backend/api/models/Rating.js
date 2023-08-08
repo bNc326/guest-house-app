@@ -13,6 +13,10 @@ export const RatingSchema = new mongoose.Schema(
       required: true,
       ref: "hotels",
     },
+    status: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
