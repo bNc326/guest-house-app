@@ -1,26 +1,18 @@
-import React, { forwardRef, useEffect, useRef } from "react";
-import { useRevalidator } from "react-router-dom";
+import React, { forwardRef } from "react";
 import { Tabs, TextInput, Label, Textarea } from "flowbite-react";
-import {
-  MdDriveFileRenameOutline,
-  MdHotel,
-  MdOutlineWorkspacePremium,
-} from "react-icons/md";
+import { MdDriveFileRenameOutline, MdHotel } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
-import { BsPlusSquare, BsTrash3, BsTools } from "react-icons/bs";
-import { TbEdit, TbEditOff } from "react-icons/tb";
-import { GuestHouseModel, InputValidate } from "../../models/GuestHouseModel";
+import { InputValidator } from "../../models/Form/Form";
 
 interface ReactProps {
-  data: GuestHouseModel;
-  inputValidate: InputValidate;
+  inputValidate: InputValidator;
   changeInputHandler: (e: React.ChangeEvent) => void;
   inputBlurHandler: (e: React.ChangeEvent) => void;
 }
 
-const EditGuestHouseTabs = forwardRef(
+const GuestHouseTabs = forwardRef(
   (props: ReactProps, ref: React.LegacyRef<HTMLDivElement>) => {
-    const { data, inputValidate, changeInputHandler, inputBlurHandler } = props;
+    const { inputValidate, changeInputHandler, inputBlurHandler } = props;
     return (
       <Tabs.Group style="underline">
         <Tabs.Item title="Vendégház adatok">
@@ -30,10 +22,11 @@ const EditGuestHouseTabs = forwardRef(
                 <TextInput
                   type="text"
                   addon={<MdDriveFileRenameOutline size="1.50rem" />}
-                  value={data.hotelName}
+                  value={inputValidate.hotelName.value}
                   onChange={changeInputHandler}
                   onBlur={inputBlurHandler}
                   name="hotelName"
+                  placeholder="Vendégház név"
                   color={`${
                     inputValidate.hotelName.firstTouch
                       ? inputValidate.hotelName.valid
@@ -55,14 +48,19 @@ const EditGuestHouseTabs = forwardRef(
                   }
                 />
               </div>
+            </div>
+            <div className="flex flex-col mobile:flex-row w-full gap-4">
               <div className="w-full">
+                <Label htmlFor="price" value="Alap ár" />
                 <TextInput
                   type="text"
-                  addon={<span className="font-bold">FT</span>}
-                  value={data.price}
+                  addon={<span className="font-bold">Ft</span>}
+                  value={inputValidate.price.value}
                   onChange={changeInputHandler}
                   onBlur={inputBlurHandler}
                   name="price"
+                  placeholder="40000"
+                  id="price"
                   color={`${
                     inputValidate.price.firstTouch
                       ? inputValidate.price.valid
@@ -84,13 +82,26 @@ const EditGuestHouseTabs = forwardRef(
                   }
                 />
               </div>
+              <div className="w-full">
+                <Label htmlFor="discountPrice" value="Akciós ár" />
+                <TextInput
+                  type="text"
+                  addon={<span className="font-bold">Ft</span>}
+                  value={inputValidate.discountPrice.value}
+                  onChange={changeInputHandler}
+                  onBlur={inputBlurHandler}
+                  name="discountPrice"
+                  placeholder="40000"
+                  id="discountPrice"
+                />
+              </div>
             </div>
-            <div className="flex w-full gap-4">
+            <div className="flex flex-col mobile:flex-row w-full gap-4">
               <div className="w-full">
                 <Label htmlFor="roomAmount" value="Szobák száma" />
                 <TextInput
                   icon={MdHotel}
-                  value={data.roomAmount}
+                  value={inputValidate.roomAmount.value}
                   name="roomAmount"
                   onChange={changeInputHandler}
                   onBlur={inputBlurHandler}
@@ -121,7 +132,7 @@ const EditGuestHouseTabs = forwardRef(
                 <Label htmlFor="maxPersonAmount" value="Max személyek száma" />
                 <TextInput
                   icon={FaUsers}
-                  value={data.maxPersonAmount}
+                  value={inputValidate.maxPersonAmount.value}
                   onChange={changeInputHandler}
                   onBlur={inputBlurHandler}
                   name="maxPersonAmount"
@@ -155,11 +166,12 @@ const EditGuestHouseTabs = forwardRef(
                 <TextInput
                   type="text"
                   addon={<span className="font-bold">NTAK</span>}
-                  value={data.NTAK}
+                  value={inputValidate.NTAK.value}
                   onChange={changeInputHandler}
                   onBlur={inputBlurHandler}
                   name="NTAK"
                   id="NTAK"
+                  placeholder="MA12345678"
                   color={`${
                     inputValidate.NTAK.firstTouch
                       ? inputValidate.NTAK.valid
@@ -190,7 +202,7 @@ const EditGuestHouseTabs = forwardRef(
                   rows={5}
                   placeholder="Leírás.."
                   id="description"
-                  value={data.description}
+                  value={inputValidate.description.value}
                   onChange={changeInputHandler}
                   onBlur={inputBlurHandler}
                   name="description"
@@ -223,10 +235,11 @@ const EditGuestHouseTabs = forwardRef(
                   <TextInput
                     type="text"
                     id="country"
-                    value={data.country}
+                    value={inputValidate.country.value}
                     onChange={changeInputHandler}
                     onBlur={inputBlurHandler}
                     name="country"
+                    placeholder="Magyarország"
                     color={`${
                       inputValidate.country.firstTouch
                         ? inputValidate.country.valid
@@ -255,7 +268,7 @@ const EditGuestHouseTabs = forwardRef(
                   <TextInput
                     type="text"
                     id="postalCode"
-                    value={data.postalCode}
+                    value={inputValidate.postalCode.value}
                     onChange={changeInputHandler}
                     onBlur={inputBlurHandler}
                     name="postalCode"
@@ -285,10 +298,11 @@ const EditGuestHouseTabs = forwardRef(
                   <TextInput
                     type="text"
                     id="city"
-                    value={data.city}
+                    value={inputValidate.city.value}
                     onChange={changeInputHandler}
                     onBlur={inputBlurHandler}
                     name="city"
+                    placeholder="Budapest"
                     color={`${
                       inputValidate.city.firstTouch
                         ? inputValidate.city.valid
@@ -315,10 +329,11 @@ const EditGuestHouseTabs = forwardRef(
                   <TextInput
                     type="text"
                     id="street"
-                    value={data.street}
+                    value={inputValidate.street.value}
                     onChange={changeInputHandler}
                     onBlur={inputBlurHandler}
                     name="street"
+                    placeholder="Petőfi Sándor utca 12"
                     color={`${
                       inputValidate.street.firstTouch
                         ? inputValidate.street.valid
@@ -549,7 +564,7 @@ const EditGuestHouseTabs = forwardRef(
   }
 );
 
-export default EditGuestHouseTabs;
+export default GuestHouseTabs;
 
 export const ErrorMessage: React.FC<{ success: boolean; message: string }> = ({
   message,

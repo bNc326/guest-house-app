@@ -7,14 +7,12 @@ import { BsCalendarDateFill } from "react-icons/bs";
 import { MdHotel, MdSubject } from "react-icons/md";
 import { format } from "date-fns";
 import { BookingDateObject } from "../../models/Booking/BookingDate";
-import { InputValidate } from "./EditBookingForm";
-
+import { InputValidator } from "../../models/Form/Form";
 const EditBookingTabs: React.FC<{
-  data: BookingDateObject;
-  inputValidate: InputValidate;
+  inputValidate: InputValidator;
   inputChangeHandler: (e: React.ChangeEvent) => void;
   inputBlurHandler: (e: React.ChangeEvent) => void;
-}> = ({ data, inputChangeHandler, inputBlurHandler, inputValidate }) => {
+}> = ({ inputChangeHandler, inputBlurHandler, inputValidate }) => {
   return (
     <Tabs.Group style="underline">
       <Tabs.Item title={"Személyes információ"}>
@@ -27,7 +25,7 @@ const EditBookingTabs: React.FC<{
                 name="name"
                 id="name"
                 type="text"
-                value={data.name}
+                value={inputValidate.name.value}
                 color={`${
                   inputValidate.name.firstTouch
                     ? inputValidate.name.valid
@@ -58,7 +56,7 @@ const EditBookingTabs: React.FC<{
                 icon={HiMail}
                 name="email"
                 id="email"
-                value={data.email}
+                value={inputValidate.email.value}
                 type="text"
                 color={`${
                   inputValidate.email.firstTouch
@@ -90,7 +88,7 @@ const EditBookingTabs: React.FC<{
                 name="phone"
                 id="phone"
                 type="text"
-                value={data.phone}
+                value={inputValidate.phone.value}
                 color={`${
                   inputValidate.phone.firstTouch
                     ? inputValidate.phone.valid
@@ -124,7 +122,7 @@ const EditBookingTabs: React.FC<{
                 required={true}
                 name="country"
                 shadow={true}
-                value={data.country}
+                value={inputValidate.country.value}
                 color={`${
                   inputValidate.country.firstTouch
                     ? inputValidate.country.valid
@@ -158,7 +156,7 @@ const EditBookingTabs: React.FC<{
                 type="text"
                 required={true}
                 shadow={true}
-                value={data.postalCode}
+                value={inputValidate.postalCode.value}
                 color={`${
                   inputValidate.postalCode.firstTouch
                     ? inputValidate.postalCode.valid
@@ -190,7 +188,7 @@ const EditBookingTabs: React.FC<{
                 type="text"
                 required={true}
                 shadow={true}
-                value={data.city}
+                value={inputValidate.city.value}
                 color={`${
                   inputValidate.city.firstTouch
                     ? inputValidate.city.valid
@@ -222,7 +220,7 @@ const EditBookingTabs: React.FC<{
                 type="text"
                 required={true}
                 shadow={true}
-                value={data.street}
+                value={inputValidate.street.value}
                 color={`${
                   inputValidate.street.firstTouch
                     ? inputValidate.street.valid
@@ -260,7 +258,7 @@ const EditBookingTabs: React.FC<{
                 type="date"
                 id="startDate"
                 name="startDate"
-                value={format(new Date(data.startDate), "yyyy-MM-dd")}
+                value={format(new Date(inputValidate.startDate.value), "yyyy-MM-dd")}
                 onChange={inputChangeHandler}
                 min={"2022-11-13"}
                 max={"2099-12-31"}
@@ -287,7 +285,7 @@ const EditBookingTabs: React.FC<{
                 type="date"
                 id="endDate"
                 name="endDate"
-                value={format(new Date(data.endDate), "yyyy-MM-dd")}
+                value={format(new Date(inputValidate.endDate.value), "yyyy-MM-dd")}
                 onChange={inputChangeHandler}
                 min={"2022-11-13"}
                 max={"2099-12-31"}
@@ -317,7 +315,7 @@ const EditBookingTabs: React.FC<{
                 id="nightAmount"
                 name="nightAmount"
                 min={0}
-                value={data.nightAmount}
+                value={inputValidate.nightAmount.value}
                 color={`${
                   inputValidate.nightAmount.firstTouch
                     ? inputValidate.nightAmount.valid
@@ -350,7 +348,7 @@ const EditBookingTabs: React.FC<{
                 name="personsAmount"
                 min={0}
                 type="number"
-                value={data.personsAmount}
+                value={inputValidate.personsAmount.value}
                 color={`${
                   inputValidate.personsAmount.firstTouch
                     ? inputValidate.personsAmount.valid
@@ -384,7 +382,7 @@ const EditBookingTabs: React.FC<{
                 type="text"
                 id="HUF"
                 name="HUF"
-                value={data.HUF}
+                value={inputValidate.HUF.value}
               />
             </div>
             <div className="w-full">
@@ -395,7 +393,7 @@ const EditBookingTabs: React.FC<{
                 id="EUR"
                 name="EUR"
                 type="text"
-                value={data.EUR}
+                value={inputValidate.EUR.value}
               />
             </div>
           </div>

@@ -1,346 +1,129 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useRevalidator, useOutletContext } from "react-router-dom";
+import React, { useState, useLayoutEffect } from "react";
 import { GiToken } from "react-icons/gi";
 import { Label, TextInput, Button } from "flowbite-react";
 import { FaSave } from "react-icons/fa";
 import EditBookingTabs from "./EditBookingTabs";
 import { BookingDateObject } from "../../models/Booking/BookingDate";
-import { cloneDeep, isEqual, keys, mapKeys, mapValues } from "lodash";
+import { cloneDeep } from "lodash";
 import { ClipLoader } from "react-spinners";
-import {
-  ALERT_ACTION,
-  ALERT_ACTION_TYPE,
-  ALERT_TYPE,
-} from "../../models/Alert/AlertModels";
-import { Outlet } from "../../models/OutletModel";
-import { HotelContext } from "../../context/HotelContextProvider";
-import { useAuthHeader } from "react-auth-kit";
-
-export interface InputValidate extends Record<string, any> {
-  country: {
-    pattern: RegExp;
-    valid: boolean;
-    firstTouch: boolean;
-    error: string;
-  };
-  postalCode: {
-    pattern: RegExp;
-    valid: boolean;
-    firstTouch: boolean;
-    error: string;
-  };
-  city: {
-    pattern: RegExp;
-    valid: boolean;
-    firstTouch: boolean;
-    error: string;
-  };
-  street: {
-    pattern: RegExp;
-    valid: boolean;
-    firstTouch: boolean;
-    error: string;
-  };
-  name: {
-    pattern: RegExp;
-    valid: boolean;
-    firstTouch: boolean;
-    error: string;
-  };
-  email: {
-    pattern: RegExp;
-    valid: boolean;
-    firstTouch: boolean;
-    error: string;
-  };
-  phone: {
-    pattern: RegExp;
-    valid: boolean;
-    firstTouch: boolean;
-    error: string;
-  };
-  startDate: {
-    pattern: null;
-    valid: boolean;
-    firstTouch: boolean;
-    error: string;
-  };
-  endDate: {
-    pattern: null;
-    valid: boolean;
-    firstTouch: boolean;
-    error: string;
-  };
-  nightAmount: {
-    pattern: RegExp;
-    valid: boolean;
-    firstTouch: boolean;
-    error: string;
-  };
-  personsAmount: {
-    pattern: RegExp;
-    valid: boolean;
-    firstTouch: boolean;
-    error: string;
-  };
-}
-
+import Form from "../Form/Form";
+import { InputValidator } from "../../models/Form/Form";
 const EditBookingForm: React.FC<{
   data: BookingDateObject;
 }> = (props) => {
   const data = props.data;
-  const inputData: InputValidate = {
-    startDate: {
-      pattern: null,
-      valid: true,
-      firstTouch: false,
-      error: "hiba!",
-    },
-    endDate: {
-      pattern: null,
-      valid: true,
-      firstTouch: false,
-      error: "hiba!",
-    },
-    nightAmount: {
-      pattern: /^[1-9]{1,}[0-9]?$/,
-      valid: true,
-      firstTouch: false,
-      error: "hiba!",
-    },
-    personsAmount: {
-      pattern: /^[1-9]{1,}[0-9]?$/,
-      valid: true,
-      firstTouch: false,
-      error: "hiba!",
-    },
-    name: {
-      pattern: /^(\S\D{1,})$/,
-      valid: true,
-      firstTouch: false,
-      error: "hiba!",
-    },
-    email: {
-      pattern: /^\S+@\S+\.\S+$/,
-      valid: true,
-      firstTouch: false,
-      error: "hiba!",
-    },
-    phone: {
-      pattern: /^\+?[0-9][0-9]{10,10}$/,
-      valid: true,
-      firstTouch: false,
-      error: "hiba!",
-    },
-    country: {
-      pattern: /^(\S\D{1,})$/,
-      valid: true,
-      firstTouch: false,
-      error: "hiba!",
-    },
-    postalCode: {
-      pattern: /^\d{4,}$/,
-      valid: true,
-      firstTouch: false,
-      error: "hiba!",
-    },
-    city: {
-      pattern: /^(\S\D{1,})$/,
-      valid: true,
-      firstTouch: false,
-      error: "hiba!",
-    },
-    street: {
-      pattern: /^(\S\D{1,})+(\s\d{1,})+(\/)?([\s\S]{1,})?$/,
-      valid: true,
-      firstTouch: false,
-      error: "hiba!",
-    },
-  };
-  const [editableData, setEditableData] = useState(cloneDeep(data));
-  const backup = cloneDeep(props.data);
-  const [objectsEqual, setObjectsEqual] = useState(true);
-  const revalidator = useRevalidator();
-  const [editLoading, setEditLoading] = useState<boolean>(false);
-  const [inputValidate, setInputValidate] = useState<InputValidate>(
-    cloneDeep(inputData)
+  const [inputValidate, setInputValidate] = useState<InputValidator>(
+    cloneDeep({
+      startDate: {
+        pattern: null,
+        valid: true,
+        firstTouch: false,
+        error: "hiba!",
+        value: data.startDate,
+      },
+      endDate: {
+        pattern: null,
+        valid: true,
+        firstTouch: false,
+        error: "hiba!",
+        value: data.endDate,
+      },
+      nightAmount: {
+        pattern: /^[1-9]{1,}[0-9]?$/,
+        valid: true,
+        firstTouch: false,
+        error: "hiba!",
+        value: data.nightAmount,
+      },
+      personsAmount: {
+        pattern: /^[1-9]{1,}[0-9]?$/,
+        valid: true,
+        firstTouch: false,
+        error: "hiba!",
+        value: data.personsAmount,
+      },
+      name: {
+        pattern: /^(\S\D{1,})$/,
+        valid: true,
+        firstTouch: false,
+        error: "hiba!",
+        value: data.name,
+      },
+      email: {
+        pattern: /^\S+@\S+\.\S+$/,
+        valid: true,
+        firstTouch: false,
+        error: "hiba!",
+        value: data.email,
+      },
+      phone: {
+        pattern: /^\+?[0-9][0-9]{10,10}$/,
+        valid: true,
+        firstTouch: false,
+        error: "hiba!",
+        value: data.phone,
+      },
+      country: {
+        pattern: /^(\S\D{1,})$/,
+        valid: true,
+        firstTouch: false,
+        error: "hiba!",
+        value: data.country,
+      },
+      postalCode: {
+        pattern: /^\d{4,}$/,
+        valid: true,
+        firstTouch: false,
+        error: "hiba!",
+        value: data.postalCode,
+      },
+      city: {
+        pattern: /^(\S\D{1,})$/,
+        valid: true,
+        firstTouch: false,
+        error: "hiba!",
+        value: data.city,
+      },
+      street: {
+        pattern: /^(\S\D{1,})+(\s\d{1,})+(\/)?([\s\S]{1,})?$/,
+        valid: true,
+        firstTouch: false,
+        error: "hiba!",
+        value: data.street,
+      },
+      HUF: {
+        pattern: null,
+        valid: true,
+        firstTouch: false,
+        error: "hiba!",
+        value: data.HUF,
+      },
+      EUR: {
+        pattern: null,
+        valid: true,
+        firstTouch: false,
+        error: "hiba!",
+        value: data.EUR,
+      },
+    })
   );
-  const inputBackup = cloneDeep(inputData);
-  const outletCtx = useOutletContext() as Outlet;
-  const hotelCtx = useContext(HotelContext);
-  const accessToken = useAuthHeader();
-  // ! SIDE EFFECT: backup equal with editableDate?
 
-  useEffect(() => {
-    const cleanup = setTimeout(() => {
-      setEditableData(cloneDeep(data));
-    }, 100);
-
-    return () => clearTimeout(cleanup);
-  }, [data]);
-
-  useEffect(() => {
-    if (objectsEqual) {
-      if (!isEqual(backup, editableData)) {
-        setObjectsEqual(false);
-      }
-    } else {
-      if (isEqual(backup, editableData)) {
-        setObjectsEqual(true);
-      }
-    }
-  }, [editableData]);
-
-  const resetFormHandler = (e: React.MouseEvent) => {
-    setEditableData(backup);
-    setInputValidate(inputBackup);
-  };
-
-  const inputChangeHandler = (e: React.ChangeEvent) => {
-    if (!(e.target instanceof HTMLInputElement)) return;
-    const value = e.target.value;
-    const name = e.target.name as string;
-    if (!inputValidate[name].firstTouch) {
-      setInputValidate((prev) => ({
-        ...prev,
-        [name]: { ...prev[name], firstTouch: true },
-      }));
-    }
-    const testInput = () => {
-      if (inputValidate[name].pattern !== null) {
-        const testValid = inputValidate[name].pattern.test(value);
-        testValid
-          ? setInputValidate((prev) => {
-              return { ...prev, [name]: { ...prev[name], valid: true } };
-            })
-          : setInputValidate((prev) => {
-              return { ...prev, [name]: { ...prev[name], valid: false } };
-            });
-      }
-    };
-    setEditableData((prev) => ({ ...prev, [name]: value }));
-    testInput();
-  };
-
-  const inputBlurHandler = (e: React.ChangeEvent) => {
-    if (!(e.target instanceof HTMLInputElement)) return;
-    const value = e.target.value;
-    const name = e.target.name as string;
-
-    const testInput = () => {
-      if (inputValidate[name].pattern !== null) {
-        const testValid = inputValidate[name].pattern.test(value);
-        testValid
-          ? setInputValidate((prev) => {
-              return { ...prev, [name]: { ...prev[name], valid: true } };
-            })
-          : setInputValidate((prev) => {
-              return { ...prev, [name]: { ...prev[name], valid: false } };
-            });
-      }
-    };
-
-    setInputValidate((prev) => ({
-      ...prev,
-      [name]: { ...prev[name], firstTouch: true },
-    }));
-    testInput();
-  };
-
-  const submitEditHandler = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const getValidKeys = (obj: InputValidate): boolean => {
-      const baseKeys = mapValues(obj, "valid");
-
-      for (let baseKey in baseKeys) {
-        if (!baseKeys[baseKey] && baseKeys[baseKey] !== undefined) {
-          return false;
-        }
-
-        if (baseKeys[baseKey] === undefined) {
-          const depthKeys = mapValues(obj[baseKey], "valid");
-          for (let depthKey in depthKeys) {
-            if (!depthKeys[depthKey] && depthKeys[depthKey] !== undefined) {
-              return false;
-            }
-            if (depthKeys[depthKey] === undefined) {
-              const deepestKeys = mapValues(obj[baseKey][depthKey], "valid");
-              for (let deepestKey in deepestKeys) {
-                if (
-                  !deepestKeys[deepestKey] &&
-                  deepestKeys[deepestKey] !== undefined
-                ) {
-                  return false;
-                }
-              }
-            }
-          }
-        }
-      }
-
-      return true;
-    };
-
-    const valid = getValidKeys(inputValidate);
-    if (valid) {
-      const url = process.env.REACT_APP_BACKEND_API as string;
-      setEditLoading(true);
-      const response = await fetch(
-        url + `/booking/${data._id}?hotel=${hotelCtx.hotelId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: accessToken(),
-          },
-          body: JSON.stringify(editableData),
-        }
-      );
-
-      if (!response.ok) {
-        revalidator.revalidate();
-        setEditLoading(false);
-        outletCtx.alertDispatch({
-          type: ALERT_ACTION_TYPE.SHOW,
-          payload: {
-            alertType: ALERT_TYPE.FAILURE,
-            message: `Valami hiba történt! Próbáld újra!`,
-          },
-        });
-      } else {
-        setObjectsEqual(true);
-        setEditLoading(false);
-        revalidator.revalidate();
-        outletCtx.alertDispatch({
-          type: ALERT_ACTION_TYPE.SHOW,
-          payload: {
-            alertType: ALERT_TYPE.SUCCESS,
-            message: `Sikeresen szerkesztetted a ${editableData._id} azonosítójú foglalást!`,
-          },
-        });
-      }
-    }
-  };
-  console.log(inputValidate);
   return (
-    <article className="p-4 bg-gray-200 laptop:shadow-lg flex flex-col space-y-8 laptop:rounded-3xl w-full laptop:w-4/5 desktop:w-1/2">
-      <form onSubmit={submitEditHandler}>
-        <EditBookingTabs
-          data={editableData}
-          inputChangeHandler={inputChangeHandler}
-          inputValidate={inputValidate}
-          inputBlurHandler={inputBlurHandler}
-        />
-
-        <ButtonArea
-          data={data}
-          objectsEqual={objectsEqual}
-          loading={editLoading}
-          resetFormHandler={resetFormHandler}
-        />
-      </form>
-    </article>
+    <>
+      <Form
+        id={data._id}
+        inputs={{ input: inputValidate, setInput: setInputValidate }}
+        sendAction={{ endpoint: "booking", method: "PUT" }}
+      >
+        {(props) => (
+          <EditBookingTabs
+            inputChangeHandler={props.handleChange}
+            inputValidate={inputValidate}
+            inputBlurHandler={props.handleBlur}
+          />
+        )}
+      </Form>
+    </>
   );
 };
 

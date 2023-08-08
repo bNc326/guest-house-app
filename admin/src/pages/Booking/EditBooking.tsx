@@ -93,7 +93,7 @@ const EditBooking = () => {
   }, [isSure.isSure]);
 
   return (
-    <section className="w-full flex flex-col laptop:gap-4 laptop:py-4 items-center">
+    <section className="w-full flex flex-col laptop:gap-4 laptop:py-4 items-center gap-4">
       <ModalComp
         setIsShow={setShowModal}
         isSure={isSure}
@@ -101,7 +101,6 @@ const EditBooking = () => {
         isSureDispatch={isSureDispatch}
       />
       <EditBookingPreview
-        params={params}
         data={data}
         setShowModal={setShowModal}
         isSureDispatch={isSureDispatch}

@@ -1,5 +1,5 @@
 import { Hotel } from "../models/Hotels.js";
-
+import { getIo } from "../../socket.js";
 export const getHotels = async (req, res, next) => {
   try {
     let result;
@@ -54,6 +54,10 @@ export const createHotel = async (req, res, next) => {
   try {
     const newHotels = new Hotel(req.body);
     await newHotels.save();
+    getIo().emit(`hotels`, {
+      action: "new",
+      payload: newHotels,
+    });
 
     res.status(201).json({
       success: true,
@@ -64,10 +68,14 @@ export const createHotel = async (req, res, next) => {
     next(err);
   }
 };
-
+//TODO when delete all hotel then we delete all booked,disabled,ratings object
 export const deleteHotel = async (req, res, next) => {
   try {
     const hotel = await Hotel.findByIdAndDelete(req.params.id);
+    getIo().emit(`hotels`, {
+      action: "delete",
+      payload: req.params.id,
+    });
     res.status(201).json({
       success: true,
       status: 201,
@@ -80,8 +88,14 @@ export const deleteHotel = async (req, res, next) => {
 
 export const editHotel = async (req, res, next) => {
   try {
-    await Hotel.findByIdAndUpdate(req.params.id, {
+    const updateHotel = await Hotel.findByIdAndUpdate(req.params.id, {
       $set: req.body,
+    });
+    const updateBody = req.body;
+    req.body._id = updateHotel._id;
+    getIo().emit(`hotels`, {
+      action: "update",
+      payload: updateBody,
     });
     res.status(201).json({
       success: true,

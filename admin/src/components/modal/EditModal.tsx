@@ -18,6 +18,10 @@ import { HotelContext } from "../../context/HotelContextProvider";
 import { useAuthHeader } from "react-auth-kit";
 import ModalContainer from "./ModalContainer";
 import Backdrop from "./Backdrop";
+import {
+  RefreshContext,
+  RefreshEnum,
+} from "../../context/RefreshContextProvider";
 
 interface ModalData {
   _id: string;
@@ -38,6 +42,7 @@ const EditModal: React.FC<{
   const revalidator = useRevalidator();
   const outletCtx = useOutletContext() as Outlet;
   const hotelCtx = useContext(HotelContext);
+  const refreshCtx = useContext(RefreshContext);
   const accessToken = useAuthHeader();
 
   useEffect(() => {
@@ -119,21 +124,24 @@ const EditModal: React.FC<{
     setIsloading(true);
     const url = process.env.REACT_APP_BACKEND_API as string;
 
-    const res = await fetch(url + `/disabled-days/${props.id}?hotel=${hotelCtx.hotelId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: accessToken(),
-      },
-      body: JSON.stringify(data),
-    });
+    const res = await fetch(
+      url + `/disabled-days/${props.id}?hotel=${hotelCtx.hotelId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: accessToken(),
+        },
+        body: JSON.stringify(data),
+      }
+    );
 
     if (!res.ok) {
       console.log("error");
       setIsloading(false);
     } else {
       const data = await res.json();
-      revalidator.revalidate();
+      refreshCtx.handleRefresh(RefreshEnum.START);
       setIsloading(false);
       resetModalData();
       outletCtx.alertDispatch({
