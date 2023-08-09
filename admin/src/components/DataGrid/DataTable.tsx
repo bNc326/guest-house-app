@@ -58,24 +58,37 @@ export const TableBody: React.FC<BodyProps> = ({
   handleChangeCheckbox,
   deletableIds,
   withCheckbox,
+  searchValue,
 }) => {
+  const filterKeys = ["_id", "name", "email", "status", "hotelName", "NTAK"];
+  const [filter, setFilter] = useState<string>();
+  useLayoutEffect(() => {
+    const cleanup = setTimeout(() => {
+      setFilter(searchValue);
+    }, 500);
+    return () => clearTimeout(cleanup);
+  }, [searchValue]);
   return (
     <Table.Body>
       {data.length
-        ? data.map((item, index) => (
-            <TableRow
-              key={index}
-              data={item}
-              tableHead={tableHead}
-              editComp={editComp}
-              onClick={(e: React.MouseEvent) => {
-                e.stopPropagation();
-                handleChangeCheckbox(item._id);
-              }}
-              deletableIds={deletableIds}
-              withCheckbox={withCheckbox}
-            />
-          ))
+        ? data
+            .filter((item) =>
+              filterKeys.some((key) => item[key] && item[key].toLowerCase().includes(filter))
+            )
+            .map((item, index) => (
+              <TableRow
+                key={index}
+                data={item}
+                tableHead={tableHead}
+                editComp={editComp}
+                onClick={(e: React.MouseEvent) => {
+                  e.stopPropagation();
+                  handleChangeCheckbox(item._id);
+                }}
+                deletableIds={deletableIds}
+                withCheckbox={withCheckbox}
+              />
+            ))
         : ""}
     </Table.Body>
   );

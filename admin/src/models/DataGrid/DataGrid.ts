@@ -21,7 +21,10 @@ export interface DataTableProps extends CRUD {
 
 export interface DataGridHeader extends CRUD {
   changeHotel?: boolean;
-  search?: boolean;
+  search?: {
+    withSearch: boolean;
+    setSearchValue: React.Dispatch<React.SetStateAction<string>>;
+  };
 }
 
 export interface CompObj {

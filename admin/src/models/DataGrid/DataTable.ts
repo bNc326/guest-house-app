@@ -12,6 +12,7 @@ export interface BodyProps extends CRUD {
   handleChangeCheckbox: (id: string) => void;
   deletableIds: string[];
   withCheckbox?: boolean;
+  searchValue: string;
 }
 
 export interface RowProps extends HeadProps, CRUD, ComponentProps<any> {

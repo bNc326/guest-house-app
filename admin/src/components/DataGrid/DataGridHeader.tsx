@@ -11,6 +11,13 @@ import { MODAL_ACTION_TYPE, MODAL_TYPE } from "../../models/Modal/ModalModal";
 
 const DataGridHeader: React.FC<Props> = ({ changeHotel, newComp, search }) => {
   const navigate = useNavigate();
+
+  const handleSearchInput = (e: React.ChangeEvent) => {
+    if (!(e.target instanceof HTMLInputElement)) return;
+    const value = e.target.value;
+
+    search?.setSearchValue(value);
+  };
   return (
     <div className="flex flex-col mobile:flex-row justify-between items-center w-full font-semibold py-4 gap-2">
       {changeHotel && <ChangeHotelComponent />}
@@ -22,6 +29,7 @@ const DataGridHeader: React.FC<Props> = ({ changeHotel, newComp, search }) => {
               icon={MdSearch}
               sizing={"sm"}
               placeholder="keresés.."
+              onChange={handleSearchInput}
             />
           </span>
         )}
