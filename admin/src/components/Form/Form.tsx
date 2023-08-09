@@ -155,7 +155,7 @@ const Form: React.FC<FormProps> = ({
       setLoading(true);
       const body = generateBody();
       const response = await fetch(
-        `${url}/${sendAction?.endpoint}${id ? "/" + id : ""}${
+        `${url}/${sendAction.endpoint}${id ? "/" + id : ""}${
           !withoutHotelQuery ? `?hotel=${hotelCtx.hotelId}` : ""
         }`,
         {

@@ -27,14 +27,14 @@ const RatingAside: React.FC<Props> = ({ id, isShow, dispatchFn }) => {
       firstTouch: false,
       error: "Ki kell tölteni az üzenet mezőt!",
     },
-    positive: {
+    positives: {
       pattern: null,
       valid: true,
       value: "",
       firstTouch: false,
       error: "Igen",
     },
-    negative: {
+    negatives: {
       pattern: null,
       valid: true,
       value: "",
@@ -61,8 +61,8 @@ const RatingAside: React.FC<Props> = ({ id, isShow, dispatchFn }) => {
         setInputValidate((prev) => {
           const update = { ...prev };
           update.message.value = data.message;
-          update.positive.value = data.positives ? data.positives : "";
-          update.negative.value = data.negatives ? data.negatives : "";
+          update.positives.value = data.positives ? data.positives : "";
+          update.negatives.value = data.negatives ? data.negatives : "";
           return update;
         });
       }
@@ -191,35 +191,35 @@ const RatingAside: React.FC<Props> = ({ id, isShow, dispatchFn }) => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="positive" value="Pozitívum" />
+                    <Label htmlFor="positives" value="Pozitívum" />
                     <Textarea
                       rows={5}
                       className="resize-y max-h-[200px] min-h-[150px]"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={
-                        inputValidate.positive.value
-                          ? inputValidate.positive.value
+                        inputValidate.positives.value
+                          ? inputValidate.positives.value
                           : ""
                       }
-                      name="positive"
-                      id="positive"
+                      name="positives"
+                      id="positives"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="negative" value="Negatívum" />
+                    <Label htmlFor="negatives" value="Negatívum" />
                     <Textarea
                       rows={5}
                       className="resize-y max-h-[200px] min-h-[150px]"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={
-                        inputValidate.negative.value
-                          ? inputValidate.negative.value
+                        inputValidate.negatives.value
+                          ? inputValidate.negatives.value
                           : ""
                       }
-                      name="negative"
-                      id="negative"
+                      name="negatives"
+                      id="negatives"
                     />
                   </div>
                 </div>
