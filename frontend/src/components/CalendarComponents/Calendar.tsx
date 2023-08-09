@@ -89,6 +89,8 @@ const CalendarComponent: React.FC<{
 
   useLayoutEffect(() => {
     const renderAllDays = () => {
+      calendar.resetCalendar();
+      setRenderedMonth(12);
       calendar.createInitialCalendar();
     };
 
@@ -175,6 +177,7 @@ const CalendarComponent: React.FC<{
     }
   }, [renderedMonth]);
 
+  console.log("calendar", renderedCalendar);
   // ! HANDLERS
 
   const selectDateHandler = (e: React.MouseEvent<EventTarget>): void => {

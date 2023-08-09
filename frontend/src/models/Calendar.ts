@@ -349,6 +349,12 @@ class Calendar {
       this.setCalendar((prev) => [...prev, month]);
     }
   }
+
+  resetCalendar() {
+    this.calendar = [];
+    this.setCalendar([]);
+    this.renderedMonth = 12
+  }
 }
 
 export default Calendar;

@@ -1,6 +1,7 @@
-import React, { useRef, useEffect, Fragment } from "react";
+import React, { useRef, useEffect, Fragment, useContext } from "react";
 import DateModel from "models/DateModel";
 import { getMonth } from "date-fns";
+import { HotelContext } from "context/HotelContextProvider";
 const BigCalendar: React.FC<{
   weekDays: string[];
   renderCalendar: DateModel[][];
@@ -11,11 +12,12 @@ const BigCalendar: React.FC<{
 }> = (props) => {
   const calendar = useRef<HTMLDivElement>(null);
   const currentMonth = getMonth(new Date());
+  const hotelCtx = useContext(HotelContext);
   useEffect(() => {
     calendar.current?.children[currentMonth].scrollIntoView({
       block: "center",
     });
-  }, [currentMonth]);
+  }, [currentMonth, hotelCtx.hotelId]);
 
   const handleGetDate = (month: number, returnData: "month" | "year") => {
     const date = new Date();
