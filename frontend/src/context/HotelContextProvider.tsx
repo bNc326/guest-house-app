@@ -21,7 +21,7 @@ export const HotelContextProvider: React.FC<{ children?: JSX.Element }> = ({
   useEffect(() => {
     const fetchHotel = async () => {
       const url = process.env.REACT_APP_BACKEND_API as string;
-      const response = await fetch(`${url}/hotels`);
+      const response = await fetch(`${url}/hotels?status=Accepted`);
 
       if (!response.ok) {
         console.log("error");

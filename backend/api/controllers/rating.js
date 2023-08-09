@@ -28,7 +28,14 @@ const handleDeleteRatings = (hotel, ids) => {
 
 export const getRatings = async (req, res, next) => {
   try {
-    const result = await Rating.find({ hotel: req.hotel }).sort({
+    // let result;
+    const find = req.query.find;
+    let findObj = { hotel: req.hotel };
+    if (find) {
+      const parseFind = JSON.parse(find);
+      findObj = { ...findObj, ...parseFind };
+    }
+    const result = await Rating.find(findObj).sort({
       createdAt: -1,
     });
     res.status(200).send(result);

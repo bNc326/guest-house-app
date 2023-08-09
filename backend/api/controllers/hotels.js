@@ -2,17 +2,36 @@ import { Hotel } from "../models/Hotels.js";
 import { getIo } from "../../socket.js";
 export const getHotels = async (req, res, next) => {
   try {
-    let result;
     const filter = req.query.filter;
+    const find = req.query.find;
+    const status = req.query.status;
+    let filterString = "";
+    let findObj = {};
+
+    if (find) {
+      const parseFind = JSON.parse(find);
+      findObj = { ...findObj, ...parseFind };
+    }
+
     if (filter) {
       const filterArray = filter.split(",");
-      let filterString = "";
       filterArray.map((text) => {
         filterString += `${text}\xa0`;
       });
-      result = await Hotel.find().select(filterString);
-    } else {
-      result = await Hotel.find();
+    }
+
+    const result = await Hotel.find(findObj).select(filterString);
+
+    if (status) {
+      result.map((hotel, index) => {
+        const updateRatings = [];
+        hotel.ratings.filter((rating) => {
+          if (rating.status === status) {
+            updateRatings.push(rating);
+          }
+        });
+        result[index].ratings = updateRatings;
+      });
     }
     res.status(200).send(result);
   } catch (err) {

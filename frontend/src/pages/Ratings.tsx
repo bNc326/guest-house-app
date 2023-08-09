@@ -63,7 +63,9 @@ export default Ratings;
 export async function loader({ params, request }: LoaderFunctionArgs) {
   const hotelQuery = request.url.split("hotel=")[1];
   const url = process.env.REACT_APP_BACKEND_API as string;
-  const response = await fetch(`${url}/ratings?hotel=${hotelQuery}`);
+  const response = await fetch(
+    `${url}/ratings?hotel=${hotelQuery}&find={"status": "Accepted"}`
+  );
   if (!response.ok) {
     throw json({ message: "fetch failed" }, { status: 500 });
   } else {
