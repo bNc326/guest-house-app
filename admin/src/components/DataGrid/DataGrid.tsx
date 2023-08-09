@@ -40,6 +40,7 @@ const DataGrid: React.FC<DataGridProps> = ({
   const [formatHeader, setFormatHeader] = useState<string[]>([]);
   const [deletableIds, setDeletableIds] = useState<string[]>([]);
   const [checkAll, setCheckAll] = useState<boolean>(false);
+  const [searchValue, setSearchValue] = useState<string>("");
   const hotelCtx = useContext(HotelContext);
   const refreshCtx = useContext(RefreshContext);
   const outletCtx = useOutletContext() as Outlet;
@@ -178,7 +179,7 @@ const DataGrid: React.FC<DataGridProps> = ({
       <DataGridHeader
         changeHotel={withChangeHotel}
         newComp={newComp}
-        search={withSearch}
+        search={withSearch ? { withSearch: true, setSearchValue } : undefined}
       />
       {deletableIds.length !== 0 && (
         <div className="w-full flex justify-between items-center bg-blue-600/30 backdrop-blur-sm p-2 rounded-md sticky top-16 z-[5000]">
@@ -217,6 +218,7 @@ const DataGrid: React.FC<DataGridProps> = ({
             tableHead={filter}
             editComp={editComp}
             withCheckbox={withCheckbox}
+            searchValue={searchValue}
           />
         </Table>
         {!formatData.length && (
