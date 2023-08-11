@@ -46,11 +46,14 @@ export const HotelsSchema = new mongoose.Schema(
       required: true,
     },
     services: {
-      type: [String],
-      required: true,
-    },
-    features: {
-      type: [String],
+      type: [
+        {
+          id: { type: String, required: true },
+          value: { type: String, required: true },
+          icon: { type: String, required: true },
+          hidden: { type: Boolean },
+        },
+      ],
       required: true,
     },
     bookedDates: {

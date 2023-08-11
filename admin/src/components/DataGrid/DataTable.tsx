@@ -73,7 +73,11 @@ export const TableBody: React.FC<BodyProps> = ({
       {data.length
         ? data
             .filter((item) =>
-              filterKeys.some((key) => item[key] && item[key].toLowerCase().includes(filter))
+              filterKeys.some(
+                (key) =>
+                  item[key] &&
+                  item[key].toLowerCase().includes(filter)
+              )
             )
             .map((item, index) => (
               <TableRow

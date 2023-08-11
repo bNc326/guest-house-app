@@ -4,6 +4,8 @@ import { GuestHouseModel } from "../../models/GuestHouseModel";
 import { cloneDeep } from "lodash";
 import Form from "../Form/Form";
 import { InputValidator } from "../../models/Form/Form";
+import { v4 as uuid } from "uuid";
+import { Service } from "../../models/GuestHouseModel";
 const EditGuestHouseForm: React.FC<{
   data: GuestHouseModel;
 }> = (props) => {
@@ -90,8 +92,14 @@ const EditGuestHouseForm: React.FC<{
   const [inputValidate, setInputValidate] = useState<InputValidator>(
     cloneDeep(inputData)
   );
-  const focusRef = useRef<HTMLDivElement>(null);
-
+  const [services, setServices] = useState<Service[]>([
+    {
+      id: uuid(),
+      value: "Étterem 500m",
+      icon: "MdRestaurant",
+      hidden: false,
+    },
+  ]);
   return (
     <Form
       id={data._id}
@@ -104,7 +112,8 @@ const EditGuestHouseForm: React.FC<{
           inputValidate={inputValidate}
           changeInputHandler={props.handleChange}
           inputBlurHandler={props.handleBlur}
-          ref={focusRef}
+          services={services}
+          setServices={setServices}
         />
       )}
     </Form>

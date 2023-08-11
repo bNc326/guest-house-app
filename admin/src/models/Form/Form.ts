@@ -15,10 +15,15 @@ export interface InputValidator {
   };
 }
 
+export interface PassData {
+  [key: string]: any;
+}
+
 export interface FormProps extends ComponentProps<any> {
   id?: string;
   inputs: Input;
-  sendAction: {
+  passData?: PassData;
+  sendAction?: {
     endpoint: string;
     method: "POST" | "PUT";
     query?: string;
@@ -26,8 +31,8 @@ export interface FormProps extends ComponentProps<any> {
   };
   acceptAction?: {
     endpoint: string;
-    initialStatus: 'Accepted' | 'Pending' | 'Ejected'
-    id: string
+    initialStatus: "Accepted" | "Pending" | "Ejected";
+    id: string;
   };
   withoutHotelQuery?: boolean;
   children: (object: ChildProps) => React.ReactNode;

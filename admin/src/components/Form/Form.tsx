@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useContext } from "react";
+import React, { useState, useLayoutEffect, useContext, useEffect } from "react";
 import { useRevalidator, useOutletContext } from "react-router-dom";
 import { FormFooter } from "./FormFooter";
 import { Input, FormProps } from "../../models/Form/Form";
@@ -20,7 +20,9 @@ const Form: React.FC<FormProps> = ({
   withoutHotelQuery,
   className,
   acceptAction,
+  passData,
 }) => {
+  //TODO FIX Backup
   const [backup, setBackup] = useState(cloneDeep(inputs.input));
   const [objectIsEqual, setObjectIsEqual] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
@@ -32,22 +34,21 @@ const Form: React.FC<FormProps> = ({
 
   useLayoutEffect(() => {
     const cleanup = setTimeout(() => {
-      let obj: { [key: string]: any } = {};
-      let obj2: { [key: string]: any } = {};
+      if (Object.keys(backup).length === 0) return;
       const input = inputs.input;
 
-      for (let key in inputs.input) {
-        obj[key] = input[key].value;
-      }
-      for (let key in backup) {
-        obj2[key] = backup[key].value;
-      }
+      // for (let key in inputs.input) {
+      //   obj[key] = input[key].value;
+      // }
+      // for (let key in backup) {
+      //   obj2[key] = backup[key].value;
+      // }
       if (objectIsEqual) {
-        if (!isEqual(obj, obj2)) {
+        if (!isEqual(input, backup)) {
           setObjectIsEqual(false);
         }
       } else {
-        if (isEqual(obj, obj2)) {
+        if (isEqual(input, backup)) {
           setObjectIsEqual(true);
         }
       }
@@ -142,10 +143,11 @@ const Form: React.FC<FormProps> = ({
 
     const generateBody = (): BodyInit => {
       const input = inputs.input;
-      const body: { [key: string]: any } = {};
+      let body: { [key: string]: any } = {};
       for (let key in input) {
         body[key] = input[key].value;
       }
+      if (passData) body = { ...body, ...passData };
       return JSON.stringify(body);
     };
 
@@ -155,11 +157,11 @@ const Form: React.FC<FormProps> = ({
       setLoading(true);
       const body = generateBody();
       const response = await fetch(
-        `${url}/${sendAction.endpoint}${id ? "/" + id : ""}${
+        `${url}/${sendAction?.endpoint}${id ? "/" + id : ""}${
           !withoutHotelQuery ? `?hotel=${hotelCtx.hotelId}` : ""
         }`,
         {
-          method: sendAction.method,
+          method: sendAction?.method,
           headers: {
             "Content-Type": "application/json",
             authorization: accessToken(),
@@ -181,6 +183,7 @@ const Form: React.FC<FormProps> = ({
         const data = await response.json();
         setObjectIsEqual(true);
         setLoading(false);
+        console.log("asd");
         setBackup(inputs.input);
         revalidator.revalidate();
         refreshCtx.handleRefresh(RefreshEnum.START);
@@ -191,7 +194,7 @@ const Form: React.FC<FormProps> = ({
             message: data.message,
           },
         });
-        sendAction.callBack && sendAction.callBack();
+        sendAction?.callBack && sendAction.callBack();
       }
     } else {
       setLoading(false);
@@ -205,7 +208,10 @@ const Form: React.FC<FormProps> = ({
     }
   };
 
-  const handleAccept = async (e: MouseEvent, status: "Accepted" | "Ejected") => {
+  const handleAccept = async (
+    e: MouseEvent,
+    status: "Accepted" | "Ejected"
+  ) => {
     e.preventDefault();
     const body = { status };
     if (!acceptAction) return;
@@ -233,7 +239,7 @@ const Form: React.FC<FormProps> = ({
           message: data.message,
         },
       });
-      sendAction.callBack && sendAction.callBack();
+      sendAction?.callBack && sendAction.callBack();
     } catch (error) {
       setLoading(false);
       outletCtx.alertDispatch({
@@ -245,6 +251,7 @@ const Form: React.FC<FormProps> = ({
       });
     }
   };
+
   return (
     <article
       className={`p-4 border-gray-300 border flex flex-col space-y-8 rounded-lg w-full laptop:w-4/5 desktop:w-1/2 ${className}`}
