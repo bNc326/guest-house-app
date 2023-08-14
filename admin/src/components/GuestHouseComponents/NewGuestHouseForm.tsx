@@ -11,15 +11,15 @@ const NewGuestHouseForm: React.FC<{}> = (props) => {
   const data: GuestHouseModel = {
     hotelName: "",
     country: "",
-    postalCode: 0,
+    postalCode: "",
     city: "",
     street: "",
     NTAK: "",
     services: [],
-    price: 0,
-    discountPrice: 0,
-    roomAmount: 0,
-    maxPersonAmount: 0,
+    price: "",
+    discountPrice: "",
+    roomAmount: "",
+    maxPersonAmount: "",
     description: "",
   };
   const inputData: InputValidator = {
@@ -105,9 +105,7 @@ const NewGuestHouseForm: React.FC<{}> = (props) => {
     cloneDeep(inputData)
   );
 
-  const [services, setServices] = useState<Service[]>([
-    { id: "asd", value: "ase", icon: "asd", hidden: false },
-  ]);
+  const [services, setServices] = useState<Service[]>([]);
   return (
     <Form
       id={data._id}

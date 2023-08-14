@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useLayoutEffect, useContext } from "react";
+import React, { useState, useLayoutEffect, } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Navigation from "../components/Navigation";
-import { AuthContext } from "../context/AuthContext";
-import { AUTH_ACTION_TYPE, details } from "../models/Auth/AuthModel";
+import { details } from "../models/Auth/AuthModel";
 import User from "../components/User";
 import { TippContext } from "../context/TippContext";
 import AlertComponent from "../components/UI/Alert";
 import useAlert from "../hooks/useAlert";
 import { Outlet as OutletModel } from "../models/OutletModel";
-import { Modal, Button } from "flowbite-react";
 import { useAuthUser } from "react-auth-kit";
 
 const Root = () => {

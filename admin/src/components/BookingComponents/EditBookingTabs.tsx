@@ -399,34 +399,6 @@ const EditBookingTabs: React.FC<{
           </div>
         </article>
       </Tabs.Item>
-      {/* <Tabs.Item title={"Üzenet a foglalónak"}>
-        <article className="flex gap-4 flex-col">
-          <div className="w-full">
-            <Label htmlFor="email" value="Email" />
-            <TextInput
-              icon={HiMail}
-              type="email"
-              id="email"
-              placeholder="pelda@email.com"
-              value={""}
-            />
-          </div>
-          <div className="w-full">
-            <Label htmlFor="subject" value="Tárgy" />
-            <TextInput
-              icon={MdSubject}
-              type="subject"
-              id="subject"
-              placeholder=""
-              value={""}
-            />
-          </div>
-          <div className="w-full">
-            <Label htmlFor="message" value="Üzenet" />
-            <Textarea id="message" placeholder="" value={""} rows={6} />
-          </div>
-        </article>
-      </Tabs.Item> */}
     </Tabs.Group>
   );
 };
