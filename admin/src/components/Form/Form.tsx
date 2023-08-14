@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useContext } from "react";
+import React, { useState, useLayoutEffect, useContext, useEffect } from "react";
 import { useRevalidator, useOutletContext } from "react-router-dom";
 import { FormFooter } from "./FormFooter";
 import { Input, FormProps } from "../../models/Form/Form";
@@ -20,8 +20,10 @@ const Form: React.FC<FormProps> = ({
   withoutHotelQuery,
   className,
   acceptAction,
+  passData,
 }) => {
-  const [backup, setBackup] = useState(cloneDeep(inputs.input));
+  //TODO FIX Backup
+  const [backup, setBackup] = useState<any>({});
   const [objectIsEqual, setObjectIsEqual] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const hotelCtx = useContext(HotelContext);
@@ -31,23 +33,19 @@ const Form: React.FC<FormProps> = ({
   const revalidator = useRevalidator();
 
   useLayoutEffect(() => {
-    const cleanup = setTimeout(() => {
-      let obj: { [key: string]: any } = {};
-      let obj2: { [key: string]: any } = {};
-      const input = inputs.input;
+    setBackup(cloneDeep({ ...inputs.input, ...passData }));
+  }, []);
 
-      for (let key in inputs.input) {
-        obj[key] = input[key].value;
-      }
-      for (let key in backup) {
-        obj2[key] = backup[key].value;
-      }
+  useLayoutEffect(() => {
+    const cleanup = setTimeout(() => {
+      if (Object.keys(backup).length === 0) return;
+      const input = inputs.input;
       if (objectIsEqual) {
-        if (!isEqual(obj, obj2)) {
+        if (!isEqual(input, backup)) {
           setObjectIsEqual(false);
         }
       } else {
-        if (isEqual(obj, obj2)) {
+        if (isEqual(input, backup)) {
           setObjectIsEqual(true);
         }
       }
@@ -119,33 +117,30 @@ const Form: React.FC<FormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const input = inputs.input;
-    const setInput = inputs.setInput;
-    setInput((prev) => {
-      const inputs = { ...prev };
-      for (let key in inputs) {
-        inputs[key].firstTouch = true;
-      }
-      return inputs;
+
+    inputs.setInput((prev) => {
+      const update = cloneDeep(prev);
+      Object.keys(update).map((key) => (update[key].firstTouch = true));
+      return update;
     });
 
     const getValidKeys = (): boolean => {
-      const baseKeys = mapValues(input, "valid");
+      const baseKeys = mapValues(inputs.input, "valid");
       for (let baseKey in baseKeys) {
         if (!baseKeys[baseKey] && baseKeys[baseKey] !== undefined) {
           return false;
         }
       }
-
       return true;
     };
 
     const generateBody = (): BodyInit => {
       const input = inputs.input;
-      const body: { [key: string]: any } = {};
+      let body: { [key: string]: any } = {};
       for (let key in input) {
         body[key] = input[key].value;
       }
+      if (passData) body = { ...body, ...passData };
       return JSON.stringify(body);
     };
 
@@ -155,11 +150,11 @@ const Form: React.FC<FormProps> = ({
       setLoading(true);
       const body = generateBody();
       const response = await fetch(
-        `${url}/${sendAction.endpoint}${id ? "/" + id : ""}${
+        `${url}/${sendAction?.endpoint}${id ? "/" + id : ""}${
           !withoutHotelQuery ? `?hotel=${hotelCtx.hotelId}` : ""
         }`,
         {
-          method: sendAction.method,
+          method: sendAction?.method,
           headers: {
             "Content-Type": "application/json",
             authorization: accessToken(),
@@ -181,7 +176,7 @@ const Form: React.FC<FormProps> = ({
         const data = await response.json();
         setObjectIsEqual(true);
         setLoading(false);
-        setBackup(inputs.input);
+        console.log("asd");
         revalidator.revalidate();
         refreshCtx.handleRefresh(RefreshEnum.START);
         outletCtx.alertDispatch({
@@ -191,7 +186,14 @@ const Form: React.FC<FormProps> = ({
             message: data.message,
           },
         });
-        sendAction.callBack && sendAction.callBack();
+        sendAction?.callBack && sendAction.callBack();
+        if (sendAction?.method === "POST") {
+          inputs.setInput(backup);
+        }
+
+        if (sendAction?.method === "PUT") {
+          setBackup(inputs.input);
+        }
       }
     } else {
       setLoading(false);
@@ -205,7 +207,10 @@ const Form: React.FC<FormProps> = ({
     }
   };
 
-  const handleAccept = async (e: MouseEvent, status: "Accepted" | "Ejected") => {
+  const handleAccept = async (
+    e: MouseEvent,
+    status: "Accepted" | "Ejected"
+  ) => {
     e.preventDefault();
     const body = { status };
     if (!acceptAction) return;
@@ -233,7 +238,7 @@ const Form: React.FC<FormProps> = ({
           message: data.message,
         },
       });
-      sendAction.callBack && sendAction.callBack();
+      sendAction?.callBack && sendAction.callBack();
     } catch (error) {
       setLoading(false);
       outletCtx.alertDispatch({
@@ -245,6 +250,7 @@ const Form: React.FC<FormProps> = ({
       });
     }
   };
+  console.log("backup", backup);
   return (
     <article
       className={`p-4 border-gray-300 border flex flex-col space-y-8 rounded-lg w-full laptop:w-4/5 desktop:w-1/2 ${className}`}

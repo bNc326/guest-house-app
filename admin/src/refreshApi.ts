@@ -12,7 +12,6 @@ const refreshApi = createRefresh({
           headers: { authorization: `Bearer ${authToken}` },
         }
       );
-      console.log(response.data);
       return {
         isSuccess: true,
         newAuthToken: response.data.accessToken,

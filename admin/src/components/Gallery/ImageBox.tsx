@@ -1,20 +1,17 @@
 import React from "react";
-import {
-  DeleteCheckbox,
-  Gallery as GalleryModel,
-} from "../../models/Gallery/Gallery";
+import { Gallery as GalleryModel } from "../../models/Gallery/Gallery";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 
 interface Props {
-  changeCheckboxHandler: (e: React.ChangeEvent) => void;
-  deleteCheckbox: DeleteCheckbox[];
+  handleChangeCheckbox: (id: string) => void;
+  deletableIds: string[];
   imageSrc: GalleryModel[];
 }
 
 const ImageBox: React.FC<Props> = ({
-  changeCheckboxHandler,
-  deleteCheckbox,
+  handleChangeCheckbox,
+  deletableIds,
   imageSrc,
 }) => {
   return (
@@ -22,19 +19,19 @@ const ImageBox: React.FC<Props> = ({
       {imageSrc &&
         imageSrc.map((img, index) => (
           <div
-            key={img.id}
+            key={img._id}
             className="w-full mobile:w-[calc(33%-.8rem)] tablet:w-[calc(25%-.8rem)] laptop:w-[calc(20%-.8rem)] flex flex-col rounded-3xl overflow-hidden shadow-shadow relative"
           >
             <input
-              onChange={changeCheckboxHandler}
-              checked={deleteCheckbox[index]?.checked}
-              data-id={img.id}
+              onChange={() => handleChangeCheckbox(img._id)}
+              checked={deletableIds.includes(img._id)}
+              data-id={img._id}
               type="checkbox"
-              id={img.id}
+              id={img._id}
               className="absolute z-10 top-[calc(1.25rem/2)] right-[calc(1.25rem/2)] w-5 h-5 rounded-3xl outline-none bg-white checked:bg-[#636060] active:ring-0 active:ring-transparent focus:ring-0 focus:ring-transparent cursor-pointer transition-all ease-in-out duration-300"
             />
             <label
-              htmlFor={img.id}
+              htmlFor={img._id}
               className="w-full h-full cursor-pointer relative"
             >
               <LazyLoadImage

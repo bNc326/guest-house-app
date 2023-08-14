@@ -14,7 +14,7 @@ const DataGridHeader: React.FC<Props> = ({ changeHotel, newComp, search }) => {
 
   const handleSearchInput = (e: React.ChangeEvent) => {
     if (!(e.target instanceof HTMLInputElement)) return;
-    const value = e.target.value;
+    const value = e.target.value.toLowerCase();
 
     search?.setSearchValue(value);
   };

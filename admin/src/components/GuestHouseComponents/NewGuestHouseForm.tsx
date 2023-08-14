@@ -1,26 +1,27 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import { GuestHouseModel } from "../../models/GuestHouseModel";
 import { cloneDeep } from "lodash";
 import Form from "../Form/Form";
 import { InputValidator } from "../../models/Form/Form";
 import GuestHouseTabs from "./GuestHouseTabs";
+import { v4 as uuid } from "uuid";
+import { Service } from "../../models/GuestHouseModel";
+import { mapValues } from "lodash";
 const NewGuestHouseForm: React.FC<{}> = (props) => {
   const data: GuestHouseModel = {
     hotelName: "",
     country: "",
-    postalCode: 0,
+    postalCode: "",
     city: "",
     street: "",
     NTAK: "",
     services: [],
-    feature: [],
-    price: 0,
-    discountPrice: 0,
-    roomAmount: 0,
-    maxPersonAmount: 0,
+    price: "",
+    discountPrice: "",
+    roomAmount: "",
+    maxPersonAmount: "",
     description: "",
   };
-
   const inputData: InputValidator = {
     hotelName: {
       pattern: /^[\s\S]{2,}$/,
@@ -100,17 +101,19 @@ const NewGuestHouseForm: React.FC<{}> = (props) => {
       value: data.NTAK,
     },
   };
-
   const [inputValidate, setInputValidate] = useState<InputValidator>(
     cloneDeep(inputData)
   );
 
-  const focusRef = useRef<HTMLDivElement>(null);
-
+  const [services, setServices] = useState<Service[]>([]);
   return (
     <Form
       id={data._id}
-      inputs={{ input: inputValidate, setInput: setInputValidate }}
+      inputs={{
+        input: inputValidate,
+        setInput: setInputValidate,
+      }}
+      passData={{ services }}
       sendAction={{ endpoint: "hotels", method: "POST" }}
       withoutHotelQuery
     >
@@ -119,7 +122,8 @@ const NewGuestHouseForm: React.FC<{}> = (props) => {
           inputValidate={inputValidate}
           changeInputHandler={props.handleChange}
           inputBlurHandler={props.handleBlur}
-          ref={focusRef}
+          services={services}
+          setServices={setServices}
         />
       )}
     </Form>

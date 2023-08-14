@@ -63,7 +63,6 @@ export const FormFooter: React.FC<Props> = ({
       {!accept?.accept && (
         <div className="flex gap-2 w-full">
           <Button
-            disabled={objectIsEqual}
             type="submit"
             className=" laptop:w-[unset] transition-all ease-in-out duration-300"
             size="sm"

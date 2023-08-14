@@ -1,39 +1,16 @@
-import React, { useState, useEffect, useContext, useLayoutEffect } from "react";
-import {
-  json,
-  useRouteLoaderData,
-  useRevalidator,
-  useOutletContext,
-  LoaderFunctionArgs,
-} from "react-router-dom";
-import { ALERT_TYPE, ALERT_ACTION_TYPE } from "../../models/Alert/AlertModels";
-import AlertComponent from "../../components/UI/Alert";
-import Table, {
-  TableRow,
-  TableButton,
-  TableCell,
-} from "../../components/UI/Table";
-import { format } from "date-fns";
-import { Button, Checkbox } from "flowbite-react";
-import { HiTrash } from "react-icons/hi";
-import { BsCalendar2PlusFill } from "react-icons/bs";
-import { DisabledDaysModel } from "../../models/Disabled-days/Disabled-days";
-import { Checkbox as CheckboxModel } from "../../models/CheckboxModel";
-import useAlert from "../../hooks/useAlert";
+import React, { useState, useContext } from "react";
 import EditModal from "../../components/modal/EditModal";
 import useModals from "../../hooks/useModals";
-import { MODAL_ACTION_TYPE, MODAL_TYPE } from "../../models/Modal/ModalModal";
+import { MODAL_TYPE } from "../../models/Modal/ModalModal";
 import NewModal from "../../components/modal/NewModal";
-import { Outlet } from "../../models/OutletModel";
-import ChangeHotelComponent from "../../components/ChangeHotelComponent";
-import { HotelContext } from "../../context/HotelContextProvider";
-import { useAuthHeader } from "react-auth-kit";
 import DataGrid from "../../components/DataGrid/DataGrid";
 import { CompTypeEnum } from "../../models/DataGrid/DataGrid";
+import { HotelContext } from "../../context/HotelContextProvider";
 
 const DisabledDays = () => {
   const { modal, modalDispatch } = useModals();
   const [isNewModal, setIsNewModal] = useState<boolean>(false);
+  const hotelCtx = useContext(HotelContext);
 
   return (
     <>
@@ -45,6 +22,14 @@ const DisabledDays = () => {
         withSearch
         withChangeHotel
         withCheckbox
+        socketData={{
+          socketEndpoint: `${hotelCtx.hotelId}-disabled-days`,
+          alert: {
+            new: "Egy admin létrehozott egy kizárt napot!",
+            update: "Egy admin módosított egy kizárt napot!",
+            delete: "Egy admin törölt egy/több kizárt napot!",
+          },
+        }}
       />
       {modal.modalType === MODAL_TYPE.EDIT && (
         <EditModal

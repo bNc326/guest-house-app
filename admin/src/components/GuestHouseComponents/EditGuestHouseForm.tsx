@@ -1,9 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useLayoutEffect, useRef } from "react";
 import GuestHouseTabs from "./GuestHouseTabs";
 import { GuestHouseModel } from "../../models/GuestHouseModel";
 import { cloneDeep } from "lodash";
 import Form from "../Form/Form";
 import { InputValidator } from "../../models/Form/Form";
+import { v4 as uuid } from "uuid";
+import { Service } from "../../models/GuestHouseModel";
 const EditGuestHouseForm: React.FC<{
   data: GuestHouseModel;
 }> = (props) => {
@@ -90,7 +92,20 @@ const EditGuestHouseForm: React.FC<{
   const [inputValidate, setInputValidate] = useState<InputValidator>(
     cloneDeep(inputData)
   );
-  const focusRef = useRef<HTMLDivElement>(null);
+  const [services, setServices] = useState<Service[]>([]);
+
+  useLayoutEffect(() => {
+    setServices([]);
+    const cleanup = setTimeout(() => {
+      if (data) {
+        data.services.map((service) => {
+          setServices((prev) => [...prev, service]);
+        });
+      }
+    }, 100);
+
+    return () => clearTimeout(cleanup);
+  }, [data]);
 
   return (
     <Form
@@ -98,13 +113,15 @@ const EditGuestHouseForm: React.FC<{
       inputs={{ input: inputValidate, setInput: setInputValidate }}
       sendAction={{ endpoint: "hotels", method: "PUT" }}
       withoutHotelQuery
+      passData={{ services }}
     >
       {(props) => (
         <GuestHouseTabs
           inputValidate={inputValidate}
           changeInputHandler={props.handleChange}
           inputBlurHandler={props.handleBlur}
-          ref={focusRef}
+          services={services}
+          setServices={setServices}
         />
       )}
     </Form>
