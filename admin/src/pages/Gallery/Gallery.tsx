@@ -1,16 +1,15 @@
-import { useState, useLayoutEffect, DragEvent } from "react";
 import {
-  useRevalidator,
-  json,
-  useRouteLoaderData,
-  useOutletContext,
-} from "react-router-dom";
+  useEffect,
+  useState,
+  useLayoutEffect,
+  DragEvent,
+  useContext,
+} from "react";
+import { useRevalidator, useOutletContext } from "react-router-dom";
 import { BiTrash } from "react-icons/bi";
 import ModalComp from "../../components/modal/Modal";
 import useIsSure from "../../hooks/useIsSure";
 import { IS_SURE_ENUM } from "../../models/IsSure/IsSure";
-import useAlert from "../../hooks/useAlert";
-import AlertComponent from "../../components/UI/Alert";
 import { ALERT_TYPE, ALERT_ACTION_TYPE } from "../../models/Alert/AlertModels";
 import useUpload from "../../hooks/useUpload";
 import { UPLOAD_TYPE } from "../../models/Upload/UploadModel";
@@ -19,50 +18,40 @@ import { Button } from "flowbite-react";
 import DropZone from "../../components/Gallery/DropZone";
 import PreviewUpload from "../../components/Gallery/PreviewUpload";
 import UploadForm from "../../components/Gallery/UploadForm";
-import {
-  DeleteCheckbox,
-  Gallery as GalleryModel,
-} from "../../models/Gallery/Gallery";
+import { Gallery as GalleryModel } from "../../models/Gallery/Gallery";
 import ImageBox from "../../components/Gallery/ImageBox";
 import { Outlet } from "../../models/OutletModel";
 import { useAuthHeader } from "react-auth-kit";
+import useFetch from "../../hooks/useFetch";
+import {
+  RefreshContext,
+  RefreshEnum,
+} from "../../context/RefreshContextProvider";
+import { ClipLoader } from "react-spinners";
 
 const Gallery = () => {
-  const imageSrc = useRouteLoaderData("gallery") as GalleryModel[];
-  const [deleteCheckbox, setDeleteCheckbox] = useState<DeleteCheckbox[]>([]);
+  const { data, reFetch } = useFetch("gallery");
+  const [imageSrc, setImageSrc] = useState<GalleryModel[]>([]);
   const [deletableIds, setDeletableIds] = useState<string[]>([]);
   const [isShow, setIsShow] = useState<boolean>(false);
   const [isDrag, setIsDrag] = useState<boolean>(false);
-  const [allSelected, setAllSelected] = useState<boolean>(false);
+  const [checkAll, setCheckAll] = useState<boolean>(false);
   const [isProgress, setIsProgress] = useState<number>(0);
   const { upload, uploadDispatch } = useUpload();
   const { isSure, isSureDispatch } = useIsSure();
-  const revalidator = useRevalidator();
   const outletCtx = useOutletContext() as Outlet;
+  const refreshCtx = useContext(RefreshContext);
   const accessToken = useAuthHeader();
 
-  useLayoutEffect(() => {
-    const getDeleteCheckbox = () => {
-      const updateCheckbox: DeleteCheckbox[] = [];
-      imageSrc.map((img) => {
-        const update: DeleteCheckbox = {
-          id: img.id,
-          checked: false,
-        };
-        updateCheckbox.push(update);
-      });
-
-      setDeleteCheckbox(updateCheckbox);
-    };
-
+  useEffect(() => {
     const cleanup = setTimeout(() => {
-      getDeleteCheckbox();
+      if (refreshCtx.loading === RefreshEnum.END) return;
+      reFetch();
     }, 100);
-
     return () => clearTimeout(cleanup);
-  }, [imageSrc]);
+  }, [refreshCtx.loading]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const deleteIds = async () => {
       if (isSure.actionType === "DELETE" && isSure.isSure) {
         const body = JSON.stringify(deletableIds);
@@ -80,8 +69,9 @@ const Gallery = () => {
           console.log(response);
         } else {
           const data = await response.json();
-          console.log(data);
-          setDeletableIds([]);
+          setTimeout(() => {
+            reFetch(deletableIds);
+          }, 3000);
           outletCtx.alertDispatch({
             type: ALERT_ACTION_TYPE.SHOW,
             payload: {
@@ -89,17 +79,19 @@ const Gallery = () => {
               message: data?.message,
             },
           });
-          setTimeout(() => {
-            revalidator.revalidate();
-          }, 5000);
+          setDeletableIds([]);
         }
       }
     };
-    const cleanup = setTimeout(() => {
-      deleteIds();
-    }, 100);
+
+    const cleanup = setTimeout(deleteIds, 100);
     return () => clearTimeout(cleanup);
   }, [isSure]);
+
+  useLayoutEffect(() => {
+    const cleanup = setTimeout(() => setImageSrc(data), 100);
+    return () => clearTimeout(cleanup);
+  }, [data]);
 
   useLayoutEffect(() => {
     const isEmpty = () => {
@@ -120,7 +112,7 @@ const Gallery = () => {
     const resetUploadData = () => {
       setIsDrag(false);
       uploadDispatch({ type: UPLOAD_TYPE.RESET });
-      revalidator.revalidate();
+      reFetch();
       setIsProgress(0);
     };
 
@@ -134,81 +126,35 @@ const Gallery = () => {
 
   useLayoutEffect(() => {
     const cleanup = setTimeout(() => {
-      if (deletableIds.length < imageSrc.length) {
-        setAllSelected(false);
+      if (imageSrc.length === deletableIds.length) {
+        setCheckAll(true);
+      } else {
+        setCheckAll(false);
       }
     }, 100);
 
     return () => clearTimeout(cleanup);
   }, [deletableIds]);
 
-  const checkAllCheckboxHandler = (e: React.MouseEvent) => {
-    if (!allSelected) {
+  const handleCheckAll = () => {
+    setCheckAll(!checkAll);
+    const ids: string[] = [];
+    imageSrc.map((img) => ids.push(img._id));
+    setDeletableIds(ids);
+    if (checkAll) {
       setDeletableIds([]);
-      setDeleteCheckbox((prev) => {
-        const update = [...prev];
-        update.map((checkbox) => (checkbox.checked = true));
-        return update;
-      });
-      setDeletableIds((prev) => {
-        const update = [...prev];
-        imageSrc.map((img) => {
-          update.push(img.id);
-        });
-        return update;
-      });
-      setAllSelected(true);
-
-      return;
     }
-
-    setDeletableIds([]);
-
-    setDeleteCheckbox((prev) => {
-      const update = [...prev];
-      update.map((checkbox) => (checkbox.checked = false));
-      return update;
-    });
-
-    setAllSelected(false);
   };
 
-  const changeCheckboxHandler = (e: React.ChangeEvent) => {
-    if (!(e.target instanceof HTMLInputElement)) return;
+  const handleChangeCheckbox = (id: string) => {
+    const isIn = deletableIds.includes(id);
 
-    const checked = e.target.checked;
-    const id = e.target.dataset.id as string;
-
-    if (checked) {
-      setDeleteCheckbox((prev) => {
-        const update = [...prev];
-        update.map((item) => {
-          if (item.id === id) {
-            item.checked = true;
-          }
-        });
-        return update;
-      });
-      setDeletableIds((prev) => {
-        return [...prev, id];
-      });
+    if (!isIn) {
+      setDeletableIds((prev) => [...prev, id]);
       return;
     }
 
-    setDeleteCheckbox((prev) => {
-      const update = [...prev];
-      update.map((item) => {
-        if (item.id === id) {
-          item.checked = false;
-        }
-      });
-      return update;
-    });
-    setDeletableIds((prev) => {
-      const deleteIndex = prev.findIndex((item) => item === id);
-      return [...prev.slice(0, deleteIndex), ...prev.slice(deleteIndex + 1)];
-    });
-    return;
+    setDeletableIds(deletableIds.filter((item) => item !== id));
   };
 
   const deletePreviewHandler = (e: React.MouseEvent) => {
@@ -365,11 +311,7 @@ const Gallery = () => {
           <div className="w-full flex justify-between items-center bg-blue-600/30 backdrop-blur-sm p-2 rounded-md sticky top-16 z-50">
             <span>{deletableIds.length} elem kiválasztva</span>{" "}
             <div className="flex flex-col mobile:flex-row gap-1 mobile:gap-2 font-bold">
-              <Button
-                color="gray"
-                onClick={checkAllCheckboxHandler}
-                className="w-full"
-              >
+              <Button color="gray" onClick={handleCheckAll} className="w-full">
                 Összes kijelölése
               </Button>
               <Button
@@ -389,8 +331,8 @@ const Gallery = () => {
         )}
 
         <ImageBox
-          changeCheckboxHandler={changeCheckboxHandler}
-          deleteCheckbox={deleteCheckbox}
+          handleChangeCheckbox={handleChangeCheckbox}
+          deletableIds={deletableIds}
           imageSrc={imageSrc}
         />
       </div>
@@ -406,20 +348,3 @@ const Gallery = () => {
 };
 
 export default Gallery;
-
-export async function loader() {
-  const url = process.env.REACT_APP_BACKEND_API as string;
-  const response = await fetch(url + `/gallery`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    console.log("fetch faild", response);
-    throw json({ message: "fetch failed" }, { status: 500 });
-  } else {
-    return response;
-  }
-}
