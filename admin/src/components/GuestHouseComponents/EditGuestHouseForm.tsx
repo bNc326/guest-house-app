@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useLayoutEffect, useRef } from "react";
 import GuestHouseTabs from "./GuestHouseTabs";
 import { GuestHouseModel } from "../../models/GuestHouseModel";
 import { cloneDeep } from "lodash";
@@ -92,20 +92,28 @@ const EditGuestHouseForm: React.FC<{
   const [inputValidate, setInputValidate] = useState<InputValidator>(
     cloneDeep(inputData)
   );
-  const [services, setServices] = useState<Service[]>([
-    {
-      id: uuid(),
-      value: "Étterem 500m",
-      icon: "MdRestaurant",
-      hidden: false,
-    },
-  ]);
+  const [services, setServices] = useState<Service[]>([]);
+
+  useLayoutEffect(() => {
+    setServices([]);
+    const cleanup = setTimeout(() => {
+      if (data) {
+        data.services.map((service) => {
+          setServices((prev) => [...prev, service]);
+        });
+      }
+    }, 100);
+
+    return () => clearTimeout(cleanup);
+  }, [data]);
+
   return (
     <Form
       id={data._id}
       inputs={{ input: inputValidate, setInput: setInputValidate }}
       sendAction={{ endpoint: "hotels", method: "PUT" }}
       withoutHotelQuery
+      passData={{ services }}
     >
       {(props) => (
         <GuestHouseTabs

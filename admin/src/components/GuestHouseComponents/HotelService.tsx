@@ -15,10 +15,7 @@ interface Props {
   setServices: React.Dispatch<React.SetStateAction<Service[]>>;
 }
 
-const HotelService: React.FC<Props> = ({
-  services,
-  setServices,
-}) => {
+const HotelService: React.FC<Props> = ({ services, setServices }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [icons, setIcons] = useState<IconTypes>({});
   const [editEnabled, setEditEnabled] = useState<boolean>(false);
@@ -117,11 +114,12 @@ const HotelService: React.FC<Props> = ({
               key={service.id}
               className="w-[calc(33%-1rem/2)] flex items-center"
             >
-              <div className="w-full flex items-center gap-1 border-red-600 border">
+              <div className="w-full flex items-center gap-1">
                 <TextInput
                   sizing={"sm"}
                   addon={
                     <Checkbox
+                      className="cursor-pointer"
                       checked={!service.hidden}
                       onChange={(e: React.ChangeEvent) =>
                         handleChangeService({

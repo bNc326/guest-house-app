@@ -103,7 +103,7 @@ const GuestHouseTabs: React.FC<ReactProps> = (props) => {
                 onChange={changeInputHandler}
                 onBlur={inputBlurHandler}
                 name="discountPrice"
-                placeholder="40000"
+                placeholder="39990"
                 id="discountPrice"
               />
             </div>
@@ -117,7 +117,9 @@ const GuestHouseTabs: React.FC<ReactProps> = (props) => {
                 name="roomAmount"
                 onChange={changeInputHandler}
                 onBlur={inputBlurHandler}
+                placeholder="2"
                 type="number"
+                min={0}
                 id="roomAmount"
                 color={`${
                   inputValidate.roomAmount.firstTouch
@@ -149,7 +151,9 @@ const GuestHouseTabs: React.FC<ReactProps> = (props) => {
                 onBlur={inputBlurHandler}
                 name="maxPersonAmount"
                 type="number"
+                min={0}
                 id="maxPersonAmount"
+                placeholder="5"
                 color={`${
                   inputValidate.maxPersonAmount.firstTouch
                     ? inputValidate.maxPersonAmount.valid
@@ -283,6 +287,7 @@ const GuestHouseTabs: React.FC<ReactProps> = (props) => {
                   value={inputValidate.postalCode.value}
                   onChange={changeInputHandler}
                   onBlur={inputBlurHandler}
+                  placeholder="1234"
                   name="postalCode"
                   color={`${
                     inputValidate.postalCode.firstTouch
@@ -372,10 +377,7 @@ const GuestHouseTabs: React.FC<ReactProps> = (props) => {
         </div>
       </Tabs.Item>
       <Tabs.Item title="Szolgáltatás buborékok">
-        <HotelService
-          services={services}
-          setServices={setServices}
-        />
+        <HotelService services={services} setServices={setServices} />
       </Tabs.Item>
     </Tabs.Group>
   );
