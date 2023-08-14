@@ -24,7 +24,7 @@ export const getImage = (req, res, next) => {
     fs.readFile(filePath, (err, file) => {
       const data = JSON.parse(file);
 
-      const foundImg = data.find((img) => img.id === req.params.id);
+      const foundImg = data.find((img) => img._id === req.params.id);
 
       if (!foundImg) {
         res.send({
@@ -52,7 +52,7 @@ export const uploadImage = (req, res, next) => {
         if (!foundItem) {
           const split = file.originalname.split(".");
           const updateBody = {
-            id: uuid(),
+            _id: uuid(),
             alt: file.originalname.replace(/\.[^/.]+$/, ""),
             path: file.originalname,
             trimmedPath: `${split[0].substring(0, 12)}... .${split[1]}`,
@@ -83,7 +83,7 @@ export const editImage = (req, res, next) => {
       const data = JSON.parse(file);
 
       const editHandler = (item) => {
-        if (item.id === req.params.id) {
+        if (item._id === req.params.id) {
           item.alt = req.body.alt;
           return item;
         }
@@ -96,7 +96,7 @@ export const editImage = (req, res, next) => {
           success: false,
           status: 404,
           message: "A kép nem található!",
-          id: req.params.id,
+          id: req.params._id,
         });
         return;
       }
@@ -131,7 +131,7 @@ export const deleteImages = (req, res, next) => {
       const imgName = [];
       data.map((img, index) => {
         deleteItems.map((item) => {
-          if (img.id === item) {
+          if (img._id === item) {
             indexes.push(index);
             imgName.push(img.path);
           }
