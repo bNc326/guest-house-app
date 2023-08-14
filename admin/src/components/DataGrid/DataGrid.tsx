@@ -33,9 +33,10 @@ const DataGrid: React.FC<DataGridProps> = ({
   withChangeHotel,
   withSearch,
   withCheckbox,
+  socketData,
 }) => {
   const language = lang;
-  const { data, reFetch } = useFetch(endpoint, query);
+  const { data, reFetch } = useFetch(endpoint, { query, socketData });
   const [formatData, setFormatData] = useState<any[]>([]);
   const [formatHeader, setFormatHeader] = useState<string[]>([]);
   const [deletableIds, setDeletableIds] = useState<string[]>([]);
@@ -162,7 +163,7 @@ const DataGrid: React.FC<DataGridProps> = ({
       console.log("error");
     } else {
       const data = await res.json();
-      reFetch(deletableIds);
+      reFetch();
       outletCtx.alertDispatch({
         type: ALERT_ACTION_TYPE.SHOW,
         payload: {

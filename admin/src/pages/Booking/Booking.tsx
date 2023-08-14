@@ -1,38 +1,10 @@
-import {
-  useEffect,
-  useState,
-  useContext,
-  useCallback,
-  useLayoutEffect,
-} from "react";
-import {
-  json,
-  useRouteLoaderData,
-  useRevalidator,
-  useOutletContext,
-  LoaderFunctionArgs,
-  useSearchParams,
-} from "react-router-dom";
-import { Button } from "flowbite-react";
-import { TippContext } from "../../context/TippContext";
-import { format } from "date-fns";
-import { ALERT_TYPE, ALERT_ACTION_TYPE } from "../../models/Alert/AlertModels";
-import { HiTrash } from "react-icons/hi";
-import Table, {
-  TableCell,
-  TableRow,
-  TableButton,
-} from "../../components/UI/Table";
-import { BookingDate } from "../../models/Booking/BookingDate";
-import { Checkbox as CheckboxModel } from "../../models/CheckboxModel";
-import { Outlet } from "../../models/OutletModel";
-import { HotelContext } from "../../context/HotelContextProvider";
-import ChangeHotelComponent from "../../components/ChangeHotelComponent";
-import { useAuthHeader } from "react-auth-kit";
+import { useContext } from "react";
 import DataGrid from "../../components/DataGrid/DataGrid";
 import { CompTypeEnum } from "../../models/DataGrid/DataGrid";
+import { HotelContext } from "../../context/HotelContextProvider";
 
 const Booking = () => {
+  const hotelCtx = useContext(HotelContext);
   return (
     <>
       <DataGrid
@@ -53,6 +25,14 @@ const Booking = () => {
         withChangeHotel
         withSearch
         withCheckbox
+        socketData={{
+          socketEndpoint: `${hotelCtx.hotelId}-booking`,
+          alert: {
+            new: "Új foglalás érkezett",
+            update: "Egy admin módosított egy foglalást",
+            delete: "Egy admin törölt egy/több foglalást",
+          },
+        }}
       />
     </>
   );

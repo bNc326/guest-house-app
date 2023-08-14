@@ -1,3 +1,5 @@
+import { SocketData } from "../../hooks/useSocket";
+
 export enum CompTypeEnum {
   PATH = "comp_path",
   MODAL = "comp_modal",
@@ -12,6 +14,7 @@ export interface DataGridProps extends CRUD {
   withChangeHotel?: boolean;
   withSearch?: boolean;
   withCheckbox?: boolean;
+  socketData?: SocketData;
 }
 
 export interface DataTableProps extends CRUD {

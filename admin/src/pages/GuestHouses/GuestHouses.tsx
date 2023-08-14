@@ -14,6 +14,14 @@ const GuestHouses = () => {
         editComp={{ type: CompTypeEnum.PATH }}
         newComp={{ type: CompTypeEnum.PATH }}
         withSearch
+        socketData={{
+          socketEndpoint: `hotels`,
+          alert: {
+            new: "Egy admin létrehozott egy vendégházat!",
+            update: "Egy admin módosított egy vendégházat!",
+            delete: "Egy admin törölt egy vendégházat!",
+          },
+        }}
       />
     </>
   );
