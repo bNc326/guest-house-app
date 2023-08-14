@@ -23,7 +23,7 @@ const Form: React.FC<FormProps> = ({
   passData,
 }) => {
   //TODO FIX Backup
-  const [backup, setBackup] = useState(cloneDeep(inputs.input));
+  const [backup, setBackup] = useState<any>({});
   const [objectIsEqual, setObjectIsEqual] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const hotelCtx = useContext(HotelContext);
@@ -33,16 +33,13 @@ const Form: React.FC<FormProps> = ({
   const revalidator = useRevalidator();
 
   useLayoutEffect(() => {
+    setBackup(cloneDeep({ ...inputs.input, ...passData }));
+  }, []);
+
+  useLayoutEffect(() => {
     const cleanup = setTimeout(() => {
       if (Object.keys(backup).length === 0) return;
       const input = inputs.input;
-
-      // for (let key in inputs.input) {
-      //   obj[key] = input[key].value;
-      // }
-      // for (let key in backup) {
-      //   obj2[key] = backup[key].value;
-      // }
       if (objectIsEqual) {
         if (!isEqual(input, backup)) {
           setObjectIsEqual(false);
@@ -120,24 +117,20 @@ const Form: React.FC<FormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const input = inputs.input;
-    const setInput = inputs.setInput;
-    setInput((prev) => {
-      const inputs = { ...prev };
-      for (let key in inputs) {
-        inputs[key].firstTouch = true;
-      }
-      return inputs;
+
+    inputs.setInput((prev) => {
+      const update = cloneDeep(prev);
+      Object.keys(update).map((key) => (update[key].firstTouch = true));
+      return update;
     });
 
     const getValidKeys = (): boolean => {
-      const baseKeys = mapValues(input, "valid");
+      const baseKeys = mapValues(inputs.input, "valid");
       for (let baseKey in baseKeys) {
         if (!baseKeys[baseKey] && baseKeys[baseKey] !== undefined) {
           return false;
         }
       }
-
       return true;
     };
 
@@ -184,7 +177,6 @@ const Form: React.FC<FormProps> = ({
         setObjectIsEqual(true);
         setLoading(false);
         console.log("asd");
-        setBackup(inputs.input);
         revalidator.revalidate();
         refreshCtx.handleRefresh(RefreshEnum.START);
         outletCtx.alertDispatch({
@@ -195,6 +187,13 @@ const Form: React.FC<FormProps> = ({
           },
         });
         sendAction?.callBack && sendAction.callBack();
+        if (sendAction?.method === "POST") {
+          inputs.setInput(backup);
+        }
+
+        if (sendAction?.method === "PUT") {
+          setBackup(inputs.input);
+        }
       }
     } else {
       setLoading(false);
@@ -251,7 +250,7 @@ const Form: React.FC<FormProps> = ({
       });
     }
   };
-
+  console.log("backup", backup);
   return (
     <article
       className={`p-4 border-gray-300 border flex flex-col space-y-8 rounded-lg w-full laptop:w-4/5 desktop:w-1/2 ${className}`}
