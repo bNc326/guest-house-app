@@ -23,11 +23,13 @@ import {
 } from "react-icons/md";
 import CountUp from "react-countup";
 import { AnimationOnScroll } from "react-animation-on-scroll";
+import { IconTypes } from "models/Icons";
 
-const HotelCard: React.FC<{ hotel: GuestHouseModel; index: number }> = ({
-  hotel,
-  index,
-}) => {
+const HotelCard: React.FC<{
+  hotel: GuestHouseModel;
+  index: number;
+  icons: IconTypes;
+}> = ({ hotel, index, icons }) => {
   const navigate = useNavigate();
   const hotelCtx = useContext(HotelContext);
   const address = `${hotel.postalCode} ${hotel.city}, ${hotel.street}`;
@@ -130,101 +132,27 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel; index: number }> = ({
             </AnimationOnScroll>
           </div>
           <div className="flex flex-col">
-            <div className="flex flex-col gap-1 pb-2">
-              <h3 className="font-semibold text-dynamicList">Szolgáltatások</h3>
-              <ul className="flex flex-wrap w-full z-0 text-dynamicSmall gap-2 text-palette-3 font-semibold">
-                <Capsule
-                  Icon={MdLocalParking}
-                  text="Ingyenes parkolás"
-                  iconSize={16}
-                  animationIndex={index}
-                />
-                <Capsule
-                  Icon={MdFlatware}
-                  text="Étterrem"
-                  className="mobile:order-8 tablet:order-none"
-                  iconSize={16}
-                  animationIndex={index}
-                />
-                <Capsule
-                  Icon={MdWifi}
-                  text="Ingyenes wifi"
-                  iconSize={16}
-                  animationIndex={index}
-                />
-                <Capsule
-                  Icon={BiArea}
-                  text="60m2"
-                  iconSize={16}
-                  animationIndex={index}
-                />
-                <Capsule
-                  Icon={MdOutlineCreditScore}
-                  text="Bankkártya & SZÉP kártya"
-                  iconSize={16}
-                  animationIndex={index}
-                />
-                <Capsule
-                  Icon={MdTv}
-                  text="Televízió"
-                  iconSize={16}
-                  animationIndex={index}
-                />
-                <Capsule
-                  Icon={TbAirConditioning}
-                  text="Légkondícionáló"
-                  iconSize={16}
-                  animationIndex={index}
-                />
-                <Capsule
-                  Icon={MdBabyChangingStation}
-                  text="Bababarát hely"
-                  iconSize={16}
-                  animationIndex={index}
-                />
-                <Capsule
-                  Icon={MdOutlineOutdoorGrill}
-                  text="Grillező hely"
-                  iconSize={16}
-                  animationIndex={index}
-                />
-                <Capsule
-                  Icon={MdSpa}
-                  text="Gyógyfűrdő 500m"
-                  iconSize={16}
-                  animationIndex={index}
-                />
-              </ul>
-            </div>
-            <div className="flex flex-col gap-1">
-              <h3 className="font-semibold text-dynamicList">Extrák</h3>
-              <ul className="flex flex-wrap w-full z-0 text-dynamicSmall gap-2 text-palette-3 font-semibold">
-                <Capsule
-                  Icon={MdWorkspacePremium}
-                  text="Finn Sauna"
-                  iconSize={16}
-                  animationIndex={index}
-                />
-                <Capsule
-                  Icon={MdWorkspacePremium}
-                  text="Wellness"
-                  iconSize={16}
-                  animationIndex={index}
-                />
-                <Capsule
-                  Icon={MdWorkspacePremium}
-                  text="Dézsa fűrdő"
-                  iconSize={16}
-                  animationIndex={index}
-                />
-                <Capsule
-                  Icon={MdWorkspacePremium}
-                  text="Fél panzio"
-                  iconSize={16}
-                  animationIndex={index}
-                />
-              </ul>
-            </div>
+            {hotel.services.length ? (
+              <div className="flex flex-col gap-1 pb-2">
+                <h3 className="font-semibold text-dynamicList">
+                  Szolgáltatások
+                </h3>
+                <ul className="flex flex-wrap w-full z-0 text-dynamicSmall gap-2 text-palette-3 font-semibold">
+                  {hotel.services
+                    .filter((item) => !item.hidden && item)
+                    .map((service) => (
+                      <Capsule
+                        Icon={icons[service.icon]}
+                        text={service.value}
+                        iconSize={16}
+                        animationIndex={index}
+                      />
+                    ))}
+                </ul>
+              </div>
+            ) : (
+              ""
+            )}
           </div>
         </div>
         <Separator />
@@ -254,7 +182,7 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel; index: number }> = ({
           </Rating>
           <div className="text-center h-full flex flex-col justify-end gap-1">
             <div className="flex justify-center items-center gap-2 ">
-              {hotel.discountPrice && (
+              {hotel.discountPrice ? (
                 <>
                   <AnimationOnScroll
                     animateOnce
@@ -279,12 +207,18 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel; index: number }> = ({
                       index === 0 ? "animate__animated animate__fadeInUp" : ""
                     }`}
                   >
-                    {(hotel.price - hotel.discountPrice) / (hotel.price * 0.01)}
+                    -
+                    {(
+                      (hotel.price - hotel.discountPrice) /
+                      (hotel.price * 0.01)
+                    ).toFixed()}
                     %
                   </AnimationOnScroll>
                 </>
+              ) : (
+                ""
               )}
-              {!hotel.discountPrice && (
+              {!hotel.discountPrice ? (
                 <AnimationOnScroll
                   animateOnce
                   animatePreScroll={false}
@@ -297,6 +231,8 @@ const HotelCard: React.FC<{ hotel: GuestHouseModel; index: number }> = ({
                     {hotel?.price} Ft/éj/ház
                   </p>
                 </AnimationOnScroll>
+              ) : (
+                ""
               )}
             </div>
             <button

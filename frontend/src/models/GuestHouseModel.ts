@@ -5,7 +5,7 @@ import { Ratings as Rating } from "./Ratings";
 export interface GuestHouseModel {
   _id: string;
   hotelName: string;
-  country: String;
+  country: string;
   postalCode: number;
   city: string;
   street: string;
@@ -15,9 +15,15 @@ export interface GuestHouseModel {
   roomAmount: number;
   maxPersonAmount: number;
   description: string;
-  service: string[];
-  feature: string[];
-  bookedDates: BookedDate[],
-  disabledDays: DisabledDay[],
-  ratings: Rating[]
+  services: Service[];
+  bookedDates: BookedDate[];
+  disabledDays: DisabledDay[];
+  ratings: Rating[];
+}
+
+export interface Service {
+  id: string;
+  value: string;
+  icon: string;
+  hidden?: boolean;
 }
