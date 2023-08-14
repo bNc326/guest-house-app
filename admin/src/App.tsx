@@ -13,7 +13,7 @@ import EditGuestHouses from "./pages/GuestHouses/EditGuestHouses";
 import { loader as editHotelLoader } from "./pages/GuestHouses/EditGuestHouses";
 import NewGuestHouses from "./pages/GuestHouses/NewGuestHouses";
 import Logout from "./pages/Logout";
-import Gallery, { loader as galleryLoader } from "./pages/Gallery/Gallery";
+import Gallery from "./pages/Gallery/Gallery";
 import { RequireAuth } from "react-auth-kit";
 import Rating from "./pages/Rating/Rating";
 
@@ -66,7 +66,6 @@ const App = () => {
         },
         {
           path: "galeria",
-          loader: galleryLoader,
           id: "gallery",
           element: <Gallery />,
         },
