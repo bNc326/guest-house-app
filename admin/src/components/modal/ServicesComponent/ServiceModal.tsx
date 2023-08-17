@@ -82,7 +82,6 @@ const ServiceModal: React.FC<Props> = ({
 
   const handleSearchIcon = (e: React.ChangeEvent) => {
     if (!(e.target instanceof HTMLInputElement)) return;
-    console.log("type");
 
     const value = e.target.value.toLowerCase().trim();
 
@@ -117,10 +116,6 @@ const ServiceModal: React.FC<Props> = ({
     setServices((prev) => [service, ...prev]);
     closeModalHandler();
   };
-  //TODO submit new service
-
-  console.log("icons", MaterialDesignIcon, icons);
-  console.log("search", searchValue, filteredIcons, iconsName);
   return (
     <Backdrop closeModalHandler={closeModalHandler}>
       <div className="w-full flex flex-col gap-4">

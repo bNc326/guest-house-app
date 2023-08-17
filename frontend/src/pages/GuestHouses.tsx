@@ -15,7 +15,7 @@ const GuestHouses = () => {
       const updateIcons: IconTypes = {};
       updateIcons[VscBlank.name] = VscBlank;
       for (let [index, icon] of Object.entries(MaterialDesignIcon)) {
-        updateIcons[icon.name] = icon;
+        updateIcons[index] = icon;
       }
       setIcons(updateIcons);
     }, 100);
@@ -31,7 +31,12 @@ const GuestHouses = () => {
         >
           {hotelCtx.hotels &&
             hotelCtx.hotels.map((hotel, index) => (
-              <HotelCard key={hotel._id} index={index} hotel={hotel} icons={icons} />
+              <HotelCard
+                key={hotel._id}
+                index={index}
+                hotel={hotel}
+                icons={icons}
+              />
             ))}
           {hotelCtx.hotels.length === 0 && (
             <div className="w-full h-full flex items-center justify-center">
