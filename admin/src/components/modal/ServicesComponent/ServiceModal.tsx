@@ -1,8 +1,4 @@
-import React, {
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import Backdrop from "../Backdrop";
 import { Button, TextInput } from "flowbite-react";
 import { MdClose } from "react-icons/md";
@@ -122,6 +118,8 @@ const ServiceModal: React.FC<Props> = ({
     closeModalHandler();
   };
   //TODO submit new service
+
+  console.log("search", searchValue, filteredIcons, iconsName);
   return (
     <Backdrop closeModalHandler={closeModalHandler}>
       <div className="w-full flex flex-col gap-4">
