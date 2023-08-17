@@ -1,9 +1,15 @@
-import { json } from "react-router-dom";
+import { json, useOutletContext } from "react-router-dom";
 import DateModel, { Day } from "../../models/DateModel";
 import Calendar from "models/Calendar";
 import { DbDateModel, DisabledDbDays } from "../../models/DbDateModel";
 import { getDaysInMonth, format } from "date-fns";
-import { useEffect, useState, useContext, useLayoutEffect } from "react";
+import {
+  useEffect,
+  useState,
+  useContext,
+  useLayoutEffect,
+  useCallback,
+} from "react";
 import { v4 as uuid } from "uuid";
 import BigCalendar from "./BigCalendar";
 import BookingDate from "../../models/BookingDate";
@@ -14,6 +20,8 @@ import { DisabledDaysModel } from "models/DisabledDaysModel";
 import { HotelContext } from "context/HotelContextProvider";
 import InfiniteScroll from "react-infinite-scroll-component";
 import UnavailableDates from "models/UnavailableDates";
+import { Outlet } from "models/OutletModel";
+import { ALERT_ACTION_TYPE, ALERT_TYPE } from "models/AlertModels";
 
 const CalendarComponent: React.FC<{
   isSelecting: boolean;
@@ -53,6 +61,7 @@ const CalendarComponent: React.FC<{
     renderedCalendar,
     setRenderedCalendar
   );
+  const outletCtx = useOutletContext() as Outlet;
 
   // ! ASYNC FUNCTIONS
 
@@ -72,7 +81,6 @@ const CalendarComponent: React.FC<{
         });
       } else {
         const data: UnavailableDates = await response.json();
-        console.log(data);
         if (data.bookedDates) {
           setBookedDate(data.bookedDates);
         }
@@ -157,7 +165,7 @@ const CalendarComponent: React.FC<{
 
     const timeout = setTimeout(() => {
       updateCalendarWithBookedDate();
-      // updatedCalendarWithDisabledDays();
+      updatedCalendarWithDisabledDays();
     });
 
     return () => clearTimeout(timeout);
@@ -177,7 +185,6 @@ const CalendarComponent: React.FC<{
     }
   }, [renderedMonth]);
 
-  console.log("calendar", renderedCalendar);
   // ! HANDLERS
 
   const selectDateHandler = (e: React.MouseEvent<EventTarget>): void => {
@@ -192,7 +199,7 @@ const CalendarComponent: React.FC<{
     const arrayIndex = Number(e.target.dataset.arrayindex) as number;
     const prevMonth = e.target.dataset.prevmonth as string;
     const nextMonth = e.target.dataset.nextmonth as string;
-    const disabledDays = e.target.dataset.disabledDays as string;
+    const disabledDay = e.target.dataset.disabledDays as string;
     const bookedAndPendingBooked = e.target.dataset
       .bookedAndPendingBooked as string;
     const pendingBooking = e.target.dataset.pendingBooking as string;
@@ -202,10 +209,17 @@ const CalendarComponent: React.FC<{
       prevMonth === "true" ||
       booked === "true" ||
       nextMonth === "true" ||
-      disabledDays === "true" ||
+      disabledDay === "true" ||
       bookedAndPendingBooked === "true" ||
       pendingBooking === "true"
     ) {
+      outletCtx.alertDispatch({
+        type: ALERT_ACTION_TYPE.SHOW,
+        payload: {
+          alertType: ALERT_TYPE.FAILURE,
+          message: "Ezt a napot nem lehet lefoglalni!",
+        },
+      });
       return;
     }
 
@@ -225,34 +239,46 @@ const CalendarComponent: React.FC<{
     };
 
     const getAllBlockedDate = () => {
-      for (
-        let aIndex = arrayIndex;
-        aIndex <= renderedCalendar.length - 1;
-        aIndex++
-      ) {
-        let i = 0;
-        if (arrayIndex === aIndex) {
-          i = index;
-        }
-
-        for (i; i <= renderedCalendar[aIndex].length - 1; i++) {
-          const blockedDate = renderedCalendar[aIndex][i];
-          if (
-            blockedDate.startBooked === true ||
-            blockedDate.startPendingBooking === true ||
-            blockedDate.disabledDays === true
-          ) {
-            const date = blockedDate.date as string;
-            setAllBlockedDate((prev) => {
-              return [...prev, date];
-            });
-            return;
+      const unavailableDates = [...bookedDate, ...disabledDays];
+      unavailableDates
+        .sort(
+          (a, b) =>
+            new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+        )
+        .map((unavailable) => {
+          const parseSelectedDate = new Date(
+            format(Date.parse(date), "yyyy-MM-dd")
+          );
+          const parseDate = new Date(
+            format(Date.parse(unavailable.startDate as string), "yyyy-MM-dd")
+          );
+          if (parseSelectedDate <= parseDate) {
+            setAllBlockedDate((prev) => [
+              ...prev,
+              format(parseDate, "yyyy-MM-dd"),
+            ]);
           }
-        }
-      }
+        });
     };
 
     if (!firstTouch) {
+      if (
+        !renderBookingDate.firstDate &&
+        (renderedCalendar[arrayIndex][index].startBooked ||
+          renderedCalendar[arrayIndex][index].startPendingBooking ||
+          renderedCalendar[arrayIndex][index + 1].disabledDays)
+      ) {
+        outletCtx.alertDispatch({
+          type: ALERT_ACTION_TYPE.SHOW,
+          payload: {
+            alertType: ALERT_TYPE.FAILURE,
+            message: "Minimum 2 napot le kell foglalni!",
+          },
+        });
+        resetDateSelect();
+        return;
+      }
+
       resetDateSelect();
       getAllBlockedDate();
       setRenderBookingDate((prevState) => {
@@ -276,13 +302,25 @@ const CalendarComponent: React.FC<{
         selectedDate.startSelected = true;
       }
       setFirstTouch(true);
-      setRenderedCalendar(updateState);
       setFirstTouchIndex(index);
       setSelectedArrayIndex(arrayIndex);
+      setRenderedCalendar(updateState);
     }
 
     if (firstTouch) {
+      if (renderBookingDate.firstDate === date) {
+        setFirstTouch(false);
+        resetDateSelect();
+        return;
+      }
       if (new Date(date) > new Date(allBlockedDate[0])) {
+        outletCtx.alertDispatch({
+          type: ALERT_ACTION_TYPE.SHOW,
+          payload: {
+            alertType: ALERT_TYPE.FAILURE,
+            message: "Ezt a napot nem lehet lefoglalni!",
+          },
+        });
         return;
       }
       if (date === renderBookingDate.firstDate) {
@@ -329,14 +367,16 @@ const CalendarComponent: React.FC<{
     }
   };
 
+
   const selectStartDateToEndDate = (e: React.MouseEvent<EventTarget>) => {
     if (!(e.target instanceof HTMLElement)) {
       return;
     }
 
-    const id = e.target.dataset.id as string;
     const index = Number(e.target.dataset.index) as number;
     const arrayIndex = Number(e.target.dataset.arrayindex) as number;
+    const currentDay = index;
+    const currentMonth = arrayIndex;
     const resetDateSelect = () => {
       const updatedState = [...renderedCalendar];
       updatedState.map((calendar) => {
@@ -351,168 +391,152 @@ const CalendarComponent: React.FC<{
       }
     };
     if (firstTouch && firstTouchIndex !== null) {
+      const blockedDates = {
+        firstTouch: [] as number[],
+        middle: {
+          day: [] as number[],
+          month: [] as number[],
+        },
+        current: [] as number[],
+      };
       resetDateSelect();
       const updatedRenderDays = [...renderedCalendar[arrayIndex]];
       updatedRenderDays.map((day) => (day.selected = false));
+
       if (arrayIndex > selectedArrayIndex) {
-        const updateState = [...renderedCalendar];
-        for (
-          let i = firstTouchIndex;
-          i <= renderedCalendar[selectedArrayIndex].length;
-          i++
-        ) {
-          if (
-            renderedCalendar[selectedArrayIndex][i]?.startBooked === true ||
-            renderedCalendar[selectedArrayIndex][i]?.startPendingBooking ===
-              true ||
-            renderedCalendar[selectedArrayIndex][i]?.disabledDays === true
-          ) {
-            const lastSelectableDate = renderedCalendar[selectedArrayIndex][i]
-              .date as string;
-            setMaxSelectableDate((prev) => [...prev, lastSelectableDate]);
-          }
-          if (
-            renderedCalendar[selectedArrayIndex][i]?.booked === true ||
-            renderedCalendar[selectedArrayIndex][i]?.pendingBooking === true ||
-            renderedCalendar[selectedArrayIndex][i]?.disabledDays === true
-          ) {
-            return;
-          } else {
-            updateState[selectedArrayIndex].map((day, dayIndex) => {
-              if (dayIndex === firstTouchIndex) {
-                day.startSelected = true;
-              } else if (dayIndex === i) {
-                day.selected = true;
+        (() => {
+          const findIndex: number[] = [];
+
+          renderedCalendar[selectedArrayIndex].map((day, dayIndex, arr) => {
+            if (dayIndex >= firstTouchIndex) {
+              allBlockedDate.map((blocked) => {
+                if (blocked === day.date) {
+                  findIndex.push(dayIndex);
+                  blockedDates.firstTouch.push(dayIndex);
+                }
+              });
+              if (dayIndex <= (findIndex[0] || arr.length - 1)) {
+                setRenderedCalendar((prev) => {
+                  const update = [...prev];
+                  if (dayIndex === firstTouchIndex) {
+                    update[selectedArrayIndex][dayIndex].startSelected = true;
+                  } else if (
+                    dayIndex === findIndex[0] &&
+                    findIndex[0] !== arr.length - 1
+                  ) {
+                    update[selectedArrayIndex][dayIndex].endSelected = true;
+                  } else {
+                    update[selectedArrayIndex][dayIndex].selected = true;
+                  }
+                  return update;
+                });
+              }
+            }
+          });
+        })();
+
+        if (!blockedDates.firstTouch.length) {
+          (() => {
+            let findIndex: number[] = [];
+            renderedCalendar.map((month, monthIndex) => {
+              if (
+                monthIndex > selectedArrayIndex &&
+                monthIndex < currentMonth
+              ) {
+                month.map((day, dayIndex, arr) => {
+                  allBlockedDate.map((blocked) => {
+                    if (blocked === day.date) {
+                      findIndex.push(dayIndex);
+                      blockedDates.middle.day.push(dayIndex);
+                      blockedDates.middle.month.push(monthIndex);
+                    }
+                  });
+                  if (
+                    dayIndex <= (findIndex[0] || arr.length) &&
+                    monthIndex <= (blockedDates.middle.month[0] || monthIndex)
+                  ) {
+                    setRenderedCalendar((prev) => {
+                      const update = [...prev];
+                      if (
+                        monthIndex === blockedDates.middle.month[0] &&
+                        dayIndex === findIndex[0] &&
+                        dayIndex !== arr.length - 1
+                      ) {
+                        update[monthIndex][dayIndex].endSelected = true;
+                      } else {
+                        update[monthIndex][dayIndex].selected = true;
+                      }
+                      return update;
+                    });
+                  }
+                });
               }
             });
-          }
-        }
-        setRenderedCalendar(updateState);
-        for (let i = selectedArrayIndex + 1; i < arrayIndex; i++) {
-          for (let x = 0; x < renderedCalendar[i].length; x++) {
-            if (
-              renderedCalendar[i][x]?.startBooked === true ||
-              renderedCalendar[i][x]?.startPendingBooking === true ||
-              renderedCalendar[i][x]?.disabledDays === true
-            ) {
-              const lastSelectableDate = renderedCalendar[selectedArrayIndex][i]
-                .date as string;
-              setMaxSelectableDate((prev) => [...prev, lastSelectableDate]);
-            }
-            if (
-              renderedCalendar[i][x]?.booked === true ||
-              renderedCalendar[i][x]?.startPendingBooking === true ||
-              renderedCalendar[i][x]?.disabledDays === true
-            ) {
-              return;
-            } else {
-              updateState[i][x].selected = true;
-              setRenderedCalendar(updateState);
-            }
-          }
-        }
-        const foundIndex = renderedCalendar[arrayIndex].findIndex(
-          (day) => day.id === id
-        );
-        let bookedIndex: number[] = [];
-        for (let i = 0; i <= renderedCalendar[arrayIndex].length; i++) {
+          })();
+
           if (
-            renderedCalendar[arrayIndex][i]?.booked === true ||
-            renderedCalendar[arrayIndex][i]?.endBooked === true ||
-            renderedCalendar[arrayIndex][i]?.disabledDays === true ||
-            renderedCalendar[arrayIndex][i]?.pendingBooking === true ||
-            renderedCalendar[arrayIndex][i]?.endPendingBooking === true
+            !blockedDates.middle.day.length &&
+            !blockedDates.middle.month.length
           ) {
-            bookedIndex.push(i);
+            (() => {
+              const findIndex: number[] = [];
+              renderedCalendar[currentMonth].map((day, dayIndex, arr) => {
+                if (dayIndex <= currentDay) {
+                  allBlockedDate.map((blocked) => {
+                    if (blocked === day.date) {
+                      findIndex.push(dayIndex);
+                    }
+                  });
+                  if (dayIndex <= (findIndex[0] || arr.length - 1)) {
+                    setRenderedCalendar((prev) => {
+                      const update = [...prev];
+                      if (
+                        dayIndex === currentDay ||
+                        dayIndex === (findIndex[0] || arr.length - 1)
+                      ) {
+                        update[currentMonth][dayIndex].endSelected = true;
+                      } else {
+                        update[currentMonth][dayIndex].selected = true;
+                      }
+                      return update;
+                    });
+                  }
+                }
+              });
+            })();
           }
-          if (
-            renderedCalendar[arrayIndex][i]?.startBooked === true ||
-            renderedCalendar[arrayIndex][i]?.startPendingBooking === true ||
-            renderedCalendar[arrayIndex][i]?.disabledDays === true
-          ) {
-            const lastSelectableDate = renderedCalendar[arrayIndex][i]
-              .date as string;
-            setMaxSelectableDate((prev) => [...prev, lastSelectableDate]);
-          }
-        }
-        for (let i = 0; i <= foundIndex; i++) {
-          if (i + 1 === bookedIndex[0]) {
-            updateState[arrayIndex].map((day, index) => {
-              if (index === i) {
-                day.endSelected = true;
-              }
-            });
-            return;
-          } else {
-            if (i === index) {
-              updateState[arrayIndex][i].endSelected = true;
-            } else {
-              updateState[arrayIndex][i].selected = true;
-            }
-          }
-          setRenderedCalendar(updateState);
         }
       }
+
       if (arrayIndex === selectedArrayIndex) {
-        let bookedIndex: number[] = [];
-        for (
-          let i = firstTouchIndex + 1;
-          i <= renderedCalendar[selectedArrayIndex].length;
-          i++
-        ) {
-          if (
-            renderedCalendar[selectedArrayIndex][i]?.booked === true ||
-            renderedCalendar[selectedArrayIndex][i]?.endBooked === true ||
-            renderedCalendar[selectedArrayIndex][i]?.disabledDays === true ||
-            renderedCalendar[selectedArrayIndex][i]?.pendingBooking === true ||
-            renderedCalendar[selectedArrayIndex][i]?.endPendingBooking ===
-              true ||
-            renderedCalendar[selectedArrayIndex][i]?.bookedAndPendingBooked ===
-              true
-          ) {
-            bookedIndex.push(i);
-          }
-          if (
-            renderedCalendar[selectedArrayIndex][i]?.startBooked === true ||
-            renderedCalendar[selectedArrayIndex][i]?.startPendingBooking ===
-              true ||
-            renderedCalendar[selectedArrayIndex][i]?.disabledDays === true
-          ) {
-            const lastSelectableDate = renderedCalendar[selectedArrayIndex][i]
-              .date as string;
-            setMaxSelectableDate((prev) => {
-              return [...prev, lastSelectableDate];
+        const findIndex: number[] = [];
+
+        renderedCalendar[selectedArrayIndex].map((day, dayIndex, arr) => {
+          if (dayIndex >= firstTouchIndex && dayIndex <= currentDay) {
+            allBlockedDate.map((blocked) => {
+              if (blocked === day.date) {
+                findIndex.push(dayIndex);
+              }
             });
-          }
-        }
-        for (let i = firstTouchIndex; i <= index; i++) {
-          if (i + 1 === bookedIndex[0]) {
-            updatedRenderDays[i].endSelected = true;
-            setRenderedCalendar((prevState) => {
-              return [
-                ...prevState.slice(0, arrayIndex),
-                updatedRenderDays,
-                ...prevState.slice(arrayIndex + 1),
-              ];
-            });
-            return;
-          } else {
-            if (i === firstTouchIndex) {
-              updatedRenderDays[i].selected = false;
-            } else if (i === index) {
-              updatedRenderDays[i].endSelected = true;
-            } else {
-              updatedRenderDays[i].selected = true;
+
+            if (dayIndex <= (findIndex[0] || arr.length - 1)) {
+              setRenderedCalendar((prev) => {
+                const update = [...prev];
+                if (dayIndex === firstTouchIndex) {
+                  update[selectedArrayIndex][dayIndex].startSelected = true;
+                } else if (
+                  dayIndex === currentDay ||
+                  dayIndex === (findIndex[0] || arr.length - 1)
+                ) {
+                  update[selectedArrayIndex][dayIndex].endSelected = true;
+                } else {
+                  update[selectedArrayIndex][dayIndex].selected = true;
+                }
+                return update;
+              });
             }
-            setRenderedCalendar((prevState) => {
-              return [
-                ...prevState.slice(0, arrayIndex),
-                updatedRenderDays,
-                ...prevState.slice(arrayIndex + 1),
-              ];
-            });
           }
-        }
+        });
       }
     }
     if (firstTouchIndex === null && !firstTouch) {
@@ -523,7 +547,7 @@ const CalendarComponent: React.FC<{
   const handleLoadMonth = () => {
     setTimeout(() => {
       calendar.renderNewMonth(3, setRenderedMonth);
-    }, 4000);
+    }, 1500);
   };
   // ! RENDER
   return (
