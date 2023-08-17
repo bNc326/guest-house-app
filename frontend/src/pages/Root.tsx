@@ -1,7 +1,13 @@
 import { Outlet } from "react-router-dom";
 import Navigation from "../components/Navigation";
 import ScrollToTop from "ScrollToTop";
+import useAlert from "hooks/useAlert";
+import { Outlet as OutletModel } from "models/OutletModel";
+import AlertComponent from "components/UI/Alert";
 const Root = () => {
+  const { alert, alertDispatch } = useAlert();
+  const outletCtx: OutletModel = { alertDispatch, alert };
+
   return (
     <>
       <ScrollToTop />
@@ -10,8 +16,14 @@ const Root = () => {
           <Navigation />
         </header>
         <main className="outlet h-full">
-          <Outlet />
+          <Outlet context={outletCtx} />
         </main>
+        <AlertComponent
+          isShow={alert.isShow}
+          message={alert.message}
+          type={alert.alertType}
+          deleteAlertDispatch={alertDispatch}
+        />
       </section>
     </>
   );
