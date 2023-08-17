@@ -25,7 +25,7 @@ const HotelService: React.FC<Props> = ({ services, setServices }) => {
       const updateIcons: IconTypes = {};
       updateIcons[VscBlank.name] = VscBlank;
       for (let [index, icon] of Object.entries(MaterialDesignIcon)) {
-        updateIcons[icon.name] = icon;
+        updateIcons[index] = icon;
       }
       setIcons(updateIcons);
     }, 100);
