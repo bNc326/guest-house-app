@@ -119,6 +119,7 @@ const ServiceModal: React.FC<Props> = ({
   };
   //TODO submit new service
 
+  console.log("icons", MaterialDesignIcon, icons);
   console.log("search", searchValue, filteredIcons, iconsName);
   return (
     <Backdrop closeModalHandler={closeModalHandler}>
