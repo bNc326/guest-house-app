@@ -81,11 +81,7 @@ const HotelCard: React.FC<{
   return (
     <div className="w-full h-full rounded-xl bg-palette-2  shadow-lg flex flex-col items-center mobile:flex-row p-4 gap-4">
       <div className="w-full shadow-md">
-        <img
-          src={DummyHotel}
-          alt=""
-          className="rounded-xl w-full h-full "
-        />
+        <img src={DummyHotel} alt="" className="rounded-xl w-full h-full " />
       </div>
 
       <div className="flex flex-col-reverse w-full h-full gap-4">
@@ -107,6 +103,7 @@ const HotelCard: React.FC<{
               </Tooltip>
             </h2>
             <AnimationOnScroll
+              offset={10}
               animateOnce
               animatePreScroll={false}
               animateIn={"animate__fadeInUp"}
@@ -117,6 +114,7 @@ const HotelCard: React.FC<{
               {address}
             </AnimationOnScroll>
             <AnimationOnScroll
+              offset={10}
               animateOnce
               animatePreScroll={false}
               animateIn={"animate__fadeInUp"}
@@ -168,6 +166,7 @@ const HotelCard: React.FC<{
                 <span className="text-dynamicMedium">/5</span>
               </p>
               <AnimationOnScroll
+                offset={10}
                 animateOnce
                 animatePreScroll={false}
                 animateIn={"animate__fadeInUp"}
@@ -186,6 +185,7 @@ const HotelCard: React.FC<{
               {hotel.discountPrice ? (
                 <>
                   <AnimationOnScroll
+                    offset={10}
                     animateOnce
                     animatePreScroll={false}
                     animateIn={"animate__fadeInUp"}
@@ -201,6 +201,7 @@ const HotelCard: React.FC<{
                     </p>
                   </AnimationOnScroll>
                   <AnimationOnScroll
+                    offset={10}
                     animateOnce
                     animatePreScroll={false}
                     animateIn={"animate__fadeInUp"}
@@ -221,6 +222,7 @@ const HotelCard: React.FC<{
               )}
               {!hotel.discountPrice ? (
                 <AnimationOnScroll
+                  offset={10}
                   animateOnce
                   animatePreScroll={false}
                   animateIn={"animate__fadeInUp"}
