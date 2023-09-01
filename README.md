@@ -53,16 +53,17 @@ The application listen at http://localhost:8800
 
 ### REST endpoints http://localhost:8800/api
 
-> | Endpoints     | Methods                                                                                                |
-> | ------------- | ------------------------------------------------------------------------------------------------------ |
-> | auth          | <code>GET</code> \| <code>DELETE</code>                                                                |
-> | booking       | <code>GET</code> \| <code>POST</code> \| <code>DELETE</code> \| <code>PUT</code> \| <code>PATCH</code> |
-> | disabled-days | <code>GET</code> \| <code>POST</code> \| <code>DELETE</code> \| <code>PUT</code> \|                    |
-> | hotels        | <code>GET</code> \| <code>POST</code> \| <code>DELETE</code> \| <code>PUT</code> \|                    |
-> | ratings       | <code>GET</code> \| <code>POST</code> \| <code>DELETE</code> \| <code>PUT</code> \|                    |
-> | gallery       | <code>GET</code> \| <code>POST</code> \| <code>DELETE</code> \| <code>PUT</code> \|                    |
+> | Endpoints     | Methods                                                                                    |
+> | ------------- | ------------------------------------------------------------------------------------------ |
+> | auth          | <code>GET</code> <code>DELETE</code>                                                       |
+> | booking       | <code>GET</code> <code>POST</code> <code>DELETE</code> <code>PUT</code> <code>PATCH</code> |
+> | disabled-days | <code>GET</code> <code>POST</code> <code>DELETE</code> <code>PUT</code>                    |
+> | hotels        | <code>GET</code> <code>POST</code> <code>DELETE</code> <code>PUT</code>                    |
+> | ratings       | <code>GET</code> <code>POST</code> <code>DELETE</code> <code>PUT</code>                    |
+> | gallery       | <code>GET</code> <code>POST</code> <code>DELETE</code> <code>PUT</code>                    |
 
 <summary><code><b>/auth</b></code></summary>
+<br>
 <details><summary><code>POST <b>/login</b></code></summary>
 
 #### Params
@@ -140,19 +141,163 @@ The application listen at http://localhost:8800
 
 #### Responses
 
-> | http code | content-type       | response                                                               |
-> | --------- | ------------------ | ---------------------------------------------------------------------- |
-> | `204`     | `application/json` | `{ success: true, status: 204, message: "Sikeresen kijelentkeztél!" }` |
+> | http code | content-type       | response                                                                       |
+> | --------- | ------------------ | ------------------------------------------------------------------------------ |
+> | `204`     | `application/json` | `{ "success": true, "status": "204", "message": "Sikeresen kijelentkeztél!" }` |
 
 </details>
 <br>
 <summary><code><b>/booking</b></code></summary>
+<br>
+<details><summary><code>GET <b>/</b></code></summary>
+
+#### Params
+
+> None
+
+#### Queries
+
+> | name    | datatype                | required |
+> | ------- | ----------------------- | -------- |
+> | `hotel` | `string(ref hotel _id)` | true     |
+
+#### Body
+
+> None
+
+#### Responses
+
+> | http code | content-type       | response         |
+> | --------- | ------------------ | ---------------- |
+> | `200`     | `application/json` | `Array<booking>` |
+
+</details>
+<details><summary><code>GET <b>/:id</b></code></summary>
+
+#### Params
+
+> | name  | datatype                  | required |
+> | ----- | ------------------------- | -------- |
+> | `:id` | `string(ref booking _id)` | true     |
+
+#### Queries
+
+> | name    | datatype                   | required |
+> | ------- | -------------------------- | -------- |
+> | `hotel` | `string(ref any hotel id)` | true     |
+
+#### Body
+
+> None
+
+#### Responses
+
+> | http code | content-type       | response                                                                                                   |
+> | --------- | ------------------ | ---------------------------------------------------------------------------------------------------------- |
+> | `200`     | `application/json` | `booking` obj                                                                                              |
+> | `404`     | `application/json` | `{ "success": false, "status": 404, "message": "Nem található a {id} azonosítójú foglalás!", "id": {id} }` |
+
+</details>
+<details><summary><code>DELETE <b>/</b></code></summary>
+
+#### Params
+
+> None
+
+#### Body
+
+> | name        | datatype   | required |
+> | ----------- | ---------- | -------- |
+> | `Array<id>` | `string[]` | true     |
+
+#### Headers
+
+> | name            | value          | required |
+> | --------------- | -------------- | -------- |
+> | `Authorization` | Bearer `token` | true     |
+
+#### Responses
+
+> | http code | content-type       | response                                                                                                 |
+> | --------- | ------------------ | -------------------------------------------------------------------------------------------------------- |
+> | `201`     | `application/json` | `{ "success": true, "status": 201, "message": "Sikeresen törölted a foglalást/okat!", "id": Array<id> }` |
+
+</details>
+<details><summary><code>PUT <b>/:id</b></code></summary>
+
+#### Params
+
+> | name  | datatype                  | required |
+> | ----- | ------------------------- | -------- |
+> | `:id` | `string(ref booking _id)` | true     |
+
+#### Queries
+
+> | name    | datatype                   | required |
+> | ------- | -------------------------- | -------- |
+> | `hotel` | `string(ref any hotel id)` | true     |
+
+#### Body
+
+> | name           | datatype           | required |
+> | -------------- | ------------------ | -------- |
+> | `Obj<booking>` | `obj(ref booking)` | true     |
+
+#### Headers
+
+> | name            | value          | required |
+> | --------------- | -------------- | -------- |
+> | `Authorization` | Bearer `token` | true     |
+
+#### Responses
+
+> | http code | content-type       | response                                                                                                              |
+> | --------- | ------------------ | --------------------------------------------------------------------------------------------------------------------- |
+> | `201`     | `application/json` | `{ "success": true, "status": 204, "message": "Sikeresen szerkesztetted a {id} azonosítójú foglalást!" , "id": {id}}` |
+
+</details>
+<details><summary><code>PATCH <b>/:id</b></code></summary>
+
+#### Params
+
+> | name  | datatype                  | required |
+> | ----- | ------------------------- | -------- |
+> | `:id` | `string(ref booking _id)` | true     |
+
+#### Queries
+
+> | name    | datatype                   | required |
+> | ------- | -------------------------- | -------- |
+> | `hotel` | `string(ref any hotel id)` | true     |
+
+#### Body
+
+> | name           | datatype           | required |
+> | -------------- | ------------------ | -------- |
+> | `Obj<booking>` | `obj(ref booking)` | true     |
+
+#### Headers
+
+> | name            | value          | required |
+> | --------------- | -------------- | -------- |
+> | `Authorization` | Bearer `token` | true     |
+
+#### Responses
+
+> | http code | content-type       | response                                                                                               |
+> | --------- | ------------------ | ------------------------------------------------------------------------------------------------------ |
+> | `201`     | `application/json` | `{ "success": true, "status": 201, "message": "Sikeresen elfogadtad/elutatsítottad a foglalást/okat!"` |
+
+</details>
+
+Comming soon...
 
 ## ADMIN
 
 ### [DEMO](https://guest-house-admin.onrender.com/)
 
-> [!NOTE] _Demo account_
+> [!NOTE]
+> Demo account
 >
 > - Username: **demo**<br>
 > - Password: **demo123**
