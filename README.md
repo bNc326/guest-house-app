@@ -198,6 +198,44 @@ The application listen at http://localhost:8800
 > | `404`     | `application/json` | `{ "success": false, "status": 404, "message": "Nem található a {id} azonosítójú foglalás!", "id": {id} }` |
 
 </details>
+<details><summary><code>POST <b>/</b></code></summary>
+
+#### Params
+
+> None
+
+#### Queries
+
+> | name    | datatype                | required |
+> | ------- | ----------------------- | -------- |
+> | `hotel` | `string(ref hotel _id)` | true     |
+
+#### Body
+
+> | name            | datatype                                  | required |
+> | --------------- | ----------------------------------------- | -------- |
+> | `startDate`     | `Date`                                    | true     |
+> | `endDate`       | `Date`                                    | true     |
+> | `name`          | `string`                                  | true     |
+> | `email`         | `string`                                  | true     |
+> | `phone`         | `string`                                  | true     |
+> | `country`       | `string`                                  | true     |
+> | `postalCode`    | `number(int32)`                           | true     |
+> | `city`          | `string`                                  | true     |
+> | `street`        | `string`                                  | true     |
+> | `nightAmount`   | `number(int32)`                           | true     |
+> | `personsAmount` | `number(int32)`                           | true     |
+> | `EUR`           | `number(int32)`                           | true     |
+> | `HUF`           | `number(int32)`                           | true     |
+> | `status`        | `string(Accepted \| Pending  \| Ejected)` | true     |
+
+#### Responses
+
+> | http code | content-type       | response                                                                                                            |
+> | --------- | ------------------ | ------------------------------------------------------------------------------------------------------------------- |
+> | `201`     | `application/json` | `{ success: true, status: 201, message: "A foglalás adminisztrátor általi jóváhagyásra vár!", id: {ObjectId(id)} }` |
+
+</details>
 <details><summary><code>DELETE <b>/</b></code></summary>
 
 #### Params
