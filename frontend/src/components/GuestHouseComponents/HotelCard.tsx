@@ -8,6 +8,7 @@ import { Rating, Button, Tooltip } from "flowbite-react";
 import { GuestHouseModel } from "models/GuestHouseModel";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import { HotelContext } from "context/HotelContextProvider";
+import DummyHotel from "../../assets/images/room.jpg";
 import {
   MdLocalParking,
   MdWifi,
@@ -81,7 +82,7 @@ const HotelCard: React.FC<{
     <div className="w-full h-full rounded-xl bg-palette-2  shadow-lg flex flex-col items-center mobile:flex-row p-4 gap-4">
       <div className="w-full shadow-md">
         <img
-          src="/static/media/room.869d8aefa93ad239dae6.jpg"
+          src={DummyHotel}
           alt=""
           className="rounded-xl w-full h-full "
         />
