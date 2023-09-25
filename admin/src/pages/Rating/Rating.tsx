@@ -27,7 +27,7 @@ const Rating = () => {
           withChangeHotel
           withSearch
           socketData={{
-            socketEndpoint: `${hotelCtx.hotelId}-disabled-days`,
+            socketEndpoint: `${hotelCtx.hotelId}-ratings`,
             alert: {
               new: "Új értékelés érkezett!",
               update: "Egy admin módosított egy értékelést!",
