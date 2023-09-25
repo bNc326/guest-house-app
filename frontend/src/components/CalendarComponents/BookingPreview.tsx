@@ -1,6 +1,5 @@
 import React from "react";
 import { BookingContextModel } from "models/BookingContext";
-import BookingForm from "./BookingForm";
 import { Separator } from "pages/Calendar";
 const BookingPreview: React.FC<{
   bookingCtx: BookingContextModel;

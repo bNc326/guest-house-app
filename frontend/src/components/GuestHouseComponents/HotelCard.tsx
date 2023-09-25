@@ -1,27 +1,13 @@
 import React, { useContext, useLayoutEffect, useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
-import { TbAirConditioning } from "react-icons/tb";
-import { BiArea } from "react-icons/bi";
 import Capsule from "../HomeComponents/Welcome/Capsule";
-import { Rating, Button, Tooltip } from "flowbite-react";
+import { Rating, Tooltip } from "flowbite-react";
 import { GuestHouseModel } from "models/GuestHouseModel";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import { HotelContext } from "context/HotelContextProvider";
 import DummyHotel from "../../assets/images/room.jpg";
-import {
-  MdLocalParking,
-  MdWifi,
-  MdBed,
-  MdFlatware,
-  MdTv,
-  MdOutlineCreditScore,
-  MdBabyChangingStation,
-  MdFamilyRestroom,
-  MdWorkspacePremium,
-  MdOutlineOutdoorGrill,
-  MdSpa,
-} from "react-icons/md";
+import { MdBed, MdFamilyRestroom } from "react-icons/md";
 import CountUp from "react-countup";
 import { AnimationOnScroll } from "react-animation-on-scroll";
 import { IconTypes } from "models/Icons";

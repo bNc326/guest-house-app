@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import RatingWithPhone from "components/UI/svg/RatingWithPhone";
 import {
@@ -12,7 +12,6 @@ import {
 import { InputValidate } from "models/Ratings";
 import RatingCard from "components/RatingComponents/RatingCard";
 import { MdWarning, MdDone } from "react-icons/md";
-import { HotelContext } from "context/HotelContextProvider";
 
 interface Star {
   value: number;

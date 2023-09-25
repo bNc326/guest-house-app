@@ -1,14 +1,11 @@
 import {
   createContext,
   useState,
-  useEffect,
   useContext,
   useLayoutEffect,
 } from "react";
 import { BookingContextModel } from "models/BookingContext";
-import { intervalToDuration, formatDuration } from "date-fns";
 import { HotelContext } from "./HotelContextProvider";
-import { GuestHouseModel } from "models/GuestHouseModel";
 export const BookingContext = createContext<BookingContextModel>({
   isShowForm: false,
   initialPrice: 0,

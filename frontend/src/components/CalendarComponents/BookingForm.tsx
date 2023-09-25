@@ -1,5 +1,5 @@
 import { FormInterface } from "pages/Calendar";
-import React, { useContext } from "react";
+import React from "react";
 import { Separator } from "pages/Calendar";
 import { FaUsers, FaChild } from "react-icons/fa";
 import { IconType } from "react-icons/lib";

@@ -1,16 +1,13 @@
 import { json, useOutletContext } from "react-router-dom";
-import DateModel, { Day } from "../../models/DateModel";
+import DateModel from "../../models/DateModel";
 import Calendar from "models/Calendar";
-import { DbDateModel, DisabledDbDays } from "../../models/DbDateModel";
-import { getDaysInMonth, format } from "date-fns";
+import { format } from "date-fns";
 import {
   useEffect,
   useState,
   useContext,
   useLayoutEffect,
-  useCallback,
 } from "react";
-import { v4 as uuid } from "uuid";
 import BigCalendar from "./BigCalendar";
 import BookingDate from "../../models/BookingDate";
 import BookedDate from "../../models/BookedDate";
@@ -36,8 +33,6 @@ const CalendarComponent: React.FC<{
     "Szombat",
     "Vasárnap",
   ];
-  const currentDate = new Date();
-  const currYear: number = currentDate.getFullYear();
   const [renderedMonth, setRenderedMonth] = useState<number>(12);
   const [renderedCalendar, setRenderedCalendar] = useState<DateModel[][]>([]);
   const [calendarLoading, setCalendarLoading] = useState<boolean>(true);
@@ -109,7 +104,7 @@ const CalendarComponent: React.FC<{
     }, 100);
 
     return () => clearTimeout(cleanup);
-  }, [hotelCtx.hotelId]);
+    }, [hotelCtx.hotelId]);
 
   useLayoutEffect(() => {
     const updateCalendarWithBookedDate = () => {
@@ -128,7 +123,7 @@ const CalendarComponent: React.FC<{
           }
         };
         resetDisabledDays();
-        disabledDays.map((disabledDay) => {
+                disabledDays.map((disabledDay) => {
           for (let month in renderedCalendar) {
             const firstIndex = renderedCalendar[month].findIndex(
               (day) =>
@@ -169,7 +164,7 @@ const CalendarComponent: React.FC<{
     });
 
     return () => clearTimeout(timeout);
-  }, [bookedDate]);
+    }, [bookedDate]);
 
   useLayoutEffect(() => {
     setHotelChange(true);
@@ -183,7 +178,7 @@ const CalendarComponent: React.FC<{
     if (renderedMonth >= 36) {
       setHasMore(false);
     }
-  }, [renderedMonth]);
+    }, [renderedMonth]);
 
   // ! HANDLERS
 

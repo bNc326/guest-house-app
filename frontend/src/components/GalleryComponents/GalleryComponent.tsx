@@ -1,4 +1,3 @@
-import { Gallery } from "models/GalleryModel";
 import { LIGHTBOX_ACTION, LIGHTBOX_TYPE } from "models/IsLightboxModel";
 import React from "react";
 import { SlideImage } from "yet-another-react-lightbox";

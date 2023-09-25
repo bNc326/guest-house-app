@@ -1,9 +1,6 @@
 import Container from "components/UI/Container";
-import React from "react";
 import Form from "./Form";
-import Map from "components/UI/svg/Map";
 import VectorMap from "components/UI/svg/VectorMap";
-import Footer from "../Footer";
 import { AnimationOnScroll } from "react-animation-on-scroll";
 const Contact = () => {
   return (

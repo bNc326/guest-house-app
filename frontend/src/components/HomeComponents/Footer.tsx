@@ -1,5 +1,3 @@
-import Container from "components/UI/Container";
-import React from "react";
 import { MdPrivacyTip, MdCookie } from "react-icons/md";
 import { Link } from "react-router-dom";
 const Footer = () => {

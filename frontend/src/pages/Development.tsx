@@ -1,7 +1,5 @@
-import Container from "components/UI/Container";
 import React from "react";
 import DevelopmentSvg from "components/UI/svg/DevelopmentSvg";
-import { SyncLoader } from "react-spinners";
 
 const Development = () => {
   return (

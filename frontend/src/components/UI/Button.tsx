@@ -1,4 +1,3 @@
-import { spawn } from "child_process";
 import { IconType } from "react-icons/lib";
 
 const Button: React.FC<{

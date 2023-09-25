@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { GuestHouseModel } from "models/GuestHouseModel";
 import { HotelContext } from "context/HotelContextProvider";
-import { ScaleLoader, SyncLoader } from "react-spinners";
+import { ScaleLoader } from "react-spinners";
 const HotelModal: React.FC<{ hotels: GuestHouseModel[] }> = ({ hotels }) => {
   const hotelCtx = useContext(HotelContext);
   return (

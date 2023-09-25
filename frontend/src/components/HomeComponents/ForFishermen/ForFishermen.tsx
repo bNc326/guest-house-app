@@ -1,4 +1,3 @@
-import Container from "components/UI/Container";
 import Wave from "components/UI/svg/Wave";
 import LakeImg from "../../../assets/images/lake.jpg";
 import LakeImgTwo from "../../../assets/images/lak2.jpg";

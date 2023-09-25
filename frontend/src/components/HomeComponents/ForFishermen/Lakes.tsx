@@ -1,7 +1,4 @@
 import React from "react";
-import FacebookSvg from "components/UI/svg/FacebookSvg";
-import GoogleMaps from "components/UI/svg/GoogleMaps";
-import Website from "components/UI/svg/Website";
 import SmallLake from "components/UI/svg/SmallLake";
 import ColorfulMap from "components/UI/svg/ColorfulMap";
 import Depth from "components/UI/svg/Depth";

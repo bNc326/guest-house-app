@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Lottie, { LottiePlayer } from "lottie-react";
+import Lottie from "lottie-react";
 import BookingSuccess from "../../assets/Lotties/booking_success.json";
 const BookingSuccessModal: React.FC<{
   message: string;

@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { useRevalidator, useRouteLoaderData } from "react-router-dom";
+import { useRevalidator } from "react-router-dom";
 import CalendarComponent from "components/CalendarComponents/Calendar";
 import { formKey } from "components/HomeComponents/Contact/Form";
 import { BookingContext } from "context/BookingContextProvider";
@@ -8,8 +8,6 @@ import BookingForm from "components/CalendarComponents/BookingForm";
 import { cloneDeep, mapValues } from "lodash";
 import { SendBookingModel } from "../models/SendBookingModel";
 import HelperBox from "components/CalendarComponents/HelperBox";
-import { ScaleLoader } from "react-spinners";
-import { GuestHouseModel } from "models/GuestHouseModel";
 import HotelModal from "components/CalendarComponents/HotelModal";
 import { HotelContext } from "context/HotelContextProvider";
 import BookingSuccessModal from "components/CalendarComponents/BookingSuccessModal";
@@ -104,7 +102,7 @@ const Calendar = () => {
       pattern: /^[0-9]{1,}$/,
     },
   });
-  const [backup, setBackup] = useState(cloneDeep(formInput));
+  const [backup] = useState(cloneDeep(formInput));
   const bookingCtx = useContext(BookingContext);
   const hotelCtx = useContext(HotelContext);
 

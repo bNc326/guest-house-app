@@ -10,8 +10,7 @@ import {
   MdEmail,
   MdPhone,
   MdWarning,
-  MdDone,
-  MdMap,
+  MdDone
 } from "react-icons/md";
 
 export interface FormInterface extends Record<string, formKey> {

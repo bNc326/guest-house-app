@@ -1,5 +1,4 @@
-import Container from "components/UI/Container";
-import { useEffect, useState, useRef, useReducer } from "react";
+import { useEffect, useState, useReducer } from "react";
 import { Gallery as GalleryModel } from "models/GalleryModel";
 import Lightbox, { SlideImage } from "yet-another-react-lightbox";
 import {
@@ -8,7 +7,6 @@ import {
   Zoom,
   Slideshow,
   Fullscreen,
-  Captions,
 } from "yet-another-react-lightbox/plugins";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
